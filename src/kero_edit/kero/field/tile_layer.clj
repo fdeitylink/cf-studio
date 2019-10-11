@@ -4,47 +4,47 @@
             [kero-edit.kero.util :as util]))
 
 (def header
-  "Marks the start of the head of a PxPack tile layer"
+  "Marks the start of the head of a PxPack tile layer."
   "pxMAP01")
 
 (def num-tile-layers
-  "The number of tile layers in a PxPack file"
+  "The number of tile layers in a PxPack file."
   3)
 
 (def max-tile-index
-  "The maximum value for a tile index, equivalent to the maximum of an unsigned byte"
+  "The maximum value for a tile index. Equivalent to the maximum of an unsigned byte."
   0xFF)
 
 (def max-dimension-size
-  "The maximum width or height of a tile layer, equivalent to the maximum of an unsigned short"
+  "The maximum width or height of a tile layer. Equivalent to the maximum of an unsigned short."
   0xFFFF)
 
 (def layers
-  "A vector of keywords representing the three tile layers in the order in which they appear in PxPack files"
+  "A vector of keywords representing the three tile layers. The order is that in which tile layers appear within PxPack files."
   [::foreground ::middleground ::background])
 
 (defn width
-  "Returns the width of the given tile layer"
+  "Returns the width of a tile layer."
   [tile-layer]
   (count (first tile-layer)))
 
 (defn height
-  "Returns the height of the given tile layer"
+  "Returns the height of a tile layer."
   [tile-layer]
   (count tile-layer))
 
 (defn get-tile
-  "Returns the tile at the given coordinates in the given tile layer"
+  "Returns the tile in a tile layer at the given coordinates."
   [tile-layer x y]
   (get-in tile-layer [y x]))
 
 (defn assoc-tile
-  "Returns a new tile-layer with the given tile at the given coordinates"
+  "Associates a tile to a tile layer at the given coordinates."
   [tile-layer x y tile]
   (assoc-in tile-layer [y x] tile))
 
 (defn resize
-  "Resizes a tile layer to a given width and height"
+  "Resizes a tile layer."
   [tile-layer new-width new-height]
   (let [old-width (width tile-layer)
         old-height (height tile-layer)]
@@ -74,7 +74,7 @@
                         :kind vector?))
 
 (def tile-layer-codec
-  "Codec for PxPack tile layers"
+  "Codec for a PxPack tile layer."
   (bin/compile-codec
    (bin/header
     (bin/ordered-map

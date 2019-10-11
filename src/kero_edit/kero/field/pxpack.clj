@@ -7,7 +7,7 @@
             [kero-edit.kero.util :as util]))
 
 (def max-unit-count
-  "The maximum number of units in a PxPack field, equivalent to the maximum of an unsigned short"
+  "The maximum number of units in a PxPack field. Equivalent to the maximum of an unsigned short."
   0xFFFF)
 
 (spec/def ::head ::head/head)
@@ -18,7 +18,7 @@
 (spec/def ::pxpack (spec/keys :req [::head ::tile-layers ::units]))
 
 (def pxpack-codec
-  "Codec for PxPack files"
+  "Codec for a PxPack file."
   (bin/ordered-map
    ::head head/head-codec
    ::tile-layers (apply bin/ordered-map (interleave tile-layer/layers (repeat tile-layer/tile-layer-codec)))

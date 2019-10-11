@@ -6,24 +6,23 @@
             [kero-edit.kero.util :as util]))
 
 (def header
-  "Marks the start of a PxPack head, and thereby the start of a PxPack file"
+  "Marks the start of a PxPack head. This also marks the start of a PxPack file."
   "PXPACK121127a**")
 
 (def max-description-length
-  "The maximum byte length of the description string (in SJIS encoding)"
+  "The maximum byte length of the description string. The string charset is specified by `kero-edit.kero.string/charset`."
   31)
 
 (def num-referenced-fields
-  "The number of other fields referenced by a PxPack field"
+  "The number of other fields referenced by a PxPack field."
   4)
 
 (def num-unknown-bytes
-  "The number of contiguous bytes in a PxPack head whose purpose is currently unknown"
+  "The number of contiguous unknown bytes in a PxPack head."
   5)
 
 (def scroll-types
-  "A vector of the scrolling types of a PxPack tile layer.
-  The index of each element indicates its byte value in a PxPack head."
+  "A vector of the scrolling types of a PxPack tile layer. The index of each element is its byte value in a PxPack head."
   [:normal :three-fourths :half :quarter :eighth :zero :h-three-fourths :h-half :h-quarter :v0-half])
 
 (spec/def ::description (kstr/kero-string-validator max-description-length))
@@ -42,6 +41,7 @@
 (spec/def ::head (spec/keys :req [::description ::fields ::spritesheet ::unknown-bytes ::bg-color ::layer-metadata]))
 
 (def ^:private layer-metadata-codec
+  "Codec for a PxPack head's layer metadata chunk."
   (bin/compile-codec
    (bin/ordered-map
     ::tileset kstr/string-codec
@@ -51,7 +51,7 @@
    #(update % ::scroll-type (partial get scroll-types))))
 
 (def head-codec
-  "Codec for PxPack heads"
+  "Codec for a PxPack head."
   (bin/compile-codec
    (bin/ordered-map
     :header (bin/constant (bin/c-string "UTF-8") header)

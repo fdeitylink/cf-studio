@@ -5,7 +5,7 @@
             [me.raynes.fs :as fs]))
 
 (def resource-path-metadata
-  "Map of resource type keywords to metadata for their paths"
+  "Map of resource type keywords to metadata for their paths."
   {::music {:resource-subdir "bgm" :prefix "" :extension ".ptcop"}
    ::fields {:resource-subdir "field" :prefix "" :extension ".pxpack"}
    ::images {:resource-subdir "img" :prefix "" :extension ".png"}
@@ -16,7 +16,7 @@
    ::scripts {:resource-subdir "text" :prefix "" :extension ".pxeve"}})
 
 (def resource-dir->game-type
-  "Map of resource directory names to Kero Blaster base game types"
+  "Map of resource directory names to Kero Blaster base game types."
   {"rsc_k" ::kero-blaster "rsc_p" ::pink-hour})
 
 (defn- resource-files

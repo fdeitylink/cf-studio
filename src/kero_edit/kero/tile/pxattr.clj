@@ -4,24 +4,24 @@
             [kero-edit.kero.util :as util]))
 
 (def header
-  "Marks the start of a PxAttr file"
+  "Marks the start of a PxAttr file."
   "pxMAP01")
 
 (def width
-  "The width of all PxAttr sets"
+  "The width of all PxAttr sets."
   16)
 
 (def height
-  "The height of all PxAttr sets"
+  "The height of all PxAttr sets."
   16)
 
 (defn get-attribute
-  "Returns the attribute at the given coordinates in the given PxAttr"
+  "Returns the tile attribute in a PxAttr at the given coordinates."
   [pxattr x y]
   (get-in pxattr [y x]))
 
 (defn assoc-attribute
-  "Returns a new PxAttr with the given attribute at the given coordinates"
+  "Associates a tile attribute to a PxAttr at the given coordinates."
   [pxattr x y attribute]
   (assoc-in pxattr [y x] attribute))
 
@@ -31,7 +31,7 @@
                     :kind vector?))
 
 (def pxattr-codec
-  "Codec for PxAttr files"
+  "Codec for PxAttr files."
   (bin/compile-codec
    [(bin/constant (bin/c-string "UTF-8") header)
     (bin/constant :ushort-le width)

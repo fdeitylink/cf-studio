@@ -5,16 +5,16 @@
             [kero-edit.kero.util :as util]))
 
 (def max-type-index
-  "The maximum value for a PxPack unit's type"
+  "The maximum value for a PxPack unit's type."
   0xFF)
   ;174)
 
 (def num-unknown-bytes
-  "The number of unknown bytes in a PxPack unit"
+  "The number of unknown bytes in a PxPack unit."
   4)
 
 (def max-coordinate-index
-  "The maximum value for the x or y coordinate of a PxPack unit, equivalent to the maximum of an unsigned short minus one"
+  "A PxPack unit's maximum x or y coordinate. Equivalent to the maximum of an unsigned short minus one."
   0xFFFF)
   ;0xFFFE)
 
@@ -26,7 +26,7 @@
 (spec/def ::unit (spec/keys :req [::type ::x ::y ::name ::unknown-bytes]))
 
 (def unit-codec
-  "Codec for PxPack units"
+  "Codec for a PxPack unit."
   (bin/compile-codec
    (bin/ordered-map
     ;; 'ub' means 'unknown byte'
