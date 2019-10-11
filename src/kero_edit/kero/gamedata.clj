@@ -39,13 +39,18 @@
                         (every?
                          (fn [[resource-kw resource-path-set]]
                            (let [{:keys [resource-subdir prefix extension]} (resource-kw resource-path-metadata)]
-                             ;; Every resource path must have the correct parent directory, prefix, and extension
-                             (every?
-                              #(and
-                                (= (fs/parent %) (fs/file resource-dir resource-subdir))
-                                (clojure.string/starts-with? (fs/base-name %) prefix)
-                                (= (fs/extension %) extension))
-                              resource-path-set)))
+                             (and
+                              ;; Every resource path collection must be a sorted set
+                              ;; TODO Consider relaxing this requirement
+                              (set? resource-path-set)
+                              (sorted? resource-path-set)
+                              ;; Every resource path must have the correct parent directory, prefix, and extension
+                              (every?
+                               #(and
+                                 (= (fs/parent %) (fs/file resource-dir resource-subdir))
+                                 (clojure.string/starts-with? (fs/base-name %) prefix)
+                                 (= (fs/extension %) extension))
+                               resource-path-set))))
                          (seq (dissoc gd ::executable ::resource-dir))))))
 
 ;; TODO Store localize file paths
