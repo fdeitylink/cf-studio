@@ -1,5 +1,6 @@
 (ns kero-edit.kero.field.tile-layer
   (:require [clojure.spec.alpha :as spec]
+            [flatland.ordered.set :as ord-set]
             [org.clojars.smee.binary.core :as bin]
             [kero-edit.kero.util :as util]))
 
@@ -20,8 +21,8 @@
   0xFFFF)
 
 (def layers
-  "A vector of keywords representing the three tile layers. The order is that in which tile layers appear within PxPack files."
-  [::foreground ::middleground ::background])
+  "An ordered set of keywords representing the three tile layers. The order is that in which tile layers appear in PxPack files."
+  (ord-set/ordered-set ::foreground ::middleground ::background))
 
 (defn width
   "Returns the width of a tile layer."
