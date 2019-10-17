@@ -7,7 +7,8 @@
                  [smee/binary "0.5.4"]
                  [org.flatland/ordered "1.5.7"]
                  [clj-commons/fs "1.5.1"]
-                 [cljfx "1.4.6"]]
+                 [cljfx "1.4.6"]
+                 [tongue "0.2.8"]]
   :main ^:skip-aot kero-edit.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
