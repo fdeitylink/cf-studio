@@ -10,7 +10,9 @@
 
 (def default-config
   "Default configuration map for Kero Edit."
-  #:kero-edit.edit.app{:locale :en})
+  #:kero-edit.edit.app{:notepad-text "DEFAULT NOTEPAD TEXT"
+
+                       :locale :en})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.

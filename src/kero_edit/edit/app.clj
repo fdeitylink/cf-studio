@@ -1,6 +1,7 @@
 (ns kero-edit.edit.app
   (:require [cljfx.api :as fx]
             [kero-edit.edit.config :as config]
+            [kero-edit.edit.i18n :refer [sub-translate]]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
             [kero-edit.edit.settings-grid :refer [settings-grid]]))
 
@@ -9,9 +10,23 @@
 
 (defmulti event-handler :event/type)
 
+(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
+  {:context (fx/swap-context context assoc ::notepad-text event)})
+
+(defn notepad-tab
+  [{:keys [fx/context]}]
+  {:fx/type :tab
+   :text (fx/sub context sub-translate ::notepad-title)
+   :id (fx/sub context sub-translate ::notepad-title)
+   :closable false
+   :content {:fx/type :text-area
+             :text (fx/sub context ::notepad-text)
+             :on-text-changed {:event/type ::notepad-text-changed}}})
+
 (defn tabs-view
   [{:keys [fx/context]}]
-  {:fx/type :tab-pane})
+  {:fx/type :tab-pane
+   :tabs [{:fx/type notepad-tab}]})
 
 (defn field-list
   [{:keys [fx/context]}]

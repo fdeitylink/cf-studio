@@ -1,4 +1,6 @@
-{:kero-edit.edit.menu-bar {:file "_File"
+{:kero-edit.edit.app {:notepad-title "Notepad"}
+
+ :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"
                            :file-open-last "Open _Last"
                            :file-save "_Save"
