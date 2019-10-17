@@ -10,11 +10,11 @@
 
 (def default-config
   "Default configuration map for Kero Edit."
-  #:kero-edit.edit.app{:license-accepted false
+  {:license-accepted false
 
-                       :notepad-text "DEFAULT NOTEPAD TEXT"
+   :notepad-text "Use this space to write notes and keep track of ideas."
 
-                       :locale :en})
+   :locale :en})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.

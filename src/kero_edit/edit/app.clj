@@ -3,29 +3,20 @@
             [cljfx.api :as fx]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [sub-translate]]
+            [kero-edit.edit.events :as events]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
             [kero-edit.edit.settings-view :refer [settings-view]])
-  (:import [javafx.scene.control Dialog DialogEvent ButtonType ButtonBar$ButtonData]
-           [javafx.scene.text Font FontWeight]))
+  (:import [javafx.scene.text Font FontWeight]))
 
 (def *context
   (atom (fx/create-context (config/read-config))))
-
-(defmulti event-handler :event/type)
-
-(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
-  {:context (fx/swap-context context assoc ::notepad-text event)})
-
-(defmethod event-handler ::license-dialog-consumed [{:keys [fx/event fx/context]}]
-  {:context (fx/swap-context context assoc ::license-accepted
-                             (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event)))))})
 
 (defn license-dialog
   [{:keys [fx/context]}]
   {:fx/type :dialog
    :title (fx/sub context sub-translate ::license-dialog-title)
-   :showing (not (fx/sub context ::license-accepted))
-   :on-hidden {:event/type ::license-dialog-consumed}
+   :showing (not (fx/sub context :license-accepted))
+   :on-hidden {::events/type ::events/license-dialog-consumed}
    :dialog-pane {:fx/type :dialog-pane
                  :button-types [:yes :no]
                  :expanded true
@@ -46,8 +37,8 @@
    :id (fx/sub context sub-translate ::notepad-title)
    :closable false
    :content {:fx/type :text-area
-             :text (fx/sub context ::notepad-text)
-             :on-text-changed {:event/type ::notepad-text-changed}}})
+             :text (fx/sub context :notepad-text)
+             :on-text-changed {::events/type ::events/notepad-text-changed}}})
 
 (defn tabs-view
   [{:keys [fx/context]}]
@@ -63,7 +54,7 @@
   {:fx/type :stage
    :title "Kero Edit"
    :maximized true
-   :showing (fx/sub context ::license-accepted)
+   :showing (fx/sub context :license-accepted)
    :scene {:fx/type :scene
            :root {:fx/type :v-box
                   :children [{:fx/type menu-bar}
@@ -79,8 +70,8 @@
 (def app
   (fx/create-app
    *context
-   :event-handler event-handler
+   :event-handler events/event-handler
    :desc-fn (fn [context]
-              (if (fx/sub context ::license-accepted)
+              (if (fx/sub context :license-accepted)
                 {:fx/type root-view}
                 {:fx/type license-dialog}))))
