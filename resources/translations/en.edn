@@ -22,4 +22,26 @@
 
                            :help "_Help"
                            :help-about "_About"
-                           :help-guide "_Guide"}}
+                           :help-guide "_Guide"}
+
+ :kero-edit.edit.settings-grid {:displayed-layers "Displayed Layers"
+
+                                :selected-layer "Selected Layer"
+
+                                :draw-mode "Draw Mode"
+                                :draw "Draw"
+                                :rect "Rect"
+                                :copy "Copy"
+                                :fill "Fill"
+                                :replace "Replace"
+
+                                :view-toggles "View Toggles"
+                                :tile-types "Tile Types"
+                                :grid "Grid"
+                                :entity-boxes "Entity Boxes"
+                                :entity-sprites "Entity Sprites"
+                                :entity-names "Entity Names"
+
+                                :edit-mode "Edit Mode"
+                                :tile "Tile"
+                                :entity "Entity"}}
