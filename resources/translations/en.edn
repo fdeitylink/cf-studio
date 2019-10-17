@@ -1,1 +1,25 @@
-{}
+{:kero-edit.edit.menu-bar {:file "_File"
+                           :file-open "_Open"
+                           :file-open-last "Open _Last"
+                           :file-save "_Save"
+                           :file-save-all "Save _All"
+                           :file-close-tab "_Close Tab"
+                           :file-close-all-tabs "Close All _Tabs"
+
+                           :edit "_Edit"
+                           :edit-undo "_Undo"
+                           :edit-redo "_Redo"
+
+                           :view "_View"
+                           :view-map-zoom "_Map Editor Zoom"
+                           :view-tileset-zoom "_Tileset Viewer Zoom"
+                           :view-tileset-background-color "Tileset Viewer Background _Color"
+
+                           :actions "_Actions"
+                           :actions-run-game "_Run Game"
+                           :actions-edit-global-script "Edit Global _Script"
+                           :actions-waffle "Make _Waffle"
+
+                           :help "_Help"
+                           :help-about "_About"
+                           :help-guide "_Guide"}}
