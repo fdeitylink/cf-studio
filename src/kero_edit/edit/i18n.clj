@@ -9,7 +9,7 @@
   ^{:doc "A sequence of locales Kero Edit has translations for."}
   translated-locales
   (map #(fs/base-name % true)
-       (fs/find-files (io/resource "translations") (re-pattern "^.+\\.edn$"))))
+       (fs/find-files (io/resource "translations") #"^.+\.edn$")))
 
 (defonce
   ^{:doc "Map containing all translations for Kero Edit."
@@ -23,7 +23,7 @@
                  (try
                    (clojure.edn/read {:eof {}} (java.io.PushbackReader. (io/reader path)))
                    (catch Exception _ {}))))
-              (fs/find-files (io/resource "translations") (re-pattern "^.+\\.edn$")))))
+              (fs/find-files (io/resource "translations") #"^.+\.edn$"))))
 
 (defonce
   ^{:doc "Translation function for Kero Edit. Use to retrieve locale-specific strings."}

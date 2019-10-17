@@ -69,7 +69,7 @@
    - `:sfx` - a sorted set of the game's sound effects file paths
    - `:scripts` - a sorted set of the game's script file paths"
   [executable-path]
-  (let [resource-dir (first (fs/find-files (fs/parent executable-path) (re-pattern "rsc_[kp]")))]
+  (let [resource-dir (first (fs/find-files (fs/parent executable-path) #"rsc_[kp]"))]
     (->> resource-path-metadata
          ;; Get all the path resources
          (map (fn [[resource-kw path-meta]] [resource-kw (resource-files resource-dir path-meta)]))
