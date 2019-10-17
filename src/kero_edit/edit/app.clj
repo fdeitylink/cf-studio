@@ -1,10 +1,11 @@
 (ns kero-edit.edit.app
   (:require [cljfx.api :as fx]
+            [kero-edit.edit.config :as config]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
             [kero-edit.edit.settings-grid :refer [settings-grid]]))
 
 (def *context
-  (atom (fx/create-context {})))
+  (atom (fx/create-context (config/read-config))))
 
 (defmulti event-handler :event/type)
 
