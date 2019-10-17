@@ -1,9 +1,12 @@
 (ns kero-edit.edit.app
-  (:require [cljfx.api :as fx]
+  (:require [clojure.java.io :as io]
+            [cljfx.api :as fx]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [sub-translate]]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.settings-grid :refer [settings-grid]]))
+            [kero-edit.edit.settings-grid :refer [settings-grid]])
+  (:import [javafx.scene.control Dialog DialogEvent ButtonType ButtonBar$ButtonData]
+           [javafx.scene.text Font FontWeight]))
 
 (def *context
   (atom (fx/create-context (config/read-config))))
@@ -12,6 +15,29 @@
 
 (defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
   {:context (fx/swap-context context assoc ::notepad-text event)})
+
+(defmethod event-handler ::license-dialog-consumed [{:keys [fx/event fx/context]}]
+  {:context (fx/swap-context context assoc ::license-accepted
+                             (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event)))))})
+
+(defn license-dialog
+  [{:keys [fx/context]}]
+  {:fx/type :dialog
+   :title (fx/sub context sub-translate ::license-dialog-title)
+   :showing (not (fx/sub context ::license-accepted))
+   :on-hidden {:event/type ::license-dialog-consumed}
+   :dialog-pane {:fx/type :dialog-pane
+                 :button-types [:yes :no]
+                 :expanded true
+                 :expandable-content {:fx/type :v-box
+                                      :spacing 20
+                                      :alignment :center
+                                      :children [{:fx/type :text
+                                                  :text (fx/sub context sub-translate ::license-dialog-header)
+                                                  :font (Font/font "" FontWeight/BOLD 20.0)}
+                                                 {:fx/type :text-area
+                                                  :text (slurp (io/resource "LICENSE"))
+                                                  :v-box/vgrow :always}]}}})
 
 (defn notepad-tab
   [{:keys [fx/context]}]
@@ -37,7 +63,7 @@
   {:fx/type :stage
    :title "Kero Edit"
    :maximized true
-   :showing true
+   :showing (fx/sub context ::license-accepted)
    :scene {:fx/type :scene
            :root {:fx/type :v-box
                   :children [{:fx/type menu-bar}
@@ -54,4 +80,7 @@
   (fx/create-app
    *context
    :event-handler event-handler
-   :desc-fn (fn [_] {:fx/type root-view})))
+   :desc-fn (fn [context]
+              (if (fx/sub context ::license-accepted)
+                {:fx/type root-view}
+                {:fx/type license-dialog}))))

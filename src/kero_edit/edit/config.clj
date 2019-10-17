@@ -10,7 +10,9 @@
 
 (def default-config
   "Default configuration map for Kero Edit."
-  #:kero-edit.edit.app{:notepad-text "DEFAULT NOTEPAD TEXT"
+  #:kero-edit.edit.app{:license-accepted false
+
+                       :notepad-text "DEFAULT NOTEPAD TEXT"
 
                        :locale :en})
 

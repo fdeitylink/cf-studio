@@ -1,4 +1,6 @@
-{:kero-edit.edit.app {:notepad-title "Notepad"}
+{:kero-edit.edit.app {:license-dialog-title "License Confirmation"
+                      :license-dialog-header "By using Kero Edit, you agree to the following license terms"
+                      :notepad-title "Notepad"}
 
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"
