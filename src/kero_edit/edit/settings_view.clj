@@ -1,11 +1,11 @@
-(ns kero-edit.edit.settings-grid
+(ns kero-edit.edit.settings-view
   (:require [cljfx.api :as fx]
             [kero-edit.edit.i18n :refer [sub-translate]])
   (:import [javafx.scene.text Font FontWeight]))
 
 (def ^:private font (Font/font "" FontWeight/BOLD 15.0))
 
-(defn settings-grid
+(defn settings-view
   [{:keys [fx/context]}]
   {:fx/type :grid-pane
    :padding 10

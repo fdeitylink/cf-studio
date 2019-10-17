@@ -4,7 +4,7 @@
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [sub-translate]]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.settings-grid :refer [settings-grid]])
+            [kero-edit.edit.settings-view :refer [settings-view]])
   (:import [javafx.scene.control Dialog DialogEvent ButtonType ButtonBar$ButtonData]
            [javafx.scene.text Font FontWeight]))
 
@@ -72,7 +72,7 @@
                               :v-box/vgrow :always
                               :items [{:fx/type field-list}
                                       {:fx/type :v-box
-                                       :children [{:fx/type settings-grid}
+                                       :children [{:fx/type settings-view}
                                                   {:fx/type tabs-view
                                                    :v-box/vgrow :always}]}]}]}}})
 
