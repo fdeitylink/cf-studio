@@ -14,7 +14,7 @@ Clone the repo and run `lein run`
 
 Kero Edit usees the following languages and libraries
 
-* [Clojure](https;//clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
+* [Clojure](https://clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 * [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 * [cljfx](https://github.com/cljfx/cljfx) (licensed under the [MIT License](https://opensource.org/licenses/MIT))
 
