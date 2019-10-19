@@ -1,6 +1,7 @@
 (ns kero-edit.edit.menu-bar
   (:require [cljfx.api :as fx]
-            [kero-edit.edit.i18n :refer [translate-sub]]))
+            [kero-edit.edit.i18n :refer [translate-sub]]
+            [kero-edit.edit.events :as events]))
 
 (defn file-menu
   [{:keys [fx/context]}]
@@ -9,27 +10,27 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-open)
             :accelerator [:ctrl :o]
-            :on-action {:event/type ::open-new-mod}}
+            :on-action {::events/type ::events/open-new-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-open-last)
             :accelerator [:ctrl :l]
-            :on-action {:event/type ::open-last-mod}}
+            :on-action {::events/type ::events/open-last-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save)
             :accelerator [:ctrl :s]
-            :on-action {:event/type ::save-file}}
+            :on-action {::events/type ::events/save-file}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save-all)
             :accelerator [:ctrl :shift :s]
-            :on-action {:event/type ::save-all-files}}
+            :on-action {::events/type ::events/save-all-files}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-tab)
             :accelerator [:ctrl :w]
-            :on-action {:event/type ::close-tab}}
+            :on-action {::events/type ::events/close-tab}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-all-tabs)
             :accelerator [:ctrl :shift :w]
-            :on-action {:event/type ::close-all-tabs}}]})
+            :on-action {::events/type ::events/close-all-tabs}}]})
 
 (defn edit-menu
   [{:keys [fx/context]}]
@@ -38,11 +39,11 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-undo)
             :accelerator [:ctrl :z]
-            :on-action {:event/type ::undo}}
+            :on-action {::events/type ::events/undo}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-redo)
             :accelerator [:ctrl :y]
-            :on-action {:event/type ::redo}}]})
+            :on-action {::events/type ::events/redo}}]})
 
 (defn view-menu
   [{:keys [fx/context]}]
@@ -54,7 +55,7 @@
             :text (fx/sub context translate-sub ::view-tileset-zoom)}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::view-tileset-background-color)
-            :on-action {:event/type ::choose-tileset-background-color}}]})
+            :on-action {::events/type ::events/choose-tileset-background-color}}]})
 
 (defn actions-menu
   [{:keys [fx/context]}]
@@ -63,13 +64,13 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-run-game)
             :accelerator [:f5]
-            :on-action {:event/type ::run-mod}}
+            :on-action {::events/type ::events/run-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-edit-global-script)
-            :on-action {:event/type ::edit-global-script}}
+            :on-action {::events/type ::events/edit-global-script}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-waffle)
-            :on-action {:event/type ::print-waffle}}]})
+            :on-action {::events/type ::events/print-waffle}}]})
 
 (defn help-menu
   [{:keys [fx/context]}]
@@ -77,10 +78,10 @@
    :text (fx/sub context translate-sub ::help)
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::help-about)
-            :on-action {:event/type ::show-about}}
+            :on-action {::events/type ::events/show-about}}
            #_{:fx/type :menu-item
               :text (fx/sub context translate-sub ::help-guide)
-              :on-action {:event/type ::show-guide}}]})
+              :on-action {::events/type ::events/show-guide}}]})
 
 (defn menu-bar
   [{:keys [fx/context]}]
