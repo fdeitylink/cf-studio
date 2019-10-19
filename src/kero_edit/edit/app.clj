@@ -2,7 +2,7 @@
   (:require [clojure.java.io :as io]
             [cljfx.api :as fx]
             [kero-edit.edit.config :as config]
-            [kero-edit.edit.i18n :refer [sub-translate]]
+            [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
             [kero-edit.edit.settings-view :refer [settings-view]])
@@ -14,7 +14,7 @@
 (defn license-dialog
   [{:keys [fx/context]}]
   {:fx/type :dialog
-   :title (fx/sub context sub-translate ::license-dialog-title)
+   :title (fx/sub context translate-sub ::license-dialog-title)
    :showing (not (fx/sub context :license-accepted))
    :on-hidden {::events/type ::events/license-dialog-consumed}
    :dialog-pane {:fx/type :dialog-pane
@@ -24,8 +24,8 @@
                                       :spacing 20
                                       :alignment :center
                                       :children [{:fx/type :text
-                                                  :text (fx/sub context sub-translate ::license-dialog-header)
-                                                  :font (Font/font "" FontWeight/BOLD 20.0)}
+                                                  :text (fx/sub context translate-sub ::license-dialog-header)
+                                                  :font {:family "" :weight :bold :size 20}}
                                                  {:fx/type :text-area
                                                   :text (slurp (io/resource "LICENSE"))
                                                   :v-box/vgrow :always}]}}})
@@ -33,8 +33,8 @@
 (defn notepad-tab
   [{:keys [fx/context]}]
   {:fx/type :tab
-   :text (fx/sub context sub-translate ::notepad-title)
-   :id (fx/sub context sub-translate ::notepad-title)
+   :text (fx/sub context translate-sub ::notepad-title)
+   :id (fx/sub context translate-sub ::notepad-title)
    :closable false
    :content {:fx/type :text-area
              :text (fx/sub context :notepad-text)

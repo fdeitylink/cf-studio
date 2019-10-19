@@ -30,10 +30,10 @@
   translate
   (tongue/build-translate translation-map))
 
-(defn sub-translate
+(defn translate-sub
   "Translation function that uses the in-context locale.
   Can be used with cljfx subscriptions to avoid explicitly specifying the locale."
   [context key & args]
   (apply translate (fx/sub context ::locale) key args))
 
-;; TODO Macro to eliminate (fx/sub context sub-translate key) boilerplate
+;; TODO Macro to eliminate (fx/sub context translate-sub key) boilerplate
