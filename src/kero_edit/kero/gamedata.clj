@@ -28,7 +28,7 @@
   ([resource-dir {:keys [resource-subdir prefix extension]}]
    (apply sorted-set (fs/find-files
                       (fs/file resource-dir resource-subdir)
-                      (re-pattern (str "^" prefix ".+\\" extension + "$"))))))
+                      (re-pattern (str "^" prefix ".+\\" extension "$"))))))
 
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
 (spec/def ::resource-dir (comp #{"rsc_k" "rsc_p"} fs/base-name))
