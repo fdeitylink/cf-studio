@@ -1,6 +1,8 @@
 (ns kero-edit.edit.app
   (:require [clojure.java.io :as io]
+            [me.raynes.fs :as fs]
             [cljfx.api :as fx]
+            [kero-edit.kero.gamedata :as gamedata]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
@@ -52,6 +54,8 @@
                :text (fx/sub context translate-sub ::field-list-label)
                :font {:family "" :weight :bold :size 20}}
               {:fx/type :list-view
+               :cell-factory (fn [path] {:text (fs/base-name path true)})
+               :items (sequence (::gamedata/fields (fx/sub context :gamedata)))
                :v-box/vgrow :always}]})
 
 (defn root-view
@@ -76,6 +80,8 @@
   (fx/create-app
    *context
    :event-handler events/event-handler
+   :effects {:read-file events/read-file-effect
+             :write-file events/write-file-effect}
    :desc-fn (fn [context]
               (if (fx/sub context :license-accepted)
                 {:fx/type root-view}

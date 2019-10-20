@@ -6,6 +6,10 @@
                       :notepad-title "Notepad"
                       :field-list-label "Fields"}
 
+ :kero-edit.edit.events {:exception-dialog-title "An exception has occurred"
+                         :open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
+                         :open-new-mod-filter-description "KB/PH Executable File"}
+
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"
                            :file-open-last "Open _Last"
