@@ -3,7 +3,8 @@
  :kero-edit.edit.app {:app-title "Kero Edit"
                       :license-dialog-title "License Confirmation"
                       :license-dialog-header "By using Kero Edit, you agree to the following license terms"
-                      :notepad-title "Notepad"}
+                      :notepad-title "Notepad"
+                      :field-list-label "Fields"}
 
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"
