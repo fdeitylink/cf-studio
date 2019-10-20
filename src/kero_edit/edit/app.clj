@@ -5,8 +5,7 @@
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.settings-view :refer [settings-view]])
-  (:import [javafx.scene.text Font FontWeight]))
+            [kero-edit.edit.settings-view :refer [settings-view]]))
 
 (def *context
   (atom (fx/create-context (config/read-config))))
