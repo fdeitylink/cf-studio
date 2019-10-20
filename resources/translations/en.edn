@@ -1,4 +1,7 @@
-{:kero-edit.edit.app {:license-dialog-title "License Confirmation"
+{:kero-edit.edit.config {:default-notepad-text "Use this space to take notes and keep track of ideas"}
+
+ :kero-edit.edit.app {:app-title "Kero Edit"
+                      :license-dialog-title "License Confirmation"
                       :license-dialog-header "By using Kero Edit, you agree to the following license terms"
                       :notepad-title "Notepad"}
 

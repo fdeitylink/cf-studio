@@ -51,7 +51,7 @@
 (defn root-view
   [{:keys [fx/context]}]
   {:fx/type :stage
-   :title "Kero Edit"
+   :title (fx/sub context translate-sub ::app-title)
    :maximized true
    :showing (fx/sub context :license-accepted)
    :scene {:fx/type :scene

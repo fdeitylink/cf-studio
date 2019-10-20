@@ -2,7 +2,9 @@
   (:require [clojure.edn]
             [clojure.pprint :refer [pprint]]
             [clojure.java.io :as io]
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs]
+            [kero-edit.edit.i18n :as i18n])
+  (:import [java.io PushbackReader]))
 
 (def default-config-path
   "Default file path for the Kero Edit configuration file."
@@ -12,7 +14,8 @@
   "Default configuration map for Kero Edit."
   {:license-accepted false
 
-   :notepad-text "Use this space to write notes and keep track of ideas."
+   ;; Default is not actually nil, just locale-specific (look at read-config)
+   :notepad-text nil
 
    :locale :en})
 
@@ -21,12 +24,16 @@
   `config-path` is the path to the configuration file. This should be an edn file with a map namespaced under `kero-edit.edit.app`. If `config-path` is not given or is invalid, a config file is looked for at `default-config-path`."
   ([] (read-config default-config-path))
   ([config-path]
-   (let [path (if (fs/file? config-path) config-path default-config-path)]
-     (merge
-      default-config
-      (try
-        (clojure.edn/read {:eof {}} (java.io.PushbackReader. (io/reader path)))
-        (catch Exception _ {}))))))
+   (let [path (if (fs/file? config-path) config-path default-config-path)
+         user-config (merge
+                      default-config
+                      (try
+                        (clojure.edn/read {:eof {}} (PushbackReader. (io/reader path)))
+                        (catch Exception _ {})))
+         {:keys [notepad-text locale]} user-config]
+     (if (some? notepad-text)
+       user-config
+       (assoc user-config :notepad-text (i18n/translate locale ::default-notepad-text))))))
 
 (defn write-config
   "Writes out a Kero Edit configuration file.
