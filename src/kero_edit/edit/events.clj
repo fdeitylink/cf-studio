@@ -20,6 +20,11 @@
     (dispatch! (assoc on-complete :path path))
     (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
 
+(defn shutdown-effect [{:keys [fx/context]} _]
+  ;; TODO Invoke config/write-config
+  (javafx.application.Platform/exit)
+  (shutdown-agents))
+
 (defmulti event-handler ::type)
 
 (defmethod event-handler ::exception [{:keys [fx/context ^Exception exception]}]
@@ -42,12 +47,15 @@
                                                     :text (with-out-str (print-cause-trace exception))
                                                     :v-box/vgrow :always}]}}})))
 
+(defmethod event-handler ::shutdown [_] {:shutdown {}})
+
 (defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
   {:context (fx/swap-context context assoc :notepad-text event)})
 
 (defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
-  {:context (fx/swap-context context assoc :license-accepted
-                             (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event)))))})
+  (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]
+    (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
+           (if-not accepted {:dispatch {::type ::shutdown}}))))
 
 (defmethod event-handler ::open-new-mod [{:keys [fx/context]}]
   @(fx/on-fx-thread

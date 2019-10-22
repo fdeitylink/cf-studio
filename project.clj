@@ -9,6 +9,9 @@
                  [clj-commons/fs "1.5.1"]
                  [cljfx "1.5.0"]
                  [com.taoensso/tempura "1.2.1"]]
-  :main ^:skip-aot kero-edit.core
+  :main ^:skip-aot kero-edit.edit.app
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar
+             {:aot :all
+              ;; Build starts up FX Platform, need to close it when finished
+              :injections [(javafx.application.Platform/exit)]}})

@@ -6,7 +6,8 @@
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.settings-view :refer [settings-view]]))
+            [kero-edit.edit.settings-view :refer [settings-view]])
+  (:gen-class))
 
 (def *context
   (atom (fx/create-context (config/read-config))))
@@ -63,6 +64,7 @@
    :title (fx/sub context translate-sub ::app-title)
    :maximized true
    :showing (fx/sub context :license-accepted)
+   :on-hidden {::events/type ::events/shutdown}
    :scene {:fx/type :scene
            :root {:fx/type :v-box
                   :children [{:fx/type menu-bar}
@@ -75,12 +77,14 @@
                                                   {:fx/type tabs-view
                                                    :v-box/vgrow :always}]}]}]}}})
 
-(def app
+(defn -main
+  [& args]
   (fx/create-app
    *context
    :event-handler events/event-handler
    :effects {:read-file events/read-file-effect
-             :write-file events/write-file-effect}
+             :write-file events/write-file-effect
+             :shutdown events/shutdown-effect}
    :desc-fn (fn [context]
               (if (fx/sub context :license-accepted)
                 {:fx/type root-view}
