@@ -39,6 +39,6 @@
   "Writes out a Kero Edit configuration file.
   `config-path` is the path to the configuration file. If not provided, `default-config-path` is used.
   `config` is the actual configuration map."
-  ([] (write-config default-config-path))
+  ([config] (write-config default-config-path config))
   ([config-path config]
    (pprint config (io/writer config-path))))
