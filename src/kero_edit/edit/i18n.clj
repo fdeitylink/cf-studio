@@ -1,6 +1,5 @@
 (ns kero-edit.edit.i18n
-  (:require [clojure.edn]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [taoensso.tempura :as tempura]
             [cljfx.api :as fx])
