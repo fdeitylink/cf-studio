@@ -1,13 +1,32 @@
 (ns kero-edit.edit.events
   (:require [clojure.stacktrace :refer [print-cause-trace]]
-            [cljfx.api :as fx]
             [me.raynes.fs :as fs]
+            [cljfx.api :as fx]
             [kero-edit.kero.gamedata :as gamedata]
             [kero-edit.edit.i18n :refer [translate-sub]])
-  (:import [java.io IOException]
+  (:import [java.util Collection List]
+           [java.io IOException]
            [javafx.event Event]
            [javafx.scene.control Dialog DialogEvent ButtonType ButtonBar$ButtonData]
            [javafx.stage Stage FileChooser FileChooser$ExtensionFilter]))
+
+(defn choose-file-effect [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
+  (fx/on-fx-thread
+   (let [chooser (doto (FileChooser.)
+                   (.setTitle title)
+                   (.setInitialDirectory initial-directory)
+                   (.setInitialFileName initial-filename)
+                   (->
+                    (.getExtensionFilters)
+                    (.addAll ^Collection (map
+                                          #(FileChooser$ExtensionFilter. ^String (:description %) ^List (:extensions %))
+                                          extension-filters))))]
+     (dispatch! (merge on-complete
+                       (case dialog-type
+                         ;; TODO Grab primary stage to optionally allow blocking modality
+                         :open {:path (.showOpenDialog chooser (Stage.))}
+                         :open-multiple {:paths (.showOpenMultipleDialog chooser (Stage.))}
+                         :save {:path (.showSaveDialog chooser (Stage.))}))))))
 
 (defn read-file-effect [{:keys [path reader-fn on-complete on-exception]} dispatch!]
   (try
@@ -60,21 +79,21 @@
            (if-not accepted {:dispatch {::type ::shutdown}}))))
 
 (defmethod event-handler ::open-new-mod [{:keys [fx/context]}]
-  @(fx/on-fx-thread
-    (if-let [path (-> (doto (FileChooser.)
-                        (.setTitle (fx/sub context translate-sub ::open-new-mod-chooser-title))
-                        (.setInitialDirectory (if-let [last-path (fx/sub context :last-executable-location)] (fs/parent last-path) (fs/home)))
-                        (.setSelectedExtensionFilter (FileChooser$ExtensionFilter. ^String (fx/sub context translate-sub ::open-new-mod-filter-description) ["*.exe"])))
-                      ;; TODO Grab primary Stage
-                      (.showOpenDialog (Stage.)))]
-      {:context (fx/swap-context context assoc :last-executable-location path)
-       :dispatch {::type ::open-mod :executable-path path}})))
+  {:context (fx/swap-context context dissoc :gamedata)
+   :choose-file {:title (fx/sub context translate-sub ::open-new-mod-chooser-title)
+                 :initial-directory (if-let [last-path (fx/sub context :last-executable-path)] (fs/parent last-path) (fs/home))
+                 :extension-filters [{:description (fx/sub context translate-sub ::open-new-mod-filter-description)
+                                      :extensions ["*.exe"]}]
+                 :dialog-type :open
+                 :on-complete {::type ::open-mod}}})
 
 (defmethod event-handler ::open-last-mod [{:keys [fx/context]}]
-  {:dispatch {::type ::open-mod :executable-path (fx/sub context :last-executable-location)}})
+  {:context (fx/swap-context context dissoc :gamedata)
+   :dispatch {::type ::open-mod :path (fx/sub context :last-executable-path)}})
 
-(defmethod event-handler ::open-mod [{:keys [executable-path]}]
-  {:read-file {:path executable-path
+(defmethod event-handler ::open-mod [{:keys [fx/context path]}]
+  {:context (fx/swap-context context assoc :last-executable-path path)
+   :read-file {:path path
                :reader-fn gamedata/executable->gamedata
                :on-complete {::type ::load-gamedata}
                :on-exception {::type ::exception}}})

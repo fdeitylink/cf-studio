@@ -17,7 +17,9 @@
    ;; Default is not actually nil, just locale-specific (look at read-config)
    :notepad-text nil
 
-   :locale :en})
+   :locale :en
+
+   :last-executable-path nil})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.

@@ -82,7 +82,8 @@
   (fx/create-app
    *context
    :event-handler events/event-handler
-   :effects {:read-file events/read-file-effect
+   :effects {:choose-file events/choose-file-effect
+             :read-file events/read-file-effect
              :write-file events/write-file-effect
              :exception-dialog events/exception-dialog-effect
              :shutdown events/shutdown-effect}
