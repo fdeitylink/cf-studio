@@ -5,6 +5,7 @@
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
+            [kero-edit.edit.effects :as effects]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
             [kero-edit.edit.settings-view :refer [settings-view]])
   (:gen-class))
@@ -82,11 +83,11 @@
   (fx/create-app
    *context
    :event-handler events/event-handler
-   :effects {:choose-file events/choose-file-effect
-             :read-file events/read-file-effect
-             :write-file events/write-file-effect
-             :exception-dialog events/exception-dialog-effect
-             :shutdown events/shutdown-effect}
+   :effects {::effects/choose-file effects/choose-file-effect
+             ::effects/read-file effects/read-file-effect
+             ::effects/write-file effects/write-file-effect
+             ::effects/exception-dialog effects/exception-dialog-effect
+             ::effects/shutdown effects/shutdown-effect}
    :desc-fn (fn [context]
               (if (fx/sub context :license-accepted)
                 {:fx/type root-view}
