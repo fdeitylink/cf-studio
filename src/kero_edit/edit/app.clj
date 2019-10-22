@@ -51,7 +51,7 @@
   [{:keys [fx/context]}]
   {:fx/type :v-box
    :children [{:fx/type :label
-               :padding {:top 10 :bottom 10 :left 10}
+               :padding 10
                :text (fx/sub context translate-sub ::field-list-label)
                :font {:family "" :weight :bold :size 20}}
               {:fx/type :list-view
