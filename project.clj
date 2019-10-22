@@ -8,7 +8,7 @@
                  [org.flatland/ordered "1.5.7"]
                  [clj-commons/fs "1.5.1"]
                  [cljfx "1.5.0"]
-                 [tongue "0.2.8"]]
+                 [com.taoensso/tempura "1.2.1"]]
   :main ^:skip-aot kero-edit.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

@@ -1,6 +1,5 @@
 (ns kero-edit.edit.app
-  (:require [clojure.java.io :as io]
-            [me.raynes.fs :as fs]
+  (:require [me.raynes.fs :as fs]
             [cljfx.api :as fx]
             [kero-edit.kero.gamedata :as gamedata]
             [kero-edit.edit.config :as config]
@@ -28,7 +27,7 @@
                                                   :text (fx/sub context translate-sub ::license-dialog-header)
                                                   :font {:family "" :weight :bold :size 20}}
                                                  {:fx/type :text-area
-                                                  :text (slurp (io/resource "LICENSE"))
+                                                  :text (slurp "LICENSE")
                                                   :v-box/vgrow :always}]}}})
 
 (defn notepad-tab
