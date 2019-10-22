@@ -25,9 +25,7 @@
   (javafx.application.Platform/exit)
   (shutdown-agents))
 
-(defmulti event-handler ::type)
-
-(defmethod event-handler ::exception [{:keys [fx/context ^Exception exception]}]
+(defn exception-dialog-effect [{:keys [fx/context ^Exception exception]} _]
   (fx/on-fx-thread
    (fx/create-component
     {:fx/type :dialog
@@ -38,7 +36,7 @@
                    :expanded true
                    :expandable-content {:fx/type :v-box
                                         :spacing 20
-                                        :alignment :center
+                                        :alignment :center-left
                                         :children [{:fx/type :text
                                                     :text (.getLocalizedMessage exception)
                                                     :font {:family "" :size 15}}
@@ -46,6 +44,10 @@
                                                     :editable false
                                                     :text (with-out-str (print-cause-trace exception))
                                                     :v-box/vgrow :always}]}}})))
+
+(defmulti event-handler ::type)
+
+(defmethod event-handler ::exception [event-map] {:exception-dialog event-map})
 
 (defmethod event-handler ::shutdown [_] {:shutdown {}})
 

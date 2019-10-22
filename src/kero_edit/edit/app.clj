@@ -84,6 +84,7 @@
    :event-handler events/event-handler
    :effects {:read-file events/read-file-effect
              :write-file events/write-file-effect
+             :exception-dialog events/exception-dialog-effect
              :shutdown events/shutdown-effect}
    :desc-fn (fn [context]
               (if (fx/sub context :license-accepted)
