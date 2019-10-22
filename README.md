@@ -18,7 +18,7 @@ Kero Edit usees the following languages and libraries
 * [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 * [cljfx](https://github.com/cljfx/cljfx) (licensed under the [MIT License](https://opensource.org/licenses/MIT))
 * [tongue](https://github.com/tonsky/tongue) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
-* [ordered](https://github.com/clj-commons/ordered)
+* [ordered](https://github.com/clj-commons/ordered) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 * [fs](https://github.com/clj-commons/fs) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 
 ## License
