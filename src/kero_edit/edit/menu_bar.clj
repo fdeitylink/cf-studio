@@ -1,5 +1,6 @@
 (ns kero-edit.edit.menu-bar
-  (:require [cljfx.api :as fx]
+  (:require [me.raynes.fs :as fs]
+            [cljfx.api :as fx]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]))
 
@@ -14,23 +15,28 @@
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-open-last)
             :accelerator [:ctrl :l]
-            :on-action {::events/type ::events/open-last-mod}}
+            :on-action {::events/type ::events/open-last-mod}
+            :disable (not (fx/sub context :last-executable-path))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save)
             :accelerator [:ctrl :s]
-            :on-action {::events/type ::events/save-file}}
+            :on-action {::events/type ::events/save-file}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save-all)
             :accelerator [:ctrl :shift :s]
-            :on-action {::events/type ::events/save-all-files}}
+            :on-action {::events/type ::events/save-all-files}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-tab)
             :accelerator [:ctrl :w]
-            :on-action {::events/type ::events/close-tab}}
+            :on-action {::events/type ::events/close-tab}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-all-tabs)
             :accelerator [:ctrl :shift :w]
-            :on-action {::events/type ::events/close-all-tabs}}]})
+            :on-action {::events/type ::events/close-all-tabs}
+            :disable (not (fx/sub context :gamedata))}]})
 
 (defn edit-menu
   [{:keys [fx/context]}]
@@ -39,11 +45,13 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-undo)
             :accelerator [:ctrl :z]
-            :on-action {::events/type ::events/undo}}
+            :on-action {::events/type ::events/undo}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-redo)
             :accelerator [:ctrl :y]
-            :on-action {::events/type ::events/redo}}]})
+            :on-action {::events/type ::events/redo}
+            :disable (not (fx/sub context :gamedata))}]})
 
 (defn view-menu
   [{:keys [fx/context]}]
@@ -64,10 +72,12 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-run-game)
             :accelerator [:f5]
-            :on-action {::events/type ::events/run-mod}}
+            :on-action {::events/type ::events/run-mod}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-edit-global-script)
-            :on-action {::events/type ::events/edit-global-script}}
+            :on-action {::events/type ::events/edit-global-script}
+            :disable (not (fx/sub context :gamedata))}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-waffle)
             :on-action {::events/type ::events/print-waffle}}]})
