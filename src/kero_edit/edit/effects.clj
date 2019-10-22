@@ -6,7 +6,7 @@
            [java.io IOException]
            [javafx.stage Stage FileChooser FileChooser$ExtensionFilter]))
 
-(defn choose-file-effect [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
+(defn choose-file [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
   (fx/on-fx-thread
    (let [chooser (doto (FileChooser.)
                    (.setTitle title)
@@ -26,18 +26,18 @@
      (if (first (vals selected-path))
        (dispatch! (merge on-complete selected-path))))))
 
-(defn read-file-effect [{:keys [path reader-fn on-complete on-exception]} dispatch!]
+(defn read-file [{:keys [path reader-fn on-complete on-exception]} dispatch!]
   (try
     (dispatch! (assoc on-complete :path path :data (reader-fn path)))
     (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
 
-(defn write-file-effect [{:keys [path writer-fn data on-complete on-exception]} dispatch!]
+(defn write-file [{:keys [path writer-fn data on-complete on-exception]} dispatch!]
   (try
     (writer-fn path)
     (dispatch! (assoc on-complete :path path))
     (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
 
-(defn exception-dialog-effect [{:keys [fx/context ^Exception exception]} _]
+(defn exception-dialog [{:keys [fx/context ^Exception exception]} _]
   (fx/on-fx-thread
    (fx/create-component
     {:fx/type :dialog
@@ -57,7 +57,7 @@
                                                     :text (with-out-str (print-cause-trace exception))
                                                     :v-box/vgrow :always}]}}})))
 
-(defn shutdown-effect [{:keys [fx/context]} _]
+(defn shutdown [{:keys [fx/context]} _]
   ;; TODO Invoke config/write-config
   (javafx.application.Platform/exit)
   (shutdown-agents))

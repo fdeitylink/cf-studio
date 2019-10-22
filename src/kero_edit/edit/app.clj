@@ -83,11 +83,11 @@
   (fx/create-app
    *context
    :event-handler events/event-handler
-   :effects {::effects/choose-file effects/choose-file-effect
-             ::effects/read-file effects/read-file-effect
-             ::effects/write-file effects/write-file-effect
-             ::effects/exception-dialog effects/exception-dialog-effect
-             ::effects/shutdown effects/shutdown-effect}
+   :effects {::effects/choose-file effects/choose-file
+             ::effects/read-file effects/read-file
+             ::effects/write-file effects/write-file
+             ::effects/exception-dialog effects/exception-dialog
+             ::effects/shutdown effects/shutdown}
    :desc-fn (fn [context]
               (if (fx/sub context :license-accepted)
                 {:fx/type root-view}
