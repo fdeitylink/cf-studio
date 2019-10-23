@@ -10,7 +10,8 @@
   #"^.+\.clj$")
 
 (defonce
-  ^{:doc "A sequence of translation files for Kero Edit."}
+  ^{:doc "A sequence of translation files for Kero Edit."
+    :private true}
   translation-files
   (fs/find-files (io/file "translations") translation-file-regex))
 
@@ -26,13 +27,11 @@
   (reduce
    (fn [translations path]
      (let [locale-kw (keyword (fs/base-name path true))]
-       (assoc translations
-              locale-kw
-              (merge
-               {:missing (str locale-kw " missing text")}
-               (try
-                 (read {:eof {}} (PushbackReader. (io/reader path)))
-                 (catch Exception _ {}))))))
+       (assoc translations locale-kw
+              (merge {:missing (str locale-kw " missing text")}
+                     (try
+                       (read {:eof {}} (PushbackReader. (io/reader path)))
+                       (catch Exception _ {}))))))
    {}
    translation-files))
 
