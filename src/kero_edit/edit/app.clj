@@ -40,8 +40,8 @@
 (defn notepad-tab
   [{:keys [fx/context]}]
   {:fx/type :tab
+   :id "notepad"
    :text (fx/sub context translate-sub ::notepad-title)
-   :id (fx/sub context translate-sub ::notepad-title)
    :closable false
    :content {:fx/type :text-area
              :text (fx/sub context :notepad-text)
