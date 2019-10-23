@@ -28,7 +28,7 @@
 
 (defn read-file [{:keys [path reader-fn on-complete on-exception]} dispatch!]
   (try
-    (dispatch! (assoc on-complete :path path :data (reader-fn path)))
+    (dispatch! (assoc on-complete :file {:path path :data (reader-fn path)}))
     (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
 
 (defn write-file [{:keys [path writer-fn data on-complete on-exception]} dispatch!]

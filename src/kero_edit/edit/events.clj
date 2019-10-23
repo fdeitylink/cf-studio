@@ -55,8 +55,8 @@
                         :on-complete {::type ::load-gamedata}
                         :on-exception {::type ::exception}}})
 
-(defmethod event-handler ::load-gamedata [{:keys [fx/context data]}]
-  {:context (fx/swap-context context assoc :gamedata data)})
+(defmethod event-handler ::load-gamedata [{:keys [fx/context file]}]
+  {:context (fx/swap-context context assoc :gamedata (:data file))})
 
 ;; These events relate to selecting fields in the list view, opening and loading, and deleting them
 
@@ -81,8 +81,8 @@
                           :on-complete {::type ::load-field}
                           :on-exception {::type ::exception}}]))
 
-(defmethod event-handler ::load-field [{:keys [fx/context path data]}]
-  {:context (fx/swap-context context assoc-in [:loaded-fields path] {:path path :data data})})
+(defmethod event-handler ::load-field [{:keys [fx/context file]}]
+  {:context (fx/swap-context context assoc-in [:loaded-fields (:path file)] file)})
 
 (defmethod event-handler ::close-field [{:keys [fx/context field]}]
   {:context (fx/swap-context context update :loaded-fields #(dissoc % (:path field)))})
