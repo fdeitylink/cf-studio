@@ -25,7 +25,7 @@
 (defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
   (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]
     (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
-           (if-not accepted {:dispatch {::type ::shutdown}}))))
+           (if-not accepted {::effects/shutdown {}}))))
 
 ;; This events relate to opening and loading a new mod project
 
