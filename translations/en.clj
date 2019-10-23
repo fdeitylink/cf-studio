@@ -3,12 +3,15 @@
  :kero-edit.edit.app {:app-title "Kero Edit"
                       :license-dialog-title "License Confirmation"
                       :license-dialog-header "By using Kero Edit, you agree to the following license terms"
-                      :notepad-title "Notepad"
-                      :field-list-label "Fields"}
+                      :notepad-title "Notepad"}
 
  :kero-edit.edit.events {:exception-dialog-title "An exception has occurred"
                          :open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
                          :open-new-mod-filter-description "KB/PH Executable File"}
+
+ :kero-edit.edit.field-list {:label "Fields"
+                             :open "Open Fields"
+                             :delete "Delete Fields"}
 
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"

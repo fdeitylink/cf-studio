@@ -1,17 +1,22 @@
 (ns kero-edit.edit.app
-  (:require [me.raynes.fs :as fs]
+  (:require [flatland.ordered.map :refer [ordered-map]]
+            [me.raynes.fs :as fs]
             [cljfx.api :as fx]
-            [kero-edit.kero.gamedata :as gamedata]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]
             [kero-edit.edit.effects :as effects]
             [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.settings-view :refer [settings-view]])
+            [kero-edit.edit.field-list :refer [field-list]]
+            [kero-edit.edit.settings-view :refer [settings-view]]
+            [kero-edit.edit.field-edit-tab :refer [field-edit-tab]])
   (:gen-class))
 
 (def *context
-  (atom (fx/create-context (config/read-config))))
+  (atom (fx/create-context (assoc
+                            (config/read-config)
+                            :selected-fields []
+                            :loaded-fields (ordered-map)))))
 
 (defn license-dialog
   [{:keys [fx/context]}]
@@ -45,19 +50,11 @@
 (defn tabs-view
   [{:keys [fx/context]}]
   {:fx/type :tab-pane
-   :tabs [{:fx/type notepad-tab}]})
-
-(defn field-list
-  [{:keys [fx/context]}]
-  {:fx/type :v-box
-   :children [{:fx/type :label
-               :padding 10
-               :text (fx/sub context translate-sub ::field-list-label)
-               :font {:family "" :weight :bold :size 20}}
-              {:fx/type :list-view
-               :cell-factory (fn [path] {:text (fs/base-name path true)})
-               :items (sequence (::gamedata/fields (fx/sub context :gamedata)))
-               :v-box/vgrow :always}]})
+ ;; TODO Fix issue: Notepad tab not always first tab - alternates with each field opened
+   :tabs (cons {:fx/type notepad-tab}
+               (for [field (vals (fx/sub context :loaded-fields))]
+                 {:fx/type field-edit-tab
+                  :field field}))})
 
 (defn root-view
   [{:keys [fx/context]}]
