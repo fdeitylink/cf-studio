@@ -34,6 +34,7 @@
                                                   :text (fx/sub context translate-sub ::license-dialog-header)
                                                   :font {:family "" :weight :bold :size 20}}
                                                  {:fx/type :text-area
+                                                  :editable false
                                                   :text (slurp "LICENSE")
                                                   :v-box/vgrow :always}]}}})
 
