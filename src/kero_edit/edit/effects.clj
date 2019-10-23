@@ -31,11 +31,10 @@
     (dispatch! (assoc on-complete :file {:path path :data (reader-fn path)}))
     (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
 
-(defn write-file [{:keys [path writer-fn data on-complete on-exception]} dispatch!]
+(defn write-file [{:keys [file writer-fn on-complete on-exception]} dispatch!]
   (try
-    (writer-fn path)
-    (dispatch! (assoc on-complete :path path))
-    (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
+    (dispatch! (assoc on-complete :file file :result (writer-fn (:path file) (:data file))))
+    (catch IOException e (dispatch! (assoc on-exception :file file :exception e)))))
 
 (defn exception-dialog [{:keys [fx/context ^Exception exception]} _]
   (fx/on-fx-thread
