@@ -5,9 +5,10 @@
                       :license-dialog-header "By using Kero Edit, you agree to the following license terms"
                       :notepad-title "Notepad"}
 
- :kero-edit.edit.events {:exception-dialog-title "An exception has occurred"
-                         :open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
+ :kero-edit.edit.events {:open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
                          :open-new-mod-filter-description "KB/PH Executable File"}
+
+ :kero-edit.edit.effects {:exception-dialog-title "An exception has occurred"}
 
  :kero-edit.edit.field-list {:label "Fields"
                              :open "Open Fields"
