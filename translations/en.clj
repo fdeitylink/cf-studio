@@ -16,6 +16,7 @@
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"
                            :file-open-last "Open _Last"
+                           :file-close-mod "Close Current _Mod"
                            :file-save "_Save"
                            :file-save-all "Save _All"
                            :file-close-tab "_Close Tab"

@@ -18,6 +18,10 @@
             :disable (not (fx/sub context :last-executable-path))
             :on-action {::events/type ::events/open-last-mod}}
            {:fx/type :menu-item
+            :text (fx/sub context translate-sub ::file-close-mod)
+            :disable (not (fx/sub context :gamedata))
+            :on-action {::events/type ::events/close-mod}}
+           {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save)
             :accelerator [:ctrl :s]
             :disable (not (fx/sub context :gamedata))
