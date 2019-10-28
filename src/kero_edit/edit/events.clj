@@ -34,12 +34,6 @@
 
 ;; This events relate to opening and loading a new mod project
 
-(defmethod event-handler ::close-mod [{:keys [fx/context]}]
-  {:context (fx/swap-context context #(-> %
-                                          (dissoc :gamedata)
-                                          (assoc :selected-fields [])
-                                          (assoc :loaded-fields (ordered-map))))})
-
 (defmethod event-handler ::open-new-mod [{:keys [fx/context]}]
   {:dispatch {::type ::close-mod}
    ::effects/choose-file {:title (fx/sub context translate-sub ::open-new-mod-chooser-title)
@@ -62,6 +56,12 @@
 
 (defmethod event-handler ::load-gamedata [{:keys [fx/context file]}]
   {:context (fx/swap-context context assoc :gamedata (:data file))})
+
+(defmethod event-handler ::close-mod [{:keys [fx/context]}]
+  {:context (fx/swap-context context #(-> %
+                                          (dissoc :gamedata)
+                                          (assoc :selected-fields [])
+                                          (assoc :loaded-fields (ordered-map))))})
 
 ;; These events relate to selecting fields in the list view, opening and loading, and deleting them
 
