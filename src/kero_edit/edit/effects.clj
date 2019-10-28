@@ -1,6 +1,7 @@
 (ns kero-edit.edit.effects
   (:require [clojure.stacktrace :refer [print-cause-trace]]
             [cljfx.api :as fx]
+            [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]])
   (:import [java.util Collection List]
            [java.io IOException]
@@ -56,7 +57,7 @@
                                                     :text (with-out-str (print-cause-trace exception))
                                                     :v-box/vgrow :always}]}}})))
 
-(defn shutdown [{:keys [fx/context]} _]
-  ;; TODO Invoke config/write-config
+(defn shutdown [{:keys [config config-path]} _]
+  (config/write-config config-path config)
   (javafx.application.Platform/exit)
   (shutdown-agents))

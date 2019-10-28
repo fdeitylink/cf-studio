@@ -5,6 +5,7 @@
             [kero-edit.kero.field.pxpack :as pxpack]
             [kero-edit.kero.gamedata :as gamedata]
             [kero-edit.kero.util :as util]
+            [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.effects :as effects])
   (:import [javafx.event Event]
@@ -17,7 +18,11 @@
 
 (defmethod event-handler ::exception [event-map] {::effects/exception-dialog event-map})
 
-(defmethod event-handler ::shutdown [_] {::effects/shutdown {}})
+(defmethod event-handler ::shutdown [{:keys [fx/context]}]
+  {::effects/shutdown {:config-path (fx/sub context :config-path)
+                       ;; Filter for items in context that are in the config
+                       :config (into {} (filter (fn [[k _]] (contains? config/default-config k))
+                                                (:cljfx.context/m context)))}})
 
 (defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
   {:context (fx/swap-context context assoc :notepad-text event)})
@@ -25,7 +30,7 @@
 (defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
   (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]
     (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
-           (if-not accepted {::effects/shutdown {}}))))
+           (if-not accepted {:dispatch {::type ::shutdown}}))))
 
 ;; This events relate to opening and loading a new mod project
 
@@ -49,7 +54,7 @@
    [:dispatch {::type ::open-mod :path (fx/sub context :last-executable-path)}]])
 
 (defmethod event-handler ::open-mod [{:keys [fx/context path]}]
-  {:context (fx/swap-context context assoc :last-executable-path path)
+  {:context (fx/swap-context context assoc :last-executable-path (str path))
    ::effects/read-file {:path path
                         :reader-fn gamedata/executable->gamedata
                         :on-complete {::type ::load-gamedata}

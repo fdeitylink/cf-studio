@@ -23,6 +23,7 @@
 
 (defn read-config
   "Reads in a Kero Edit configuration file.
+  Returns map of `:config`, the configuration map, and `:config-path`, the path ultimately used for the config file.
   `config-path` is the path to the configuration file. This should be an edn file with a map namespaced under `kero-edit.edit.app`. If `config-path` is not given or is invalid, a config file is looked for at `default-config-path`."
   ([] (read-config default-config-path))
   ([config-path]
@@ -33,9 +34,10 @@
                         (clojure.edn/read {:eof {}} (PushbackReader. (io/reader path)))
                         (catch Exception _ {})))
          {:keys [notepad-text locale]} user-config]
-     (if (some? notepad-text)
-       user-config
-       (assoc user-config :notepad-text (i18n/translate locale ::default-notepad-text))))))
+     {:config-path path
+      :config (if notepad-text
+                user-config
+                (assoc user-config :notepad-text (i18n/translate locale ::default-notepad-text)))})))
 
 (defn write-config
   "Writes out a Kero Edit configuration file.

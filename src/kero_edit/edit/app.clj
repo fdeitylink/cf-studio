@@ -13,10 +13,8 @@
   (:gen-class))
 
 (def *context
-  (atom (fx/create-context (assoc
-                            (config/read-config)
-                            :selected-fields []
-                            :loaded-fields (ordered-map)))))
+  (atom (fx/create-context {:selected-fields []
+                            :loaded-fields (ordered-map)})))
 
 (defn license-dialog
   [{:keys [fx/context]}]
@@ -77,7 +75,9 @@
                                                    :v-box/vgrow :always}]}]}]}}})
 
 (defn -main
-  [& args]
+  [& [config-path]]
+  (let [{:keys [config config-path]} (config/read-config config-path)]
+    (swap! *context fx/swap-context merge config {:config-path config-path}))
   (fx/create-app
    *context
    :event-handler events/event-handler
