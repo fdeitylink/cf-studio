@@ -1,10 +1,10 @@
 # kero-edit
 
-A modding tool for [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster)
+A modding tool for the 2014 platformer game [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster).
 
 ## Installation
 
-Clone the repo and run `lein run`
+Clone the repo and run `lein run`.
 
 ## Usage
 
@@ -12,7 +12,7 @@ Clone the repo and run `lein run`
 
 ## Libraries
 
-Kero Edit usees the following languages and libraries
+Kero Edit uses the following languages and libraries:
 
 * [Clojure](https://clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
 * [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
