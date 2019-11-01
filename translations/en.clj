@@ -61,4 +61,8 @@
 
                                 :edit-mode "Edit Mode"
                                 :tile "Tile"
-                                :entity "Entity"}}
+                                :entity "Entity"
+
+                                :foreground "Foreground"
+                                :middleground "Middleground"
+                                :background "Background"}}

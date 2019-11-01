@@ -24,13 +24,19 @@
                        :config (into {} (filter (fn [[k _]] (contains? config/default-config k))
                                                 (:cljfx.context/m context)))}})
 
-(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
-  {:context (fx/swap-context context assoc :notepad-text event)})
-
 (defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
   (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]
     (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
            (if-not accepted {:dispatch {::type ::shutdown}}))))
+
+(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
+  {:context (fx/swap-context context assoc :notepad-text event)})
+
+(defmethod event-handler ::displayed-layers-changed [{:keys [fx/event fx/context layer]}]
+  {:context (fx/swap-context context update :displayed-layers #(if event (conj % layer) (disj % layer)))})
+
+(defmethod event-handler ::selected-layer-changed [{:keys [fx/event fx/context layer]}]
+  {:context (fx/swap-context context assoc :selected-layer layer)})
 
 ;; This events relate to opening and loading a new mod project
 

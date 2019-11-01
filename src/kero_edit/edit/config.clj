@@ -3,6 +3,7 @@
             [clojure.pprint :refer [pprint]]
             [clojure.java.io :as io]
             [me.raynes.fs :as fs]
+            [kero-edit.kero.field.tile-layer :as tile-layer]
             [kero-edit.edit.i18n :as i18n])
   (:import [java.io PushbackReader]))
 
@@ -19,7 +20,10 @@
 
    :locale :en
 
-   :last-executable-path nil})
+   :last-executable-path nil
+
+   :displayed-layers tile-layer/layers
+   :selected-layer (first tile-layer/layers)})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.
