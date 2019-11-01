@@ -1,6 +1,6 @@
 # kero-edit
 
-A modding tool for the Studio Pixel's 2014 platformer [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster).
+A modding tool for Studio Pixel's 2014 platformer [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster).
 
 ## Installation
 
