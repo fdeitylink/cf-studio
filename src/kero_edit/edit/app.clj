@@ -50,10 +50,11 @@
   [{:keys [fx/context]}]
   {:fx/type :tab-pane
  ;; TODO Fix issue: Notepad tab not always first tab - alternates with each field opened
-   :tabs (cons {:fx/type notepad-tab}
-               (for [field (vals (fx/sub context :loaded-fields))]
-                 {:fx/type field-edit-tab
-                  :field field}))})
+   :tabs (list*
+          {:fx/type notepad-tab}
+          (for [field (vals (fx/sub context :loaded-fields))]
+            {:fx/type field-edit-tab
+             :field field}))})
 
 (defn root-view
   [{:keys [fx/context]}]
