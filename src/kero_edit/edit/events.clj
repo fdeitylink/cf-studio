@@ -44,6 +44,9 @@
 (defmethod event-handler ::view-toggles-changed [{:keys [fx/event fx/context view]}]
   {:context (fx/swap-context context update :view-toggles #(if event (conj % view) (disj % view)))})
 
+(defmethod event-handler ::edit-mode-changed [{:keys [fx/context mode]}]
+  {:context (fx/swap-context context assoc :edit-mode mode)})
+
 ;; This events relate to opening and loading a new mod project
 
 (defmethod event-handler ::open-new-mod [{:keys [fx/context]}]

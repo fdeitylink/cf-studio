@@ -11,7 +11,8 @@
   [{:keys [fx/context]}]
   {:fx/type fx/ext-let-refs
    :refs {:layer-tg {:fx/type :toggle-group}
-          :draw-mode-tg {:fx/type :toggle-group}}
+          :draw-mode-tg {:fx/type :toggle-group}
+          :edit-mode-tg {:fx/type :toggle-group}}
    :desc {:fx/type :grid-pane
           :padding 10
           :vgap 10
@@ -84,4 +85,15 @@
                          :selected (contains? (fx/sub context :view-toggles) view)
                          :on-selected-changed {::events/type ::events/view-toggles-changed :view view}
                          :grid-pane/row row
-                         :grid-pane/column 3})))}})
+                         :grid-pane/column 3}))
+
+                     (doall
+                      (for [[mode row] (map vector [:tile :entity] (range 1 3))]
+                        {:fx/type :radio-button
+                         :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name mode)))
+                         :font font
+                         :toggle-group {:fx/type fx/ext-get-ref :ref :edit-mode-tg}
+                         :selected (= (fx/sub context :edit-mode) mode)
+                         :on-selected-changed {::events/type ::events/edit-mode-changed :mode mode}
+                         :grid-pane/row row
+                         :grid-pane/column 4})))}})
