@@ -74,4 +74,14 @@
                          :selected (= (fx/sub context :draw-mode) mode)
                          :on-selected-changed {::events/type ::events/draw-mode-changed :mode mode}
                          :grid-pane/row row
-                         :grid-pane/column 2})))}})
+                         :grid-pane/column 2}))
+
+                     (doall
+                      (for [[view row] (map vector [:tile-types :grid :entity-boxes :entity-sprites :entity-names] (range 1 6))]
+                        {:fx/type :check-box
+                         :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name view)))
+                         :font font
+                         :selected (contains? (fx/sub context :view-toggles) view)
+                         :on-selected-changed {::events/type ::events/view-toggles-changed :view view}
+                         :grid-pane/row row
+                         :grid-pane/column 3})))}})

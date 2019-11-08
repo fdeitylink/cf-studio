@@ -24,7 +24,8 @@
 
    :displayed-layers tile-layer/layers
    :selected-layer (first tile-layer/layers)
-   :draw-mode :draw})
+   :draw-mode :draw
+   :view-toggles #{:entity-boxes :entity-sprites}})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.

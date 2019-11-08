@@ -35,11 +35,14 @@
 (defmethod event-handler ::displayed-layers-changed [{:keys [fx/event fx/context layer]}]
   {:context (fx/swap-context context update :displayed-layers #(if event (conj % layer) (disj % layer)))})
 
-(defmethod event-handler ::selected-layer-changed [{:keys [fx/event fx/context layer]}]
+(defmethod event-handler ::selected-layer-changed [{:keys [fx/context layer]}]
   {:context (fx/swap-context context assoc :selected-layer layer)})
 
-(defmethod event-handler ::draw-mode-changed [{:keys [fx/event fx/context mode]}]
+(defmethod event-handler ::draw-mode-changed [{:keys [fx/context mode]}]
   {:context (fx/swap-context context assoc :draw-mode mode)})
+
+(defmethod event-handler ::view-toggles-changed [{:keys [fx/event fx/context view]}]
+  {:context (fx/swap-context context update :view-toggles #(if event (conj % view) (disj % view)))})
 
 ;; This events relate to opening and loading a new mod project
 
