@@ -10,7 +10,8 @@
 (defn settings-view
   [{:keys [fx/context]}]
   {:fx/type fx/ext-let-refs
-   :refs {:layer-tg {:fx/type :toggle-group}}
+   :refs {:layer-tg {:fx/type :toggle-group}
+          :draw-mode-tg {:fx/type :toggle-group}}
    :desc {:fx/type :grid-pane
           :padding 10
           :vgap 10
@@ -55,7 +56,6 @@
                           :on-selected-changed {::events/type ::events/displayed-layers-changed :layer layer}
                           :grid-pane/row row
                           :grid-pane/column 0}
-                         ;; TODO Apply toggle group
                          {:fx/type :radio-button
                           :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name layer)))
                           :font font
@@ -63,4 +63,15 @@
                           :selected (= (fx/sub context :selected-layer) layer)
                           :on-selected-changed {::events/type ::events/selected-layer-changed :layer layer}
                           :grid-pane/row row
-                          :grid-pane/column 1}])))}})
+                          :grid-pane/column 1}]))
+
+                     (doall
+                      (for [[mode row] (map vector [:draw :rect :copy :fill :replace] (range 1 6))]
+                        {:fx/type :radio-button
+                         :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name mode)))
+                         :font font
+                         :toggle-group {:fx/type fx/ext-get-ref :ref :draw-mode-tg}
+                         :selected (= (fx/sub context :draw-mode) mode)
+                         :on-selected-changed {::events/type ::events/draw-mode-changed :mode mode}
+                         :grid-pane/row row
+                         :grid-pane/column 2})))}})

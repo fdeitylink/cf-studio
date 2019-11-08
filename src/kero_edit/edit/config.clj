@@ -23,7 +23,8 @@
    :last-executable-path nil
 
    :displayed-layers tile-layer/layers
-   :selected-layer (first tile-layer/layers)})
+   :selected-layer (first tile-layer/layers)
+   :draw-mode :draw})
 
 (defn read-config
   "Reads in a Kero Edit configuration file.

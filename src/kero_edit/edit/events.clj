@@ -38,6 +38,9 @@
 (defmethod event-handler ::selected-layer-changed [{:keys [fx/event fx/context layer]}]
   {:context (fx/swap-context context assoc :selected-layer layer)})
 
+(defmethod event-handler ::draw-mode-changed [{:keys [fx/event fx/context mode]}]
+  {:context (fx/swap-context context assoc :draw-mode mode)})
+
 ;; This events relate to opening and loading a new mod project
 
 (defmethod event-handler ::open-new-mod [{:keys [fx/context]}]
