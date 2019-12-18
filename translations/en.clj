@@ -41,9 +41,15 @@
                            :help-about "_About"
                            :help-guide "_Guide"}
 
- :kero-edit.edit.settings-view {:displayed-layers "Displayed Layers"
+ :kero-edit.edit.settings-view {:title "Settings"
+
+                                :displayed-layers "Displayed Layers"
 
                                 :selected-layer "Selected Layer"
+
+                                :foreground "Foreground"
+                                :middleground "Middleground"
+                                :background "Background"
 
                                 :draw-mode "Draw Mode"
                                 :draw "Draw"
@@ -61,8 +67,4 @@
 
                                 :edit-mode "Edit Mode"
                                 :tile "Tile"
-                                :entity "Entity"
-
-                                :foreground "Foreground"
-                                :middleground "Middleground"
-                                :background "Background"}}
+                                :entity "Entity"}}
