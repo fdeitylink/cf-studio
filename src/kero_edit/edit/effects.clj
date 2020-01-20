@@ -1,5 +1,6 @@
 (ns kero-edit.edit.effects
   (:require [clojure.stacktrace :refer [print-cause-trace]]
+            [me.raynes.fs :as fs]
             [cljfx.api :as fx]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]])
@@ -11,7 +12,7 @@
   (fx/on-fx-thread
    (let [chooser (doto (FileChooser.)
                    (.setTitle title)
-                   (.setInitialDirectory initial-directory)
+                   (.setInitialDirectory (if (fs/directory? initial-directory) initial-directory (fs/home)))
                    (.setInitialFileName initial-filename)
                    (->
                     (.getExtensionFilters)
