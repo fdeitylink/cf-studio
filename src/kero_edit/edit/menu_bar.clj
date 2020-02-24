@@ -100,6 +100,7 @@
 (defn menu-bar
   [{:keys [fx/context]}]
   {:fx/type :menu-bar
+   :use-system-menu-bar true
    :menus [{:fx/type file-menu}
            {:fx/type edit-menu}
            {:fx/type view-menu}
