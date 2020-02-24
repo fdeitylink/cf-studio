@@ -9,24 +9,23 @@
            [javafx.stage Stage FileChooser FileChooser$ExtensionFilter]))
 
 (defn choose-file [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
-  (fx/on-fx-thread
-   (let [chooser (doto (FileChooser.)
-                   (.setTitle title)
-                   (.setInitialDirectory (if (fs/directory? initial-directory) initial-directory (fs/home)))
-                   (.setInitialFileName initial-filename)
-                   (->
-                    (.getExtensionFilters)
-                    (.addAll ^Collection (map
-                                          #(FileChooser$ExtensionFilter. ^String (:description %) ^List (:extensions %))
-                                          extension-filters))))
-         selected-path (case dialog-type
+  (let [chooser (doto (FileChooser.)
+                  (.setTitle title)
+                  (.setInitialDirectory (if (fs/directory? initial-directory) initial-directory (fs/home)))
+                  (.setInitialFileName initial-filename)
+                  (->
+                   (.getExtensionFilters)
+                   (.addAll ^Collection (map
+                                         #(FileChooser$ExtensionFilter. ^String (:description %) ^List (:extensions %))
+                                         extension-filters))))
+        selected-path (case dialog-type
                          ;; TODO Grab primary stage to optionally allow blocking modality
-                         :open {:path (.showOpenDialog chooser (Stage.))}
-                         :open-multiple {:paths (.showOpenMultipleDialog chooser (Stage.))}
-                         :save {:path (.showSaveDialog chooser (Stage.))})]
+                        :open {:path @(fx/on-fx-thread (.showOpenDialog chooser (Stage.)))}
+                        :open-multiple {:paths @(fx/on-fx-thread (.showOpenMultipleDialog chooser (Stage.)))}
+                        :save {:path @(fx/on-fx-thread (.showSaveDialog chooser (Stage.)))})]
      ;; If user escapes dialog w/o making a choice, path is nil
-     (if (first (vals selected-path))
-       (dispatch! (merge on-complete selected-path))))))
+    (if (first (vals selected-path))
+      (dispatch! (merge on-complete selected-path)))))
 
 (defn read-file [{:keys [path reader-fn on-complete on-exception]} dispatch!]
   (try
