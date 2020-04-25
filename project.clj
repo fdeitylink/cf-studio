@@ -7,7 +7,7 @@
                  [smee/binary "0.5.4"]
                  [org.flatland/ordered "1.5.7"]
                  [clj-commons/fs "1.5.1"]
-                 [cljfx "1.6.1"]
+                 [cljfx "1.6.8"]
                  [com.taoensso/tempura "1.2.1"]]
   :main ^:skip-aot kero-edit.edit.app
   :target-path "target/%s"
