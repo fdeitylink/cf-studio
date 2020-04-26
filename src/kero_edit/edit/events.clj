@@ -3,7 +3,7 @@
             [me.raynes.fs :as fs]
             [cljfx.api :as fx]
             [kero-edit.kero.field.pxpack :as pxpack]
-            [kero-edit.kero.gamedata :as gamedata]
+            [kero-edit.kero.metadata :as metadata]
             [kero-edit.kero.util :as util]
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
@@ -65,16 +65,16 @@
 (defmethod event-handler ::open-mod [{:keys [fx/context path]}]
   {:context (fx/swap-context context assoc :last-executable-path (str path))
    ::effects/read-file {:path path
-                        :reader-fn gamedata/executable->gamedata
-                        :on-complete {::type ::load-gamedata}
+                        :reader-fn metadata/executable->metadata
+                        :on-complete {::type ::load-metadata}
                         :on-exception {::type ::exception}}})
 
-(defmethod event-handler ::load-gamedata [{:keys [fx/context file]}]
-  {:context (fx/swap-context context assoc :gamedata (:data file))})
+(defmethod event-handler ::load-metadata [{:keys [fx/context file]}]
+  {:context (fx/swap-context context assoc :metadata (:data file))})
 
 (defmethod event-handler ::close-mod [{:keys [fx/context]}]
   {:context (fx/swap-context context #(-> %
-                                          (dissoc :gamedata)
+                                          (dissoc :metadata)
                                           (assoc :selected-fields [])
                                           (assoc :loaded-fields (ordered-map))))})
 

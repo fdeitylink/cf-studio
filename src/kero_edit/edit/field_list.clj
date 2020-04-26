@@ -2,7 +2,7 @@
   (:require [me.raynes.fs :as fs]
             [cljfx.api :as fx]
             [cljfx.ext.list-view :as fx.ext.list-view]
-            [kero-edit.kero.gamedata :as gamedata]
+            [kero-edit.kero.metadata :as metadata]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]))
 
@@ -12,12 +12,12 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::open)
             :accelerator [:enter]
-            :disable (not (fx/sub context :gamedata))
+            :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/open-fields}}
            #_{:fx/type :menu-item
               :text (fx/sub context translate-sub ::delete)
               :accelerator [:delete]
-              :disable (not (fx/sub context :gamedata))
+              :disable (not (fx/sub context :metadata))
               :on-action {::events/type ::events/delete-fields}}]})
 
 (defn field-list
@@ -33,7 +33,7 @@
                        :on-selected-items-changed {::events/type ::events/field-selection-changed}}
                :desc {:fx/type :list-view
                       :cell-factory (fn [path] {:text (fs/base-name path true)})
-                      :items (sequence (::gamedata/fields (fx/sub context :gamedata)))
+                      :items (sequence (::metadata/fields (fx/sub context :metadata)))
                       :context-menu {:fx/type context-menu}
                       :on-mouse-clicked {::events/type ::events/field-list-click}
                       :on-key-pressed {::events/type ::events/field-list-keypress}}}]})

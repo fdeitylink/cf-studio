@@ -1,4 +1,4 @@
-(ns kero-edit.kero.gamedata
+(ns kero-edit.kero.metadata
   (:require [clojure.set]
             [clojure.string]
             [clojure.spec.alpha :as spec]
@@ -32,10 +32,10 @@
 
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
 (spec/def ::resource-dir (comp #{"rsc_k" "rsc_p"} fs/base-name))
-(spec/def ::gamedata (spec/and
+(spec/def ::metadata (spec/and
                       (spec/keys :req (conj (keys resource-path-metadata) ::executable ::resource-dir))
                       ;; Validate the resource path sets
-                      (fn [{:keys [::resource-dir] :as gd}]
+                      (fn [{:keys [::resource-dir] :as metadata}]
                         (every?
                          (fn [[resource-kw resource-path-set]]
                            (let [{:keys [resource-subdir prefix extension]} (resource-kw resource-path-metadata)]
@@ -51,13 +51,13 @@
                                  (clojure.string/starts-with? (fs/base-name %) prefix)
                                  (= (fs/extension %) extension))
                                resource-path-set))))
-                         (seq (dissoc gd ::executable ::resource-dir))))))
+                         (seq (dissoc metadata ::executable ::resource-dir))))))
 
 ;; TODO Store localize file paths
-(defn executable->gamedata
-  "Creates a gamedata map from a Kero Blaster executable path.
+(defn executable->metadata
+  "Creates a metadata map from a Kero Blaster executable path.
   `executable-path` is the path of the Kero Blaster executable.
-  The map is namespaced under `kero-edit.kero.gamedata` and will contain:
+  The map is namespaced under this namespace and will contain:
    - `:executable` - the path to the game executable
    - `:resource-dir` - the path to the game's root resource directory
    - `:music` - a sorted set of the game's background music file paths
