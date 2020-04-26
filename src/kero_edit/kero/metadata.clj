@@ -31,7 +31,7 @@
                       (re-pattern (str "^" prefix ".+\\" extension "$"))))))
 
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
-(spec/def ::resource-dir (comp #{"rsc_k" "rsc_p"} fs/base-name))
+(spec/def ::resource-dir (spec/and (comp #{"rsc_k" "rsc_p"} fs/base-name) fs/directory?))
 (spec/def ::metadata (spec/and
                       (spec/keys :req (conj (keys resource-path-metadata) ::executable ::resource-dir))
                       ;; Validate the resource path sets
