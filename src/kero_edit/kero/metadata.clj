@@ -7,13 +7,13 @@
 (def resource-path-metadata
   "Map of resource type keywords to metadata for their paths."
   {::music {:resource-subdir "bgm" :prefix "" :extension ".ptcop"}
-   ::fields {:resource-subdir "field" :prefix "" :extension ".pxpack"}
-   ::images {:resource-subdir "img" :prefix "" :extension ".png"}
-   ::spritesheets {:resource-subdir "img" :prefix "fu" :extension ".png"}
-   ::tilesets {:resource-subdir "img" :prefix "mpt" :extension ".png"}
-   ::tile-attributes {:resource-subdir "img" :prefix "" :extension ".pxattr"}
+   ::field {:resource-subdir "field" :prefix "" :extension ".pxpack"}
+   ::image {:resource-subdir "img" :prefix "" :extension ".png"}
+   ::spritesheet {:resource-subdir "img" :prefix "fu" :extension ".png"}
+   ::tileset {:resource-subdir "img" :prefix "mpt" :extension ".png"}
+   ::tile-attribute {:resource-subdir "img" :prefix "" :extension ".pxattr"}
    ::sfx {:resource-subdir "se" :prefix "" :extension ".ptnoise"}
-   ::scripts {:resource-subdir "text" :prefix "" :extension ".pxeve"}})
+   ::script {:resource-subdir "text" :prefix "" :extension ".pxeve"}})
 
 (def resource-dir->game-type
   "Map of resource directory names to Kero Blaster base game types."
@@ -61,13 +61,13 @@
    - `:executable` - the path to the game executable
    - `:resource-dir` - the path to the game's root resource directory
    - `:music` - a sorted set of the game's background music file paths
-   - `:fields` - a sorted set of the game's field file paths
-   - `:images` - a sorted set of the game's image file paths besides the spritesheets and tilesets
-   - `:spritesheets` - a sorted set of the game's spritesheet file paths
-   - `:tilesets` - a sorted set of the game's tileset file paths
-   - `:tile-attributes` - a sorted set of the game's tile attribute file paths
+   - `:field` - a sorted set of the game's field file paths
+   - `:image` - a sorted set of the game's image file paths besides the spritesheets and tilesets
+   - `:spritesheet` - a sorted set of the game's spritesheet file paths
+   - `:tileset` - a sorted set of the game's tileset file paths
+   - `:tile-attribute` - a sorted set of the game's tile attribute file paths
    - `:sfx` - a sorted set of the game's sound effects file paths
-   - `:scripts` - a sorted set of the game's script file paths"
+   - `:script` - a sorted set of the game's script file paths"
   [executable-path]
   (let [resource-dir (first (fs/find-files (fs/parent executable-path) #"rsc_[kp]"))]
     (->> resource-path-metadata

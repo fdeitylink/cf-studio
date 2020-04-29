@@ -33,7 +33,7 @@
                        :on-selected-items-changed {::events/type ::events/field-selection-changed}}
                :desc {:fx/type :list-view
                       :cell-factory (fn [path] {:text (fs/base-name path true)})
-                      :items (sequence (::metadata/fields (fx/sub context :metadata)))
+                      :items (sequence (::metadata/field (fx/sub context :metadata)))
                       :context-menu {:fx/type context-menu}
                       :on-mouse-clicked {::events/type ::events/field-list-click}
                       :on-key-pressed {::events/type ::events/field-list-keypress}}}]})
