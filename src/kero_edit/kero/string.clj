@@ -1,7 +1,6 @@
 (ns kero-edit.kero.string
   (:require [clojure.spec.alpha :as spec]
-            [org.clojars.smee.binary.core :as bin]
-            [kero-edit.kero.util :as util]))
+            [org.clojars.smee.binary.core :as bin]))
 
 (def charset
   "The name of the charset used for encoding Kero Blaster strings."

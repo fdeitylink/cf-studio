@@ -3,8 +3,7 @@
             [org.clojars.smee.binary.core :as bin]
             [kero-edit.kero.field.head :as head]
             [kero-edit.kero.field.tile-layer :as tile-layer]
-            [kero-edit.kero.field.unit :as unit]
-            [kero-edit.kero.util :as util]))
+            [kero-edit.kero.field.unit :as unit]))
 
 (def max-unit-count
   "The maximum number of units in a PxPack field. Equivalent to the maximum of an unsigned short."

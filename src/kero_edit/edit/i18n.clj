@@ -3,7 +3,7 @@
             [me.raynes.fs :as fs]
             [taoensso.tempura :as tempura]
             [cljfx.api :as fx])
-  (:import [java.io File PushbackReader]))
+  (:import java.io.PushbackReader))
 
 (def translation-file-regex
   "Regex for locating translation files."
