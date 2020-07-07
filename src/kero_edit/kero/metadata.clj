@@ -27,6 +27,7 @@
   "Map of resource directory names to Kero Blaster base game types."
   {"rsc_k" ::kero-blaster "rsc_p" ::pink-hour})
 
+;; TODO Consider returning a set of {:path: _ :type _}
 (defn- resource-files
   "Returns an alphabetically sorted set of resource files.
   `resource-dir` is the root resource directory.
@@ -40,26 +41,37 @@
 
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
 (spec/def ::resource-dir (spec/and (comp #{"rsc_k" "rsc_p"} fs/base-name) fs/directory?))
+
+(defmacro ^:private define-resource-type-specs
+  "Defines the specs for the resource types"
+  []
+  `(do
+     ~@(for [[resource-type {:keys [prefix extension]}] resource-type->path-meta]
+         `(spec/def ~resource-type
+            (spec/coll-of
+             ;; Every resource path must have the correct parent directory, prefix, and extension
+             (spec/and
+              ;; TODO Find way to do resource subdir check from this spec and not ::metdatada spec
+              #(clojure.string/starts-with? (fs/base-name %) ~prefix)
+              #(= (fs/extension %) ~extension))
+             ;; TODO Consider relaxing sorted set requirement
+             :kind #(and (set? %) (sorted? %))
+             :distinct true)))))
+
+(define-resource-type-specs)
+
 (spec/def ::metadata (spec/and
                       (spec/keys :req (conj (keys resource-type->path-meta) ::executable ::resource-dir))
-                      ;; Validate the resource path sets
+                      ;; Validate parent directories of paths in resource path sets
                       (fn [{:keys [::resource-dir] :as metadata}]
+                        ;; For every set
                         (every?
                          (fn [[resource-type resource-path-set]]
-                           (let [{:keys [subdir prefix extension]} (resource-type resource-type->path-meta)]
-                             (and
-                              ;; Every resource path collection must be a sorted set
-                              ;; TODO Consider relaxing this requirement
-                              (set? resource-path-set)
-                              (sorted? resource-path-set)
-                              ;; Every resource path must have the correct parent directory, prefix, and extension
-                              (every?
-                               #(and
-                                 (= (fs/parent %) (fs/file resource-dir subdir))
-                                 (clojure.string/starts-with? (fs/base-name %) prefix)
-                                 (= (fs/extension %) extension))
-                               resource-path-set))))
-                         (seq (dissoc metadata ::executable ::resource-dir))))))
+                           (let [{:keys [subdir]} (resource-type resource-type->path-meta)
+                                 parent (fs/file resource-dir subdir)]
+                             ;; For every path in the set
+                             (every? #(= (fs/parent %) parent) resource-path-set)))
+                         (dissoc metadata ::executable ::resource-dir)))))
 
 ;; TODO Store localize file paths
 (defn executable->metadata
