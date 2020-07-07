@@ -12,18 +12,24 @@
 
 (defmulti event-handler ::type)
 
-;; These events simply delegate to effects - for when a function or property expects an event but an effect needs to occur
+;; These events simply delegate to effects
+;; Used when a function or property expects an event but an effect is needed
 
-(defmethod event-handler ::exception [event-map] {::effects/exception-dialog event-map})
+(defmethod event-handler ::exception
+  [event-map]
+  {::effects/exception-dialog event-map})
 
 (defmethod event-handler ::shutdown
   [event-map]
   {::effects/shutdown event-map})
 
-(defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
-  (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]
-    (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
-           (if-not accepted {:dispatch {::type ::shutdown}}))))
+(defmethod event-handler ::license-dialog-consumed
+  [{:keys [^Event fx/event fx/context]}]
+  (let [accepted (= ButtonBar$ButtonData/YES
+                    (-> event ^Dialog (.getSource) ^ButtonType (.getResult) .getButtonData))]
+    (merge
+     {:context (fx/swap-context context assoc :license-accepted accepted)}
+     (when-not accepted {:dispatch {::type ::shutdown}}))))
 
 #_(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
   {:context (fx/swap-context context assoc :notepad-text event)})
@@ -43,18 +49,23 @@
 #_(defmethod event-handler ::edit-mode-changed [{:keys [fx/context mode]}]
   {:context (fx/swap-context context assoc :edit-mode mode)})
 
-;; This events relate to opening and loading a new mod project
+;; These events relate to opening and loading a new mod project
 
-(defmethod event-handler ::open-new-mod [{:keys [fx/context]}]
+;; FIXME Choose file effect occurs before close mod event. May need feature request from cljfx
+(defmethod event-handler ::open-new-mod
+  [{:keys [fx/context]}]
   {:dispatch {::type ::close-mod}
    ::effects/choose-file {:title (fx/sub context translate-sub ::open-new-mod-chooser-title)
-                          :initial-directory (if-let [last-path (fx/sub context :last-executable-path)] (fs/parent last-path) (fs/home))
+                          :initial-directory (if-let [last-path (fx/sub context :last-executable-path)]
+                                               (fs/parent last-path)
+                                               (fs/home))
                           :extension-filters [{:description (fx/sub context translate-sub ::open-new-mod-filter-description)
                                                :extensions ["*.exe"]}]
                           :dialog-type :open
                           :on-complete {::type ::open-mod}}})
 
-(defmethod event-handler ::open-last-mod [{:keys [fx/context]}]
+(defmethod event-handler ::open-last-mod
+  [{:keys [fx/context]}]
   [[:dispatch {::type ::close-mod}]
    [:dispatch {::type ::open-mod :path (fx/sub context :last-executable-path)}]])
 
