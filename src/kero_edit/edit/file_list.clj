@@ -64,9 +64,15 @@
                        :on-selected-item-changed {::events/type ::events/file-selection-changed}}
                :desc {:fx/type :tree-view
                       :show-root false
-                      ;; It seems cell factories can't rely on cljfx context (TODO feature request?)
-                      ;; Otherwise, the values would be keywords (to be translated into group names)
-                      :cell-factory (fn [value] {:text (if (string? value) value (fs/base-name (:path value) true))})
+                      ;; TODO possible feature request
+                      ;; It seems cell factories can't rely on cljfx context
+                      ;; Otherwise, the values would be keywords (to be translated with translate-sub)
+                      ;; Dev seems to allude to this here: https://github.com/cljfx/cljfx#factory-props
+                      :cell-factory {:fx/cell-type :tree-cell
+                                     :describe (fn [value]
+                                                 {:text (if (string? value)
+                                                          value
+                                                          (fs/base-name (:path value) true))})}
                       :context-menu {:fx/type context-menu}
                       :on-mouse-clicked {::events/type ::events/file-list-click}
                       :on-key-pressed {::events/type ::events/file-list-keypress}
