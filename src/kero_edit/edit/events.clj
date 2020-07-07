@@ -4,7 +4,6 @@
             [kero-edit.kero.field.pxpack :as pxpack]
             [kero-edit.kero.metadata :as metadata]
             [kero-edit.kero.util :as util]
-            [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.effects :as effects])
   (:import javafx.event.Event
@@ -17,11 +16,9 @@
 
 (defmethod event-handler ::exception [event-map] {::effects/exception-dialog event-map})
 
-(defmethod event-handler ::shutdown [{:keys [fx/context]}]
-  {::effects/shutdown {:config-path (fx/sub context :config-path)
-                       ;; Filter for items in context that are in the config
-                       :config (into {} (filter (fn [[k _]] (contains? config/default-config k))
-                                                (:cljfx.context/m context)))}})
+(defmethod event-handler ::shutdown
+  [event-map]
+  {::effects/shutdown event-map})
 
 (defmethod event-handler ::license-dialog-consumed [{:keys [^Event fx/event fx/context]}]
   (let [accepted (= ButtonBar$ButtonData/YES (.getButtonData ^ButtonType (.getResult ^Dialog (.getSource event))))]

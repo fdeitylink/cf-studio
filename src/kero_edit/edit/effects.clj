@@ -58,7 +58,9 @@
                                                     :text (with-out-str (print-cause-trace exception))
                                                     :v-box/vgrow :always}]}}})))
 
-(defn shutdown [{:keys [config config-path]} _]
-  (config/write-config config-path config)
-  (javafx.application.Platform/exit)
-  (shutdown-agents))
+(defn shutdown [{:keys [fx/context]} _]
+  (let [path (fx/sub context :config-path)
+        config (select-keys (:cljfx.context/m context) (keys config/default-config))]
+    (config/write-config path config)
+    (javafx.application.Platform/exit)
+    (shutdown-agents)))
