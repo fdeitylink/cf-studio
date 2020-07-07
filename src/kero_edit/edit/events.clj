@@ -130,7 +130,7 @@
   (if (get-in (fx/sub context :open-files) [type path])
     (when create-editor? {:dispatch {::type ::create-editor :file file}})
     {::effects/read-file {:file file
-                          :reader-fn #(util/decode-file % (metadata/resource-type->codec type))
+                          :reader-fn (partial util/decode-file (metadata/resource-type->codec type))
                           :on-complete {::type ::load-file :create-editor? create-editor?}
                           :on-exception {::type ::exception}}}))
 

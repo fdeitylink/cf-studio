@@ -15,17 +15,18 @@
   ([spec]
    (validator spec ""))
   ([spec err-str]
-   #(if (spec/valid? spec %) %
-        (throw (ex-info err-str (spec/explain-data spec %))))))
+   #(if (spec/valid? spec %)
+      %
+      (throw (ex-info err-str (spec/explain-data spec %))))))
 
 (defn decode-file
   "Decodes a file according to a codec."
-  [file codec]
+  [codec file]
   (with-open [is (io/input-stream file)]
     (bin/decode codec is)))
 
 (defn encode-file
   "Encodes a value into a file according to a codec."
-  [file codec value]
+  [codec file value]
   (with-open [os (io/output-stream file)]
     (bin/encode codec os value)))
