@@ -14,16 +14,16 @@ Clone the repo and run `lein run`.
 
 Kero Edit uses the following languages and libraries:
 
-* [Clojure](https://clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
-* [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
+* [Clojure](https://clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
+* [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
 * [cljfx](https://github.com/cljfx/cljfx) (licensed under the [MIT License](https://opensource.org/licenses/MIT))
-* [tempura](https://github.com/ptaoussanis/tempura) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
-* [ordered](https://github.com/clj-commons/ordered) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
-* [fs](https://github.com/clj-commons/fs) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0.php))
+* [tempura](https://github.com/ptaoussanis/tempura) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
+* [ordered](https://github.com/clj-commons/ordered) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
+* [fs](https://github.com/clj-commons/fs) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
 
 ## License
 
-Copyright 2019 Brian "fdeitylink" Christian
+Copyright 2020 Brian "fdeitylink" Christian
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
