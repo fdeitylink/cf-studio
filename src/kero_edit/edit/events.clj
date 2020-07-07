@@ -1,6 +1,5 @@
 (ns kero-edit.edit.events
-  (:require [flatland.ordered.map :refer [ordered-map]]
-            [me.raynes.fs :as fs]
+  (:require [me.raynes.fs :as fs]
             [cljfx.api :as fx]
             [kero-edit.kero.field.pxpack :as pxpack]
             [kero-edit.kero.metadata :as metadata]
@@ -8,9 +7,9 @@
             [kero-edit.edit.config :as config]
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.effects :as effects])
-  (:import [javafx.event Event]
-           [javafx.scene.input MouseButton MouseEvent KeyCode KeyEvent]
-           [javafx.scene.control Dialog DialogEvent ButtonType ButtonBar$ButtonData]))
+  (:import javafx.event.Event
+           [javafx.scene.control ButtonBar$ButtonData ButtonType Dialog TreeItem]
+           [javafx.scene.input KeyCode KeyEvent MouseButton MouseEvent]))
 
 (defmulti event-handler ::type)
 
@@ -29,22 +28,22 @@
     (merge {:context (fx/swap-context context assoc :license-accepted accepted)}
            (if-not accepted {:dispatch {::type ::shutdown}}))))
 
-(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
+#_(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
   {:context (fx/swap-context context assoc :notepad-text event)})
 
-(defmethod event-handler ::displayed-layers-changed [{:keys [fx/event fx/context layer]}]
+#_(defmethod event-handler ::displayed-layers-changed [{:keys [fx/event fx/context layer]}]
   {:context (fx/swap-context context update :displayed-layers #(if event (conj % layer) (disj % layer)))})
 
-(defmethod event-handler ::selected-layer-changed [{:keys [fx/context layer]}]
+#_(defmethod event-handler ::selected-layer-changed [{:keys [fx/context layer]}]
   {:context (fx/swap-context context assoc :selected-layer layer)})
 
-(defmethod event-handler ::draw-mode-changed [{:keys [fx/context mode]}]
+#_(defmethod event-handler ::draw-mode-changed [{:keys [fx/context mode]}]
   {:context (fx/swap-context context assoc :draw-mode mode)})
 
-(defmethod event-handler ::view-toggles-changed [{:keys [fx/event fx/context view]}]
+#_(defmethod event-handler ::view-toggles-changed [{:keys [fx/event fx/context view]}]
   {:context (fx/swap-context context update :view-toggles #(if event (conj % view) (disj % view)))})
 
-(defmethod event-handler ::edit-mode-changed [{:keys [fx/context mode]}]
+#_(defmethod event-handler ::edit-mode-changed [{:keys [fx/context mode]}]
   {:context (fx/swap-context context assoc :edit-mode mode)})
 
 ;; This events relate to opening and loading a new mod project
@@ -62,47 +61,116 @@
   [[:dispatch {::type ::close-mod}]
    [:dispatch {::type ::open-mod :path (fx/sub context :last-executable-path)}]])
 
-(defmethod event-handler ::open-mod [{:keys [fx/context path]}]
+(defmethod event-handler ::open-mod
+  [{:keys [fx/context path]}]
   {:context (fx/swap-context context assoc :last-executable-path (str path))
-   ::effects/read-file {:path path
+   ::effects/read-file {:file {:path path}
                         :reader-fn metadata/executable->metadata
-                        :on-complete {::type ::load-metadata}
+                        :on-complete {::type ::load-mod}
                         :on-exception {::type ::exception}}})
 
-(defmethod event-handler ::load-metadata [{:keys [fx/context file]}]
-  {:context (fx/swap-context context assoc :metadata (:data file))})
+(defmethod event-handler ::load-mod
+  [{:keys [fx/context] {:keys [data]} :file}]
+  {:context (fx/swap-context context assoc :metadata data)})
 
-(defmethod event-handler ::close-mod [{:keys [fx/context]}]
-  {:context (fx/swap-context context #(-> %
-                                          (dissoc :metadata)
-                                          (assoc :selected-fields [])
-                                          (assoc :loaded-fields (ordered-map))))})
+;; TODO Create prompt effect
+;; Checks for unsaved work and only clears everything if there is none or user still wants to close
+(defmethod event-handler ::close-mod
+  [{:keys [fx/context]}]
+  (concat
+   (for [[_ editor] (fx/sub context :editors)]
+     ;; editor contains the necessary path & type fields for a file
+     ;; TODO actually it uses non-namespaced type kw
+     [:dispatch {::type ::close-editor :file editor}])
+   {:dispatch {::type ::clear-mod}}))
 
-;; These events relate to selecting fields in the list view, opening and loading, and deleting them
+(defmethod event-handler ::clear-mod
+  [{:keys [fx/context]}]
+  {:context (fx/swap-context context dissoc :metadata :selected-file :open-files :editors :current-editor)})
 
-(defmethod event-handler ::field-selection-changed [{:keys [fx/context fx/event]}]
-  {:context (fx/swap-context context assoc :selected-fields event)})
+;; These events relate to actions done with files in the tree list view
 
-(defmethod event-handler ::field-list-click [{:keys [fx/context ^MouseEvent fx/event]}]
-  (if (and (= MouseButton/PRIMARY (.getButton event))
-           (= 2 (.getClickCount event)))
-    {:dispatch {::type ::open-fields}}))
+(defmethod event-handler ::file-selection-changed
+  [{:keys [fx/context ^TreeItem fx/event]}]
+  ;; event is nil if moving from child to parent with left arrow key (bug?)
+  (let [value (some-> event .getValue)]
+    (if (or (nil? value) (string? value))
+      {:context (fx/swap-context context dissoc :selected-file)}
+      {:context (fx/swap-context context assoc :selected-file value)})))
 
-(defmethod event-handler ::field-list-keypress [{:keys [fx/context ^KeyEvent fx/event]}]
-  (condp = (.getCode event)
-    KeyCode/ENTER {:dispatch {::type ::open-fields}}
-    ; KeyCode/DELETE {:dispatch {::type ::delete-fields}}
-    nil))
+(defmethod event-handler ::file-list-click
+  [{:keys [fx/context ^MouseEvent fx/event]}]
+  (when-let [file (fx/sub context :selected-file)]
+    (when (and (= MouseButton/PRIMARY (.getButton event))
+               (= 2 (.getClickCount event)))
+      {:dispatch {::type ::open-file :file file :create-editor? true}})))
 
-(defmethod event-handler ::open-fields [{:keys [fx/context]}]
-  (for [field (fx/sub context :selected-fields)]
-    [::effects/read-file {:path field
-                          :reader-fn #(util/decode-file % pxpack/pxpack-codec)
-                          :on-complete {::type ::load-field}
-                          :on-exception {::type ::exception}}]))
+;; TODO
+;; Enter key accelerator doesn't work on the corresponding menu item so we have this
+;; Figure out why enter doesn't work and if we can get rid of this redundancy
+(defmethod event-handler ::file-list-keypress
+  [{:keys [fx/context ^KeyEvent fx/event]}]
+  (when-let [file (fx/sub context :selected-file)]
+    (when (= KeyCode/ENTER (.getCode event))
+      {:dispatch {::type ::open-file :file file :create-editor? true}})))
 
-(defmethod event-handler ::load-field [{:keys [fx/context file]}]
-  {:context (fx/swap-context context assoc-in [:loaded-fields (:path file)] file)})
+;; These events relate to reading files
 
-(defmethod event-handler ::close-field [{:keys [fx/context field]}]
-  {:context (fx/swap-context context update :loaded-fields #(dissoc % (:path field)))})
+(defmethod event-handler ::open-file
+  [{:keys [fx/context create-editor?] {:keys [path type] :as file} :file}]
+  ;; File may already be open (e.g. loaded as asset for another file)
+  (if (get-in (fx/sub context :open-files) [type path])
+    (when create-editor? {:dispatch {::type ::create-editor :file file}})
+    {::effects/read-file {:file file
+                          :reader-fn #(util/decode-file % (metadata/resource-type->codec type))
+                          :on-complete {::type ::load-file :create-editor? create-editor?}
+                          :on-exception {::type ::exception}}}))
+
+(defmethod event-handler ::load-file
+  [{:keys [fx/context create-editor?] {:keys [path type] :as file} :file}]
+  (merge
+   {:context (fx/swap-context context assoc-in [:open-files type path] file)}
+   (when create-editor? {:dispatch {::type ::create-editor :file file}})))
+
+(defmethod event-handler ::close-file
+  [{:keys [fx/context] {:keys [path type]} :file}]
+  {:context (fx/swap-context context update-in [:open-files type] dissoc path)})
+
+;; These events relate to managing editors
+
+(defmethod event-handler ::create-editor
+  [{:keys [fx/context] {:keys [path data type]} :file}]
+  (let [editor-path (if (not= type ::pxpack/pxpack) [path] [path ::pxpack/head])
+        ;; Default editor, needs to be adjusted if editor is for a field
+        base-editor {:type type :path path :edits [data] :edit-pos 0 :dirty false}]
+    (merge
+     {:dispatch {::type ::switch-to-editor :editor-path editor-path}}
+     ;; If the editor does not already exist, create it
+     (when-not (get (fx/sub context :editors) path)
+       (let [editor (if (not= type ::pxpack/pxpack)
+                      base-editor
+                      ;; Field editor is really 3 separate editors for head, tiles, entities
+                      (reduce
+                       (fn [editor field-section]
+                         ;; Insert subeditors into wrapping editor
+                           (assoc editor
+                                  field-section
+                                  (assoc base-editor
+                                         :type field-section
+                                         :edits [(field-section data)])))
+                       {:type ::pxpack/pxpack :path path :dirty false}
+                       [::pxpack/head ::pxpack/tile-layers ::pxpack/units]))]
+         {:context (fx/swap-context context assoc-in [:editors path] editor)})))))
+
+(defmethod event-handler ::switch-to-editor
+  [{:keys [fx/context editor-path]}]
+  {:context (fx/swap-context context assoc :current-editor editor-path)})
+
+;; TODO Use prompt effect (see todo on ::close-mod)
+(defmethod event-handler ::close-editor
+  [{:keys [fx/context] {:keys [path] :as file} :file}]
+  (concat
+   {:dispatch {::type ::close-file :file file}}
+   {:context (fx/swap-context context update :editors dissoc path)}
+   (when (= path (first (fx/sub context :current-editor)))
+     {:context (fx/swap-context context dissoc :current-editor)})))

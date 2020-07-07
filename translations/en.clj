@@ -10,9 +10,11 @@
 
  :kero-edit.edit.effects {:exception-dialog-title "An exception has occurred"}
 
- :kero-edit.edit.field-list {:label "Fields"
-                             :open "Open Fields"
-                             :delete "Delete Fields"}
+ :kero-edit.edit.file-list {:label "Files"
+                            :open "Open"
+                            :close "Close"
+                            :delete "Delete File"
+                            :pxpack "Fields"}
 
  :kero-edit.edit.menu-bar {:file "_File"
                            :file-open "_Open"

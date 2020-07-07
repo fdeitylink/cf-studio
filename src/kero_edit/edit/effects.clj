@@ -27,10 +27,11 @@
     (if (first (vals selected-path))
       (dispatch! (merge on-complete selected-path)))))
 
-(defn read-file [{:keys [path reader-fn on-complete on-exception]} dispatch!]
-  (try
-    (dispatch! (assoc on-complete :file {:path path :data (reader-fn path)}))
-    (catch IOException e (dispatch! (assoc on-exception :path path :exception e)))))
+(defn read-file [{:keys [file reader-fn on-complete on-exception]} dispatch!]
+  (dispatch!
+    (try
+      (assoc on-complete :file (assoc file :data (reader-fn (:path file))))
+      (catch IOException e (assoc on-exception :file file :exception e)))))
 
 (defn write-file [{:keys [file writer-fn on-complete on-exception]} dispatch!]
   (try

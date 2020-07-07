@@ -4,7 +4,7 @@
             [kero-edit.edit.i18n :refer [translate-sub]]
             [kero-edit.edit.events :as events]))
 
-(defn file-menu
+(defn- file-menu
   [{:keys [fx/context]}]
   {:fx/type :menu
    :text (fx/sub context translate-sub ::file)
@@ -15,7 +15,7 @@
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-open-last)
             :accelerator [:ctrl :l]
-            :disable (not (fx/sub context :last-executable-path))
+            :disable (not (fs/exists? (fx/sub context :last-executable-path)))
             :on-action {::events/type ::events/open-last-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-mod)
@@ -31,18 +31,18 @@
             :accelerator [:ctrl :shift :s]
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/save-all-files}}
-           {:fx/type :menu-item
+           #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-tab)
             :accelerator [:ctrl :w]
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/close-tab}}
-           {:fx/type :menu-item
+           #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-all-tabs)
             :accelerator [:ctrl :shift :w]
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/close-all-tabs}}]})
 
-(defn edit-menu
+(defn- edit-menu
   [{:keys [fx/context]}]
   {:fx/type :menu
    :text (fx/sub context translate-sub ::edit)
@@ -57,19 +57,19 @@
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/redo}}]})
 
-(defn view-menu
+(defn- view-menu
   [{:keys [fx/context]}]
   {:fx/type :menu
    :text (fx/sub context translate-sub ::view)
-   :items [{:fx/type :menu
+   :items [#_{:fx/type :menu
             :text (fx/sub context translate-sub ::view-map-zoom)}
-           {:fx/type :menu
+           #_{:fx/type :menu
             :text (fx/sub context translate-sub ::view-tileset-zoom)}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::view-tileset-background-color)
             :on-action {::events/type ::events/choose-tileset-background-color}}]})
 
-(defn actions-menu
+(defn- actions-menu
   [{:keys [fx/context]}]
   {:fx/type :menu
    :text (fx/sub context translate-sub ::actions)
@@ -78,7 +78,7 @@
             :accelerator [:f5]
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/run-mod}}
-           {:fx/type :menu-item
+           #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-edit-global-script)
             :disable (not (fx/sub context :metadata))
             :on-action {::events/type ::events/edit-global-script}}
@@ -86,7 +86,7 @@
             :text (fx/sub context translate-sub ::actions-waffle)
             :on-action {::events/type ::events/print-waffle}}]})
 
-(defn help-menu
+(defn- help-menu
   [{:keys [fx/context]}]
   {:fx/type :menu
    :text (fx/sub context translate-sub ::help)
@@ -98,7 +98,7 @@
               :on-action {::events/type ::events/show-guide}}]})
 
 (defn menu-bar
-  [{:keys [fx/context]}]
+  [_]
   {:fx/type :menu-bar
    :use-system-menu-bar true
    :menus [{:fx/type file-menu}
