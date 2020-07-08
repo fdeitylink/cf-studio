@@ -1,12 +1,12 @@
-(ns kero-edit.edit.effects
-  (:require [clojure.stacktrace :refer [print-cause-trace]]
-            [me.raynes.fs :as fs]
+(ns cf.studio.effects
+  (:require [cf.studio.config :as config]
+            [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
-            [kero-edit.edit.config :as config]
-            [kero-edit.edit.i18n :refer [translate-sub]])
-  (:import [java.util Collection List]
-           [java.io IOException]
-           [javafx.stage Stage FileChooser FileChooser$ExtensionFilter]))
+            [clojure.stacktrace :refer [print-cause-trace]]
+            [me.raynes.fs :as fs])
+  (:import java.io.IOException
+           [java.util Collection List]
+           [javafx.stage FileChooser FileChooser$ExtensionFilter Stage]))
 
 (defn choose-file [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
   (let [chooser (doto (FileChooser.)

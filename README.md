@@ -1,4 +1,4 @@
-# kero-edit
+# Cat & Frog Studio
 
 A modding tool for Studio Pixel's 2014 platformer [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster).
 
@@ -8,11 +8,11 @@ Clone the repo and run `lein run`.
 
 ## Usage
 
-    $ java -jar kero-edit-0.1.0-SNAPSHOT-standalone.jar [args]
+    $ java -jar cf-studio-0.1.0-SNAPSHOT-standalone.jar [args]
 
 ## Libraries
 
-Kero Edit uses the following languages and libraries:
+Cat & Frog Studio uses the following languages and libraries:
 
 * [Clojure](https://clojure.org) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))
 * [binary-dsl](https://github.com/smee/binary) (licensed under the [Eclipse Public License 1.0](https://opensource.org/licenses/eclipse-1.0))

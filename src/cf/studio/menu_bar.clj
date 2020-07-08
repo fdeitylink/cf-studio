@@ -1,8 +1,8 @@
-(ns kero-edit.edit.menu-bar
-  (:require [me.raynes.fs :as fs]
+(ns cf.studio.menu-bar
+  (:require [cf.studio.events :as events]
+            [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
-            [kero-edit.edit.i18n :refer [translate-sub]]
-            [kero-edit.edit.events :as events]))
+            [me.raynes.fs :as fs]))
 
 (defn- file-menu
   [{:keys [fx/context]}]

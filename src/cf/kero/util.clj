@@ -1,6 +1,6 @@
-(ns kero-edit.kero.util
-  (:require [clojure.spec.alpha :as spec]
-            [clojure.java.io :as io]
+(ns cf.kero.util
+  (:require [clojure.java.io :as io]
+            [clojure.spec.alpha :as spec]
             [org.clojars.smee.binary.core :as bin]))
 
 (spec/def ::byte (spec/int-in -0x80 0x80))

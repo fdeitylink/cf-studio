@@ -1,12 +1,12 @@
-(ns kero-edit.edit.app
-  (:require [cljfx.api :as fx]
-            [kero-edit.edit.config :as config]
-            [kero-edit.edit.i18n :refer [translate-sub]]
-            [kero-edit.edit.events :as events]
-            [kero-edit.edit.effects :as effects]
-            [kero-edit.edit.menu-bar :refer [menu-bar]]
-            [kero-edit.edit.file-list :refer [file-list]])
-  (:gen-class))
+(ns cf.studio.app
+  (:gen-class)
+  (:require [cf.studio.config :as config]
+            [cf.studio.effects :as effects]
+            [cf.studio.events :as events]
+            [cf.studio.file-list :refer [file-list]]
+            [cf.studio.i18n :refer [translate-sub]]
+            [cf.studio.menu-bar :refer [menu-bar]]
+            [cljfx.api :as fx]))
 
 (def *context
   (atom (fx/create-context {:open-files {}

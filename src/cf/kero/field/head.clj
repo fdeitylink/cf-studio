@@ -1,16 +1,16 @@
-(ns kero-edit.kero.field.head
-  (:require [clojure.spec.alpha :as spec]
-            [org.clojars.smee.binary.core :as bin]
-            [kero-edit.kero.field.tile-layer :as tile-layer]
-            [kero-edit.kero.string :as kstr]
-            [kero-edit.kero.util :as util]))
+(ns cf.kero.field.head
+  (:require [cf.kero.field.tile-layer :as tile-layer]
+            [cf.kero.string :as kstr]
+            [cf.kero.util :as util]
+            [clojure.spec.alpha :as spec]
+            [org.clojars.smee.binary.core :as bin]))
 
 (def header
   "Marks the start of a PxPack head. This also marks the start of a PxPack file."
   "PXPACK121127a**")
 
 (def max-description-length
-  "The maximum byte length of the description string. The string charset is specified by `kero-edit.kero.string/charset`."
+  "The maximum byte length of the description string. The string charset is specified by `cf.kero.string/charset`."
   31)
 
 (def num-referenced-fields

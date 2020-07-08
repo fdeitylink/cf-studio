@@ -1,8 +1,8 @@
-(ns kero-edit.kero.field.tile-layer
-  (:require [clojure.spec.alpha :as spec]
+(ns cf.kero.field.tile-layer
+  (:require [cf.kero.util :as util]
+            [clojure.spec.alpha :as spec]
             [flatland.ordered.set :refer [ordered-set]]
-            [org.clojars.smee.binary.core :as bin]
-            [kero-edit.kero.util :as util]))
+            [org.clojars.smee.binary.core :as bin]))
 
 (def header
   "Marks the start of the head of a PxPack tile layer."

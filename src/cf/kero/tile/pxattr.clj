@@ -1,7 +1,7 @@
-(ns kero-edit.kero.tile.pxattr
-  (:require [clojure.spec.alpha :as spec]
-            [org.clojars.smee.binary.core :as bin]
-            [kero-edit.kero.util :as util]))
+(ns cf.kero.tile.pxattr
+  (:require [cf.kero.util :as util]
+            [clojure.spec.alpha :as spec]
+            [org.clojars.smee.binary.core :as bin]))
 
 (def header
   "Marks the start of a PxAttr file."

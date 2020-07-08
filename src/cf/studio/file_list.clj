@@ -1,10 +1,10 @@
-(ns kero-edit.edit.file-list
-  (:require [me.raynes.fs :as fs]
+(ns cf.studio.file-list
+  (:require [cf.kero.field.pxpack :as pxpack]
+            [cf.studio.events :as events]
+            [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [cljfx.ext.tree-view :as fx.ext.tree-view]
-            [kero-edit.kero.field.pxpack :as pxpack]
-            [kero-edit.edit.i18n :refer [translate-sub]]
-            [kero-edit.edit.events :as events]))
+            [me.raynes.fs :as fs]))
 
 (defn- context-menu
   [{:keys [fx/context]}]
@@ -36,7 +36,7 @@
   {:fx/type :tree-item
    :value (->> resource-type
                name
-               (keyword "kero-edit.edit.file-list")
+               (keyword "cf.studio.file-list")
                (fx/sub context translate-sub))
    :children (let [open (resource-type (fx/sub context :open-files))
                    not-open (remove (set (keys open)) (resource-type (fx/sub context :metadata)))]

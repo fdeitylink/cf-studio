@@ -1,6 +1,6 @@
-(defproject kero-edit "0.1.0-SNAPSHOT"
+(defproject cf-studio "0.1.0-SNAPSHOT"
   :description "A modding tool for Kero Blaster"
-  :url "https://github.com/fdeitylink/kero-edit"
+  :url "https://github.com/fdeitylink/cf-studio"
   :license {:name "Apache License 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.10.1"]
@@ -10,7 +10,7 @@
                  ;[funcool/datoteka "1.2.0"]
                  [cljfx "1.7.4"]
                  [com.taoensso/tempura "1.2.1"]]
-  :main ^:skip-aot kero-edit.edit.app
+  :main ^:skip-aot cf.studio.app
   :target-path "target/%s"
   :profiles {:uberjar
              {:aot :all

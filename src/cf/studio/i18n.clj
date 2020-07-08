@@ -1,8 +1,8 @@
-(ns kero-edit.edit.i18n
-  (:require [clojure.java.io :as io]
+(ns cf.studio.i18n
+  (:require [cljfx.api :as fx]
+            [clojure.java.io :as io]
             [me.raynes.fs :as fs]
-            [taoensso.tempura :as tempura]
-            [cljfx.api :as fx])
+            [taoensso.tempura :as tempura])
   (:import java.io.PushbackReader))
 
 (def translation-file-regex
@@ -10,18 +10,18 @@
   #"^.+\.clj$")
 
 (defonce
-  ^{:doc "A sequence of translation files for Kero Edit."
+  ^{:doc "A sequence of translation files for Cat & Frog Studio."
     :private true}
   translation-files
   (fs/find-files (io/file "translations") translation-file-regex))
 
 (defonce
-  ^{:doc "A sequence of locales Kero Edit has translations for."}
+  ^{:doc "A sequence of locales Cat & Frog Studio has translations for."}
   translated-locales
   (map #(fs/base-name % true) translation-files))
 
 (defonce
-  ^{:doc "Map containing all translations for Kero Edit."
+  ^{:doc "Map containing all translations for Cat & Frog Studio."
     :private true}
   translation-map
   (reduce
@@ -36,7 +36,7 @@
    translation-files))
 
 (defn translate
-  "Translation function for Kero Edit. Use to retrieve locale-specific strings"
+  "Translation function for Cat & Frog Studio. Use to retrieve locale-specific strings"
   [locale resource-id & args]
   (apply tempura/tr {:dict translation-map} [locale :en] [resource-id] args))
 

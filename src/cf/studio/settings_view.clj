@@ -1,8 +1,8 @@
-(ns kero-edit.edit.settings-view
-  (:require [cljfx.api :as fx]
-            [kero-edit.kero.field.tile-layer :as tile-layer]
-            [kero-edit.edit.i18n :refer [translate-sub]]
-            [kero-edit.edit.events :as events])
+(ns cf.studio.settings-view
+  (:require [cf.kero.field.tile-layer :as tile-layer]
+            [cf.studio.events :as events]
+            [cf.studio.i18n :refer [translate-sub]]
+            [cljfx.api :as fx])
   (:import [javafx.scene.text Font FontWeight]))
 
 ;; TODO Add to let-refs
@@ -56,14 +56,14 @@
                                (flatten
                                 (for [[layer row] (map vector tile-layer/layers (range 1 4))]
                                   [{:fx/type :check-box
-                                    :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name layer)))
+                                    :text (fx/sub context translate-sub (keyword "cf.studio.settings-view" (name layer)))
                                     :font font
                                     :selected (contains? (fx/sub context :displayed-layers) layer)
                                     :on-selected-changed {::events/type ::events/displayed-layers-changed :layer layer}
                                     :grid-pane/row row
                                     :grid-pane/column 0}
                                    {:fx/type :radio-button
-                                    :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name layer)))
+                                    :text (fx/sub context translate-sub (keyword "cf.studio.settings-view" (name layer)))
                                     :font font
                                     :toggle-group {:fx/type fx/ext-get-ref :ref :layer-tg}
                                     :selected (= (fx/sub context :selected-layer) layer)
@@ -74,7 +74,7 @@
                                (doall
                                 (for [[mode row] (map vector [:draw :rect :copy :fill :replace] (range 1 6))]
                                   {:fx/type :radio-button
-                                   :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name mode)))
+                                   :text (fx/sub context translate-sub (keyword "cf.studio.settings-view" (name mode)))
                                    :font font
                                    :toggle-group {:fx/type fx/ext-get-ref :ref :draw-mode-tg}
                                    :selected (= (fx/sub context :draw-mode) mode)
@@ -85,7 +85,7 @@
                                (doall
                                 (for [[view row] (map vector [:tile-types :grid :entity-boxes :entity-sprites :entity-names] (range 1 6))]
                                   {:fx/type :check-box
-                                   :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name view)))
+                                   :text (fx/sub context translate-sub (keyword "cf.studio.settings-view" (name view)))
                                    :font font
                                    :selected (contains? (fx/sub context :view-toggles) view)
                                    :on-selected-changed {::events/type ::events/view-toggles-changed :view view}
@@ -95,7 +95,7 @@
                                (doall
                                 (for [[mode row] (map vector [:tile :entity] (range 1 3))]
                                   {:fx/type :radio-button
-                                   :text (fx/sub context translate-sub (keyword "kero-edit.edit.settings-view" (name mode)))
+                                   :text (fx/sub context translate-sub (keyword "cf.studio.settings-view" (name mode)))
                                    :font font
                                    :toggle-group {:fx/type fx/ext-get-ref :ref :edit-mode-tg}
                                    :selected (= (fx/sub context :edit-mode) mode)

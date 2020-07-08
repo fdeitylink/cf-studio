@@ -1,15 +1,15 @@
-(ns kero-edit.kero.metadata
-  (:require [clojure.set]
-            [clojure.string]
+(ns cf.kero.metadata
+  (:require [cf.kero.field.pxpack :as pxpack]
+            clojure.set
             [clojure.spec.alpha :as spec]
-            [me.raynes.fs :as fs]
-            [kero-edit.kero.field.pxpack :as pxpack]))
+            clojure.string
+            [me.raynes.fs :as fs]))
 
 (def resource-type->path-meta
   "Map of resource type keywords to metadata for their paths."
   ;; Aliasing for nonexistent namespaces: https://clojure.atlassian.net/browse/CLJ-2123
   {::music {:subdir "bgm" :prefix "" :extension ".ptcop"}
-   ;; TODO Consider kero-edit.kero.field prefix
+   ;; TODO Consider cf.kero.field prefix
    ;; Maybe when an alias like ::field is possible
    ::pxpack/pxpack {:subdir "field" :prefix "" :extension ".pxpack"}
    ::image {:subdir "img" :prefix "" :extension ".png"}

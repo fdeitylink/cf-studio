@@ -1,11 +1,11 @@
-(ns kero-edit.edit.events
-  (:require [me.raynes.fs :as fs]
+(ns cf.studio.events
+  (:require [cf.kero.field.pxpack :as pxpack]
+            [cf.kero.metadata :as metadata]
+            [cf.kero.util :as util]
+            [cf.studio.effects :as effects]
+            [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
-            [kero-edit.kero.field.pxpack :as pxpack]
-            [kero-edit.kero.metadata :as metadata]
-            [kero-edit.kero.util :as util]
-            [kero-edit.edit.i18n :refer [translate-sub]]
-            [kero-edit.edit.effects :as effects])
+            [me.raynes.fs :as fs])
   (:import javafx.event.Event
            [javafx.scene.control ButtonBar$ButtonData ButtonType Dialog TreeItem]
            [javafx.scene.input KeyCode KeyEvent MouseButton MouseEvent]))

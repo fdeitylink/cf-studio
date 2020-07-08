@@ -1,4 +1,4 @@
-(ns kero-edit.kero.string
+(ns cf.kero.string
   (:require [clojure.spec.alpha :as spec]
             [org.clojars.smee.binary.core :as bin]))
 

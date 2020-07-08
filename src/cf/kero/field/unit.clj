@@ -1,8 +1,8 @@
-(ns kero-edit.kero.field.unit
-  (:require [clojure.spec.alpha :as spec]
-            [org.clojars.smee.binary.core :as bin]
-            [kero-edit.kero.string :as kstr]
-            [kero-edit.kero.util :as util]))
+(ns cf.kero.field.unit
+  (:require [cf.kero.string :as kstr]
+            [cf.kero.util :as util]
+            [clojure.spec.alpha :as spec]
+            [org.clojars.smee.binary.core :as bin]))
 
 (def max-type-index
   "The maximum value for a PxPack unit's type."
