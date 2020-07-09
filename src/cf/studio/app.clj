@@ -10,9 +10,7 @@
             [cljfx.api :as fx]))
 
 (def *context
-  (atom (fx/create-context {:open-files {}
-                            :editors {}
-                            :current-editor []})))
+  (atom (fx/create-context {})))
 
 (defn license-dialog
   [{:keys [fx/context]}]
