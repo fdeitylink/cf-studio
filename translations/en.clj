@@ -69,4 +69,6 @@
 
                            :edit-mode "Edit Mode"
                            :tile "Tile"
-                           :entity "Entity"}}
+                           :entity "Entity"}
+
+ :cf.studio.editor-view {:no-editor-open "Open a file to start editing"}}

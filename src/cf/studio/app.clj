@@ -1,6 +1,7 @@
 (ns cf.studio.app
   (:gen-class)
   (:require [cf.studio.config :as config]
+            [cf.studio.editor-view :refer [editor-view]]
             [cf.studio.effects :as effects]
             [cf.studio.events :as events]
             [cf.studio.file-list :refer [file-list]]
@@ -54,11 +55,11 @@
            :root {:fx/type :v-box
                   :children [{:fx/type menu-bar}
                              {:fx/type :split-pane
+                              ;; FIXME This is overridden when the stage maximizes
                               :divider-positions [0.1]
                               :v-box/vgrow :always
                               :items [{:fx/type file-list}
-                                      #_{:fx/type :v-box
-                                       :children [{:fx/type settings-view}]}]}]}}})
+                                      {:fx/type editor-view}]}]}}})
 
 (defn -main
   [& [config-path]]
