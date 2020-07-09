@@ -1,6 +1,6 @@
-(ns cf.studio.editor-view
+(ns cf.studio.editors.editor-view
   (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.pxpack-editor :refer [pxpack-editor]]
+            [cf.studio.editors.pxpack-editor :refer [pxpack-editor]]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]))
 

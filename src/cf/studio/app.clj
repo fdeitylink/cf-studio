@@ -1,7 +1,7 @@
 (ns cf.studio.app
   (:gen-class)
   (:require [cf.studio.config :as config]
-            [cf.studio.editor-view :refer [editor-view]]
+            [cf.studio.editors.editor-view :refer [editor-view]]
             [cf.studio.effects :as effects]
             [cf.studio.events :as events]
             [cf.studio.file-list :refer [file-list]]

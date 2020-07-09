@@ -1,4 +1,4 @@
-(ns cf.studio.pxpack-editor)
+(ns cf.studio.editors.pxpack-editor)
 
 (defn pxpack-editor
   [{:keys [fx/context editor]}]
