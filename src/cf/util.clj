@@ -1,4 +1,4 @@
-(ns cf.kero.util
+(ns cf.util
   (:require [clojure.java.io :as io]
             [clojure.spec.alpha :as spec]
             [org.clojars.smee.binary.core :as bin]))

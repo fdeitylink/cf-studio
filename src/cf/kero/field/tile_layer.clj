@@ -1,5 +1,5 @@
 (ns cf.kero.field.tile-layer
-  (:require [cf.kero.util :as util]
+  (:require [cf.util :as util]
             [clojure.spec.alpha :as spec]
             [flatland.ordered.set :refer [ordered-set]]
             [org.clojars.smee.binary.core :as bin]))

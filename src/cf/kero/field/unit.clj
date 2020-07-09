@@ -1,6 +1,6 @@
 (ns cf.kero.field.unit
   (:require [cf.kero.string :as kstr]
-            [cf.kero.util :as util]
+            [cf.util :as util]
             [clojure.spec.alpha :as spec]
             [org.clojars.smee.binary.core :as bin]))
 
