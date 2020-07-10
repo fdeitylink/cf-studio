@@ -4,16 +4,21 @@
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]))
 
-(defn editor-view
-  [{:keys [fx/context]}]
+(defn- child-editor
+  [context]
   (let [editor (get-in
                 (fx/sub context :editors)
                 (fx/sub context :current-editor))]
-    (case (:type editor)
-      ::pxpack/head {:fx/type pxpack-editor :editor editor}
-      {:fx/type :stack-pane
-       :children [{:fx/type :text
-                   :stack-pane/alignment :center
-                   :stack-pane/margin 10
-                   :text (fx/sub context translate-sub ::no-editor-open)
-                   :font {:family "" :size 15}}]})))
+    (condp contains? (:type editor)
+      #{::pxpack/head ::pxpack/tile-layers ::pxpack/units} {:fx/type pxpack-editor :editor editor}
+      {:fx/type :text
+       :text (fx/sub context translate-sub ::no-editor-open)
+       :font {:family "" :size 15}})))
+
+(defn editor-view
+  [{:keys [fx/context]}]
+  {:fx/type :stack-pane
+   :children [(merge
+               (fx/sub context child-editor)
+               {:stack-pane/alignment :center
+                :stack-pane/margin 10})]})
