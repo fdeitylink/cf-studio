@@ -43,34 +43,6 @@
                       :help-about "_About"
                       :help-guide "_Guide"}
 
- :cf.studio.settings-view {:title "Settings"
-
-                           :displayed-layers "Displayed Layers"
-
-                           :selected-layer "Selected Layer"
-
-                           :foreground "Foreground"
-                           :middleground "Middleground"
-                           :background "Background"
-
-                           :draw-mode "Draw Mode"
-                           :draw "Draw"
-                           :rect "Rect"
-                           :copy "Copy"
-                           :fill "Fill"
-                           :replace "Replace"
-
-                           :view-toggles "View Toggles"
-                           :tile-types "Tile Types"
-                           :grid "Grid"
-                           :entity-boxes "Entity Boxes"
-                           :entity-sprites "Entity Sprites"
-                           :entity-names "Entity Names"
-
-                           :edit-mode "Edit Mode"
-                           :tile "Tile"
-                           :entity "Entity"}
-
  :cf.studio.editors.editor-view {:no-editor-open "Open a file to start editing"}
 
  :cf.studio.editors.pxpack-editor {:head "Head"
