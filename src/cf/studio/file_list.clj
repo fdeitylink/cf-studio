@@ -55,9 +55,8 @@
   [{:keys [fx/context]}]
   {:fx/type :v-box
    :children [{:fx/type :label
-               :padding 10
                :text (fx/sub context translate-sub ::label)
-               :font {:family "" :weight :bold :size 20}}
+               :style-class ["app-title" "label"]}
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always
                :props {:selection-mode :single
@@ -70,7 +69,8 @@
                       ;; Dev seems to allude to this here: https://github.com/cljfx/cljfx#factory-props
                       :cell-factory {:fx/cell-type :tree-cell
                                      :describe (fn [value]
-                                                 {:text (if (string? value)
+                                                 {:style-class ["cell" "indexed-cell" "tree-cell" "app-file-list-cell"]
+                                                  :text (if (string? value)
                                                           value
                                                           (fs/base-name (:path value) true))})}
                       :context-menu {:fx/type context-menu}

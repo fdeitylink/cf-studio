@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [clj-commons/fs "1.5.2"]
                  [cljfx "1.7.4"]
+                 [cljfx/css "1.1.0"]
                  [com.taoensso/tempura "1.2.1"]
                  [org.clojure/core.cache "1.0.207"]
                  [org.flatland/ordered "1.5.9"]

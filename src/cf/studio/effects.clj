@@ -52,8 +52,7 @@
                                         :spacing 20
                                         :alignment :center-left
                                         :children [{:fx/type :text
-                                                    :text (.getLocalizedMessage exception)
-                                                    :font {:family "" :size 15}}
+                                                    :text (.getLocalizedMessage exception)}
                                                    {:fx/type :text-area
                                                     :editable false
                                                     :text (with-out-str (print-cause-trace exception))

@@ -11,7 +11,7 @@
   [{:keys [editor]}]
   {:fx/type :text
    :text (-> editor :type str)
-   :font {:family "" :size 15}})
+   :style-class "app-text-small"})
 
 (defn- pxpack-head-editor
   [m]
@@ -40,7 +40,7 @@
                :left {:fx/type :text
                       :text (fs/base-name (:path editor) true)
                       :text-alignment :left
-                      :font {:family "" :weight :bold :size 20}}
+                      :style-class "app-title"}
                :right {:fx/type :text
                        ;; A bit hacky, but editor refers to the sub-editor
                        ;; so this is the only way to get the description
@@ -50,7 +50,7 @@
                               (fx/sub context :open-files)
                               [::pxpack/pxpack (:path editor) :data ::pxpack/head ::head/description])
                        :text-alignment :right
-                       :font {:family "" :size 13}}
+                       :style-class "app-text-small"}
                :bottom {:fx/type :h-box
                         :spacing 5.0
                         :children (mapv

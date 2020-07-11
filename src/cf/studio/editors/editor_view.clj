@@ -13,7 +13,7 @@
       #{::pxpack/head ::pxpack/tile-layers ::pxpack/units} {:fx/type pxpack-editor :editor editor}
       {:fx/type :text
        :text (fx/sub context translate-sub ::no-editor-open)
-       :font {:family "" :size 15}})))
+       :style-class "app-text-medium"})))
 
 (defn editor-view
   [{:keys [fx/context]}]

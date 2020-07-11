@@ -7,7 +7,9 @@
             [cf.studio.file-list :refer [file-list]]
             [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.menu-bar :refer [menu-bar]]
-            [cljfx.api :as fx]))
+            [cf.studio.styles :refer [styles]]
+            [cljfx.api :as fx]
+            [cljfx.css :as css]))
 
 (def *context
   (atom (fx/create-context {})))
@@ -50,6 +52,7 @@
    :showing (fx/sub context :license-accepted)
    :on-hidden {::events/type ::events/shutdown}
    :scene {:fx/type :scene
+           :stylesheets [(::css/url styles)]
            :root {:fx/type :v-box
                   :children [{:fx/type menu-bar}
                              {:fx/type :split-pane
