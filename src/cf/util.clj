@@ -30,3 +30,20 @@
   [codec file value]
   (with-open [os (io/output-stream file)]
     (bin/encode codec os value)))
+
+(def running-in-repl?
+  "Represents whether or not the Clojure runtime is being executed from a REPL."
+  false)
+
+(defn set-running-in-repl!
+  "Sets `running-in-repl?`.
+  Should be executed on the main thread."
+  []
+  (alter-var-root
+   #'running-in-repl?
+   (fn [_]
+     (boolean
+      (some
+       #(and (= "clojure.main$repl" (.getClassName %))
+             (= "doInvoke" (.getMethodName %)))
+       (.getStackTrace (Thread/currentThread)))))))

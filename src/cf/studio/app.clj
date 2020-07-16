@@ -8,6 +8,7 @@
             [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.menu-bar :refer [menu-bar]]
             [cf.studio.styles :refer [styles]]
+            [cf.util :as util]
             [cljfx.api :as fx]
             [cljfx.css :as css]))
 
@@ -64,6 +65,7 @@
 
 (defn -main
   [& [config-path]]
+  (util/set-running-in-repl!)
   (let [{:keys [config config-path]} (config/read-config config-path)]
     (swap! *context fx/swap-context merge config {:config-path config-path}))
   (fx/create-app

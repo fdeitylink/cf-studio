@@ -1,6 +1,7 @@
 (ns cf.studio.effects
   (:require [cf.studio.config :as config]
             [cf.studio.i18n :refer [translate-sub]]
+            [cf.util :as util]
             [cljfx.api :as fx]
             [clojure.stacktrace :refer [print-cause-trace]]
             [me.raynes.fs :as fs])
@@ -62,5 +63,6 @@
   (let [path (fx/sub context :config-path)
         config (select-keys (:cljfx.context/m context) (keys config/default-config))]
     (config/write-config path config)
-    (javafx.application.Platform/exit)
-    (shutdown-agents)))
+    (when-not util/running-in-repl?
+      (javafx.application.Platform/exit)
+      (shutdown-agents))))
