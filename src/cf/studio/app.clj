@@ -4,6 +4,7 @@
             [cf.studio.editors.editor-view :refer [editor-view]]
             [cf.studio.effects :as effects]
             [cf.studio.events :as events]
+            [cf.studio.file-graph :refer [new-file-graph]]
             [cf.studio.file-list :refer [file-list]]
             [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.menu-bar :refer [menu-bar]]
@@ -12,8 +13,14 @@
             [cljfx.api :as fx]
             [cljfx.css :as css]))
 
+;; TODO
+;; init context fn (useful for ::events/clear-mod)
+;; maybe drop metadata wrapper and put executable & resource dir at top level
+
 (def *context
-  (atom (fx/create-context {})))
+  (do
+    (println "context redef'd")
+    (atom (fx/create-context {:files (new-file-graph)}))))
 
 (defn license-dialog
   [{:keys [fx/context]}]

@@ -1,16 +1,13 @@
 (ns cf.studio.editors.editor-view
-  (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.editors.pxpack-editor :refer [pxpack-editor]]
+  (:require [cf.studio.editors.pxpack-editor :refer [pxpack-editor]]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]))
 
 (defn- child-editor
   [context]
-  (let [editor (get-in
-                (fx/sub context :editors)
-                (fx/sub context :current-editor))]
-    (condp contains? (:type editor)
-      #{::pxpack/head ::pxpack/tile-layers ::pxpack/units} {:fx/type pxpack-editor :editor editor}
+  (let [{:keys [path type subtype]} (fx/sub context :current-editor)]
+    (case type
+      :cf.kero.field.pxpack/pxpack {:fx/type pxpack-editor :path path :subtype subtype}
       {:fx/type :text
        :text (fx/sub context translate-sub ::no-editor-open)
        :style-class "app-text-medium"})))

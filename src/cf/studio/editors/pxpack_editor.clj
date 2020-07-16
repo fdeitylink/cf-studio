@@ -3,63 +3,63 @@
             [cf.kero.field.pxpack :as pxpack]
             [cf.studio.events :as events]
             [cf.studio.editors.events]
+            [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs]))
 
 (defn- child-editor-text
-  [{:keys [editor]}]
+  [type]
   {:fx/type :text
-   :text (-> editor :type str)
+   :text (str type)
    :style-class "app-text-small"})
 
 (defn- pxpack-head-editor
-  [m]
-  (child-editor-text m))
+  [{:keys [path]}]
+  (child-editor-text ::pxpack/head))
 
 (defn- pxpack-tile-layers-editor
-  [m]
-  (child-editor-text m))
+  [{:keys [path]}]
+  (child-editor-text ::pxpack/tile-layers))
 
 (defn- pxpack-units-editor
-  [m]
-  (child-editor-text m))
+  [{:keys [path]}]
+  (child-editor-text ::pxpack/units))
 
 (defn- child-editor
-  [editor]
-  (case (:type editor)
-    ::pxpack/head {:fx/type pxpack-head-editor :editor editor}
-    ::pxpack/tile-layers {:fx/type pxpack-tile-layers-editor :editor editor}
-    ::pxpack/units {:fx/type pxpack-units-editor :editor editor}))
+  [{:keys [path subtype]}]
+  (case subtype
+    ::pxpack/head {:fx/type pxpack-head-editor :path path}
+    ::pxpack/tile-layers {:fx/type pxpack-tile-layers-editor :path path}
+    ::pxpack/units {:fx/type pxpack-units-editor :path path}))
 
 (defn pxpack-editor
-  [{:keys [fx/context editor]}]
+  [{:keys [fx/context path subtype]}]
   {:fx/type :v-box
    :alignment :top-center
    :children [{:fx/type :border-pane
                :left {:fx/type :text
-                      :text (fs/base-name (:path editor) true)
+                      :text (fs/base-name path true)
                       :text-alignment :left
                       :style-class "app-title"}
                :right {:fx/type :text
-                       ;; A bit hacky, but editor refers to the sub-editor
-                       ;; so this is the only way to get the description
-                       ;; regardless of if the user is editing the head,
-                       ;; tile layers, or units
-                       :text (get-in
-                              (fx/sub context :open-files)
-                              [::pxpack/pxpack (:path editor) :data ::pxpack/head ::head/description])
+                       :text (-> context
+                                 (fx/sub file-graph/file-data-sub path)
+                                 (get-in [::pxpack/head ::head/description]))
                        :text-alignment :right
                        :style-class "app-text-small"}
                :bottom {:fx/type :h-box
                         :spacing 5.0
-                        :children (mapv
-                                   #(assoc % :h-box/margin {:top 5.0 :bottom 5.0})
-                                   (for [[text type] [[::head ::pxpack/head]
-                                                      [::tile-layers ::pxpack/tile-layers]
-                                                      [::units ::pxpack/units]]]
+                        :children (doall
+                                   (for [[text subtype] [[::head ::pxpack/head]
+                                                         [::tile-layers ::pxpack/tile-layers]
+                                                         [::units ::pxpack/units]]]
                                      {:fx/type :button
+                                      :h-box/margin {:top 5.0 :bottom 5.0}
                                       :text (fx/sub context translate-sub text)
-                                      :on-action {::events/type ::events/switch-pxpack-editor :path (:path editor) :type type}}))}}
+                                      :on-action {::events/type ::events/switch-pxpack-editor :path path :subtype subtype}}))}}
               {:fx/type :separator}
-              (child-editor editor)]})
+              {:fx/type child-editor
+               :path path
+               :subtype subtype
+               :v-box/vgrow :always}]})

@@ -3,6 +3,7 @@
             [cf.kero.metadata :as metadata]
             [cf.util :as util]
             [cf.studio.effects :as effects]
+            [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs])
@@ -61,22 +62,28 @@
 
 (defmethod event-handler ::load-mod
   [{:keys [fx/context] {:keys [data]} :file}]
-  {:context (fx/swap-context context assoc :metadata data)})
+  {:context (fx/swap-context context assoc
+                             :metadata (select-keys data [::metadata/executable ::metadata/resource-dir])
+                             :files (apply
+                                     file-graph/new-file-graph
+                                     (mapcat
+                                      (fn [[type paths]] (map (fn [p] {:type type :path p}) paths))
+                                      (dissoc data ::metadata/executable ::metadata/resource-dir))))})
 
 ;; TODO Create prompt effect
 ;; Checks for unsaved work and only clears everything if there is none or user still wants to close
 (defmethod event-handler ::close-mod
   [{:keys [fx/context]}]
   (concat
-   (for [[_ editor] (fx/sub context :editors)]
-     ;; editor contains the necessary path & type fields for a file
-     ;; TODO actually it uses non-namespaced type kw
-     [:dispatch {::type ::close-editor :file editor}])
+   (for [path (file-graph/paths (fx/sub context file-graph/filter-editing-files-sub))]
+     [:dispatch {::type ::close-editor :path path}])
    {:dispatch {::type ::clear-mod}}))
 
 (defmethod event-handler ::clear-mod
   [{:keys [fx/context]}]
-  {:context (fx/swap-context context dissoc :metadata :selected-file :open-files :editors :current-editor)})
+  {:context (fx/swap-context context #(-> %
+                                          (dissoc :metadata :selected-file :files :current-editor)
+                                          (assoc :files (file-graph/new-file-graph))))})
 
 ;; These events relate to actions done with files in the tree list view
 
@@ -89,78 +96,61 @@
       {:context (fx/swap-context context assoc :selected-file value)})))
 
 (defmethod event-handler ::file-list-click
-  [{:keys [fx/context ^MouseEvent fx/event]}]
-  (when-let [file (fx/sub context :selected-file)]
-    (when (and (= MouseButton/PRIMARY (.getButton event))
-               (= 2 (.getClickCount event)))
-      {:dispatch {::type ::open-file :file file :create-editor? true}})))
+  [{:keys [^MouseEvent fx/event]}]
+  (when (and (= MouseButton/PRIMARY (.getButton event))
+             (= 2 (.getClickCount event)))
+    {:dispatch {::type ::open-selected-file}}))
 
 ;; TODO
 ;; Enter key accelerator doesn't work on the corresponding menu item so we have this
-;; Figure out why enter doesn't work and if we can get rid of this redundancy
+;; Figure out why and if we can just use an on-action on the menu item
 (defmethod event-handler ::file-list-keypress
-  [{:keys [fx/context ^KeyEvent fx/event]}]
+  [{:keys [^KeyEvent fx/event]}]
+  (when (= KeyCode/ENTER (.getCode event))
+    {:dispatch {::type ::open-selected-file}}))
+
+(defmethod event-handler ::open-selected-file
+  [{:keys [fx/context]}]
   (when-let [file (fx/sub context :selected-file)]
-    (when (= KeyCode/ENTER (.getCode event))
-      {:dispatch {::type ::open-file :file file :create-editor? true}})))
+    {:dispatch {::type ::open-file :file file :edit? true}
+     :context (fx/swap-context context dissoc :selected-file)}))
 
 ;; These events relate to reading files
 
 (defmethod event-handler ::open-file
-  [{:keys [fx/context create-editor?] {:keys [path type] :as file} :file}]
-  ;; File may already be open (e.g. loaded as asset for another file)
-  (if (get-in (fx/sub context :open-files) [type path])
-    (when create-editor? {:dispatch {::type ::create-editor :file file}})
+  [{:keys [fx/context edit?] {:keys [path type] :as file} :file}]
+  (if (fx/sub context file-graph/is-file-open?-sub path)
+    (when edit? {:dispatch {::type ::create-editor :file file}})
     {::effects/read-file {:file file
                           :reader-fn (partial util/decode-file (metadata/resource-type->codec type))
-                          :on-complete {::type ::load-file :create-editor? create-editor?}
+                          :on-complete {::type ::load-file :edit? edit?}
                           :on-exception {::type ::exception}}}))
 
 (defmethod event-handler ::load-file
-  [{:keys [fx/context create-editor?] {:keys [path type] :as file} :file}]
+  [{:keys [fx/context edit?] {:keys [path data] :as file} :file}]
   (merge
-   {:context (fx/swap-context context assoc-in [:open-files type path] file)}
-   (when create-editor? {:dispatch {::type ::create-editor :file file}})))
-
-(defmethod event-handler ::close-file
-  [{:keys [fx/context] {:keys [path type]} :file}]
-  {:context (fx/swap-context context update-in [:open-files type] dissoc path)})
+   {:context (fx/swap-context context update :files file-graph/open-file path data)}
+   (when edit? {:dispatch {::type ::create-editor :file file}})))
 
 ;; These events relate to managing editors
 
 (defmethod event-handler ::create-editor
-  [{:keys [fx/context] {:keys [path data type]} :file}]
-  (let [editor-path (if (not= type ::pxpack/pxpack) [path] [path ::pxpack/head])
-        ;; Default editor, needs to be adjusted if editor is for a field
-        base-editor {:type type :path path :edits [data] :edit-pos 0 :dirty false}]
-    (merge
-     {:dispatch {::type ::switch-to-editor :editor-path editor-path}}
-     ;; If the editor does not already exist, create it
-     (when-not (get (fx/sub context :editors) path)
-       (let [editor (if (not= type ::pxpack/pxpack)
-                      base-editor
-                      ;; Field editor is really 3 separate editors for head, tiles, entities
-                      (reduce
-                       (fn [editor field-section]
-                         ;; Insert subeditors into wrapping editor
-                           (assoc editor
-                                  field-section
-                                  (assoc base-editor
-                                         :type field-section
-                                         :edits [(field-section data)])))
-                       {:type ::pxpack/pxpack :path path :dirty false}
-                       [::pxpack/head ::pxpack/tile-layers ::pxpack/units]))]
-         {:context (fx/swap-context context assoc-in [:editors path] editor)})))))
+  [{:keys [fx/context] {:keys [path type]} :file}]
+  {:context (fx/swap-context context update :files file-graph/open-editor path)
+  ;; TODO Maintain existing pxpack subeditor selection if editor already exists
+   :dispatch {::type ::switch-to-editor
+              :editor (merge {:path path :type type}
+                             (when (= type ::pxpack/pxpack) {:subtype ::pxpack/head}))}})
 
 (defmethod event-handler ::switch-to-editor
-  [{:keys [fx/context editor-path]}]
-  {:context (fx/swap-context context assoc :current-editor editor-path)})
+  [{:keys [fx/context editor]}]
+  {:context (fx/swap-context context assoc :current-editor editor)})
 
 ;; TODO Use prompt effect (see todo on ::close-mod)
 (defmethod event-handler ::close-editor
-  [{:keys [fx/context] {:keys [path] :as file} :file}]
-  (concat
-   {:dispatch {::type ::close-file :file file}}
-   {:context (fx/swap-context context update :editors dissoc path)}
-   (when (= path (first (fx/sub context :current-editor)))
-     {:context (fx/swap-context context dissoc :current-editor)})))
+  [{:keys [fx/context path]}]
+  {:context (fx/swap-context context #(as-> % ctxt
+                                        (update ctxt :files file-graph/close-editor path)
+                                        (if (= path (get-in ctxt [:current-editor :path]))
+                                          (dissoc ctxt :current-editor)
+                                          ctxt)))})

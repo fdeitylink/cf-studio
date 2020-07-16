@@ -1,21 +1,23 @@
 (ns cf.studio.file-list
   (:require [cf.kero.field.pxpack :as pxpack]
             [cf.studio.events :as events]
+            [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [cljfx.ext.tree-view :as fx.ext.tree-view]
+            [clojure.set]
             [me.raynes.fs :as fs]))
 
 (defn- context-menu
   [{:keys [fx/context]}]
-  (let [file (fx/sub context :selected-file)]
+  (let [path (-> context (fx/sub :selected-file) :path)]
     {:fx/type :context-menu
      :items [{:fx/type :menu-item
               :text (fx/sub context translate-sub ::open)
-              ;; TODO Accelerator doesn't work?
+              ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
-              :disable (not (fx/sub context :metadata))}
-              ;;:on-action {::events/type ::events/open-file :file file :create-editor? true}}
+              :disable (not (fx/sub context :metadata))
+              :on-action {::events/type ::events/open-selected-file}}
              #_{:fx/type :menu-item
                 :text (fx/sub context translate-sub ::delete)
                 :accelerator [:delete]
@@ -24,8 +26,8 @@
              {:fx/type :menu-item
               :text (fx/sub context translate-sub ::close)
               :accelerator [:ctrl :w]
-              :disable (not (get (fx/sub context :editors) (:path file)))
-              :on-action {::events/type ::events/close-editor :file file}}]}))
+              :disable (not (and path (fx/sub context file-graph/editing-file?-sub path)))
+              :on-action {::events/type ::events/close-editor :path path}}]}))
 
 (def ^:private resource-types
   "List of resource types that have editor implementations and thus appear in this tree view"
@@ -38,18 +40,33 @@
                name
                (keyword "cf.studio.file-list")
                (fx/sub context translate-sub))
-   :children (let [open (resource-type (fx/sub context :open-files))
-                   not-open (remove (set (keys open)) (resource-type (fx/sub context :metadata)))]
+   ;; TODO Consider having vals be just paths, not file maps
+   :children (let [editing (-> context
+                               (fx/sub file-graph/filter-editing-files-sub)
+                               (file-graph/filter-file-type resource-type)
+                               file-graph/files)
+                   open (-> context
+                            (fx/sub file-graph/filter-open-files-sub)
+                            (file-graph/filter-file-type resource-type)
+                            file-graph/files
+                            (clojure.set/difference editing))
+                   closed (-> context
+                              (fx/sub file-graph/filter-closed-files-sub)
+                              (file-graph/filter-file-type resource-type)
+                              file-graph/files)]
                (doall
-                (cons
+                (list*
                  {:fx/type :tree-item
                   :expanded true
-                  :value (fx/sub context translate-sub ::open)
-                  :children (for [file (vals open)]
+                  :value (fx/sub context translate-sub ::editing-files)
+                  :children (for [file editing]
                               {:fx/type :tree-item :value file})}
-                 (for [path not-open]
-                   {:fx/type :tree-item
-                    :value {:path path :type resource-type}}))))})
+                 {:fx/type :tree-item
+                  :value (fx/sub context translate-sub ::open-files)
+                  :children (for [file open]
+                              {:fx/type :tree-item :value file})}
+                 (for [file closed]
+                   {:fx/type :tree-item :value file}))))})
 
 (defn file-list
   [{:keys [fx/context]}]

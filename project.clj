@@ -3,11 +3,12 @@
   :url "https://github.com/fdeitylink/cf-studio"
   :license {:name "Apache License 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[aysylu/loom "1.0.2"]
                  [clj-commons/fs "1.5.2"]
                  [cljfx "1.7.4"]
                  [cljfx/css "1.1.0"]
                  [com.taoensso/tempura "1.2.1"]
+                 [org.clojure/clojure "1.10.1"]
                  [org.clojure/core.cache "1.0.207"]
                  [org.flatland/ordered "1.5.9"]
                  [smee/binary "0.5.5"]]

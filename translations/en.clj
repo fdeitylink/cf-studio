@@ -13,6 +13,8 @@
                        :open "Open"
                        :close "Close"
                        :delete "Delete File"
+                       :editing-files "Editing Files"
+                       :open-files "Open Files"
                        :pxpack "Fields"}
 
  :cf.studio.menu-bar {:file "_File"
