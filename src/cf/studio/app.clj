@@ -18,9 +18,7 @@
 ;; maybe drop metadata wrapper and put executable & resource dir at top level
 
 (def *context
-  (do
-    (println "context redef'd")
-    (atom (fx/create-context {:files (new-file-graph)}))))
+  (atom (fx/create-context {:files (new-file-graph)})))
 
 (defn license-dialog
   [{:keys [fx/context]}]
