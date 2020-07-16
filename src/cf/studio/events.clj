@@ -31,24 +31,6 @@
      {:context (fx/swap-context context assoc :license-accepted accepted)}
      (when-not accepted {:dispatch {::type ::shutdown}}))))
 
-#_(defmethod event-handler ::notepad-text-changed [{:keys [fx/event fx/context]}]
-  {:context (fx/swap-context context assoc :notepad-text event)})
-
-#_(defmethod event-handler ::displayed-layers-changed [{:keys [fx/event fx/context layer]}]
-  {:context (fx/swap-context context update :displayed-layers #(if event (conj % layer) (disj % layer)))})
-
-#_(defmethod event-handler ::selected-layer-changed [{:keys [fx/context layer]}]
-  {:context (fx/swap-context context assoc :selected-layer layer)})
-
-#_(defmethod event-handler ::draw-mode-changed [{:keys [fx/context mode]}]
-  {:context (fx/swap-context context assoc :draw-mode mode)})
-
-#_(defmethod event-handler ::view-toggles-changed [{:keys [fx/event fx/context view]}]
-  {:context (fx/swap-context context update :view-toggles #(if event (conj % view) (disj % view)))})
-
-#_(defmethod event-handler ::edit-mode-changed [{:keys [fx/context mode]}]
-  {:context (fx/swap-context context assoc :edit-mode mode)})
-
 ;; These events relate to opening and loading a new mod project
 
 ;; FIXME Choose file effect occurs before close mod event. May need feature request from cljfx

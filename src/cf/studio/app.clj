@@ -35,16 +35,6 @@
                                                   :text (slurp "LICENSE")
                                                   :v-box/vgrow :always}]}}})
 
-#_(defn notepad-tab
-  [{:keys [fx/context]}]
-  {:fx/type :tab
-   :id "notepad"
-   :text (fx/sub context translate-sub ::notepad-title)
-   :closable false
-   :content {:fx/type :text-area
-             :text (fx/sub context :notepad-text)
-             :on-text-changed {::events/type ::events/notepad-text-changed}}})
-
 (defn root-view
   [{:keys [fx/context]}]
   {:fx/type :stage
