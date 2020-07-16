@@ -46,7 +46,7 @@
 
  :cf.studio.editors.editor-view {:no-editor-open "Open a file to start editing"}
 
- :cf.studio.editors.pxpack-editor {:head "Head"
+ :cf.studio.editors.pxpack.editor {:head "Head"
                                    :tile-layers "Tile Layers"
                                    :units "Units"
                                    :script "Script"}}

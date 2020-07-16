@@ -1,4 +1,4 @@
-(ns cf.studio.editors.events
+(ns cf.studio.editors.pxpack.events
   (:require [cf.studio.events :as events]))
 
 (defmethod events/event-handler ::events/switch-pxpack-editor

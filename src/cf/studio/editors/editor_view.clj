@@ -1,5 +1,5 @@
 (ns cf.studio.editors.editor-view
-  (:require [cf.studio.editors.pxpack-editor :refer [pxpack-editor]]
+  (:require [cf.studio.editors.pxpack.editor :refer [pxpack-editor]]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]))
 
