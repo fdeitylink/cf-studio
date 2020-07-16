@@ -49,7 +49,6 @@
                        :text-alignment :right
                        :style-class "app-text-small"}
                :bottom {:fx/type :h-box
-                        :spacing 5.0
                         :children (doall
                                    (for [[text subtype] [[::head ::pxpack/head]
                                                          [::tile-layers ::pxpack/tile-layers]
