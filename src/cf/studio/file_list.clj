@@ -10,7 +10,7 @@
 
 (defn- context-menu
   [{:keys [fx/context]}]
-  (let [path (-> context (fx/sub :selected-file) :path)]
+  (let [path (fx/sub context :selected-path)]
     {:fx/type :context-menu
      :items [{:fx/type :menu-item
               :text (fx/sub context translate-sub ::open)
@@ -44,16 +44,16 @@
    :children (let [editing (-> context
                                (fx/sub file-graph/filter-editing-files-sub)
                                (file-graph/filter-file-type resource-type)
-                               file-graph/files)
+                               file-graph/paths)
                    open (-> context
                             (fx/sub file-graph/filter-open-files-sub)
                             (file-graph/filter-file-type resource-type)
-                            file-graph/files
+                            file-graph/paths
                             (clojure.set/difference editing))
                    closed (-> context
                               (fx/sub file-graph/filter-closed-files-sub)
                               (file-graph/filter-file-type resource-type)
-                              file-graph/files)]
+                              file-graph/paths)]
                (doall
                 (list*
                  {:fx/type :tree-item
@@ -87,9 +87,7 @@
                       :cell-factory {:fx/cell-type :tree-cell
                                      :describe (fn [value]
                                                  {:style-class ["cell" "indexed-cell" "tree-cell" "app-file-list-cell"]
-                                                  :text (if (string? value)
-                                                          value
-                                                          (fs/base-name (:path value) true))})}
+                                                  :text (if (string? value) value (fs/base-name value true))})}
                       :context-menu {:fx/type context-menu}
                       :on-mouse-clicked {::events/type ::events/file-list-click}
                       :on-key-pressed {::events/type ::events/file-list-keypress}

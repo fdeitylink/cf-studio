@@ -82,7 +82,7 @@
 (defmethod event-handler ::clear-mod
   [{:keys [fx/context]}]
   {:context (fx/swap-context context #(-> %
-                                          (dissoc :game-data :selected-file :files :current-editor)
+                                          (dissoc :game-data :selected-path :files :current-editor)
                                           (assoc :files (file-graph/new-file-graph))))})
 
 ;; These events relate to actions done with files in the tree list view
@@ -92,8 +92,8 @@
   ;; event is nil if moving from child to parent with left arrow key (bug?)
   (let [value (some-> event .getValue)]
     (if (or (nil? value) (string? value))
-      {:context (fx/swap-context context dissoc :selected-file)}
-      {:context (fx/swap-context context assoc :selected-file value)})))
+      {:context (fx/swap-context context dissoc :selected-path)}
+      {:context (fx/swap-context context assoc :selected-path value)})))
 
 (defmethod event-handler ::file-list-click
   [{:keys [^MouseEvent fx/event]}]
@@ -111,20 +111,21 @@
 
 (defmethod event-handler ::open-selected-file
   [{:keys [fx/context]}]
-  (when-let [file (fx/sub context :selected-file)]
-    {:dispatch {::type ::open-file :file file :edit? true}
-     :context (fx/swap-context context dissoc :selected-file)}))
+  (when-let [path (fx/sub context :selected-path)]
+    {:dispatch {::type ::open-file :path path :edit? true}
+     :context (fx/swap-context context dissoc :selected-path)}))
 
 ;; These events relate to reading files
 
 (defmethod event-handler ::open-file
-  [{:keys [fx/context edit?] {:keys [path type] :as file} :file}]
+  [{:keys [fx/context path edit?]}]
+  (let [file (fx/sub context file-graph/file-sub path)]
   (if (fx/sub context file-graph/is-file-open?-sub path)
     (when edit? {:dispatch {::type ::create-editor :file file}})
     {::effects/read-file {:file file
-                          :reader-fn (partial util/decode-file (game-data/resource-type->codec type))
+                          :reader-fn (partial util/decode-file (game-data/resource-type->codec (:type file)))
                           :on-complete {::type ::load-file :edit? edit?}
-                          :on-exception {::type ::exception}}}))
+                          :on-exception {::type ::exception}}})))
 
 (defmethod event-handler ::load-file
   [{:keys [fx/context edit?] {:keys [path data] :as file} :file}]
