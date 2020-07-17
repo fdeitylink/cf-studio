@@ -15,7 +15,7 @@
 
 ;; TODO
 ;; init context fn (useful for ::events/clear-mod)
-;; maybe drop metadata wrapper and put executable & resource dir at top level
+;; maybe drop game data wrapper and put executable & resource dir at top level
 
 (def *context
   (atom (fx/create-context {:files (new-file-graph)})))

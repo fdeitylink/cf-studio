@@ -1,4 +1,4 @@
-(ns cf.kero.metadata
+(ns cf.kero.game-data
   (:require [cf.kero.field.pxpack :as pxpack]
             clojure.set
             [clojure.spec.alpha :as spec]
@@ -60,10 +60,10 @@
 
 (define-resource-type-specs)
 
-(spec/def ::metadata (spec/and
+(spec/def ::game-data (spec/and
                       (spec/keys :req (conj (keys resource-type->path-meta) ::executable ::resource-dir))
                       ;; Validate parent directories of paths in resource path sets
-                      (fn [{:keys [::resource-dir] :as metadata}]
+                      (fn [{:keys [::resource-dir] :as game-data}]
                         ;; For every set
                         (every?
                          (fn [[resource-type resource-path-set]]
@@ -71,11 +71,11 @@
                                  parent (fs/file resource-dir subdir)]
                              ;; For every path in the set
                              (every? #(= (fs/parent %) parent) resource-path-set)))
-                         (dissoc metadata ::executable ::resource-dir)))))
+                         (dissoc game-data ::executable ::resource-dir)))))
 
 ;; TODO Store localize file paths
-(defn executable->metadata
-  "Creates a metadata map from a Kero Blaster executable path.
+(defn executable->game-data
+  "Creates a game data map from a Kero Blaster executable path.
   `executable-path` is the path of the Kero Blaster executable.
   Keys are namespaced under this namespace, unless otherwise specified, and will map to:
    - `:executable` - the path to the game executable

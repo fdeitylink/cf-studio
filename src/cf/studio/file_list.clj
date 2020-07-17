@@ -16,12 +16,12 @@
               :text (fx/sub context translate-sub ::open)
               ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
-              :disable (not (fx/sub context :metadata))
+              :disable (not (fx/sub context :game-data))
               :on-action {::events/type ::events/open-selected-file}}
              #_{:fx/type :menu-item
                 :text (fx/sub context translate-sub ::delete)
                 :accelerator [:delete]
-                :disable (not (fx/sub context :metadata))
+                :disable (not (fx/sub context :game-data))
                 :on-action {::events/type ::events/delete-file}}
              {:fx/type :menu-item
               :text (fx/sub context translate-sub ::close)

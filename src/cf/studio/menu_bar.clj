@@ -19,27 +19,27 @@
             :on-action {::events/type ::events/open-last-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-mod)
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/close-mod}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save)
             :accelerator [:ctrl :s]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/save-file}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-save-all)
             :accelerator [:ctrl :shift :s]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/save-all-files}}
            #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-tab)
             :accelerator [:ctrl :w]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/close-tab}}
            #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::file-close-all-tabs)
             :accelerator [:ctrl :shift :w]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/close-all-tabs}}]})
 
 (defn- edit-menu
@@ -49,12 +49,12 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-undo)
             :accelerator [:ctrl :z]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/undo}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::edit-redo)
             :accelerator [:ctrl :y]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/redo}}]})
 
 (defn- view-menu
@@ -76,11 +76,11 @@
    :items [{:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-run-game)
             :accelerator [:f5]
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/run-mod}}
            #_{:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-edit-global-script)
-            :disable (not (fx/sub context :metadata))
+            :disable (not (fx/sub context :game-data))
             :on-action {::events/type ::events/edit-global-script}}
            {:fx/type :menu-item
             :text (fx/sub context translate-sub ::actions-waffle)

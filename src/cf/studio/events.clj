@@ -1,6 +1,6 @@
 (ns cf.studio.events
   (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.kero.metadata :as metadata]
+            [cf.kero.game-data :as game-data]
             [cf.util :as util]
             [cf.studio.effects :as effects]
             [cf.studio.file-graph :as file-graph]
@@ -56,19 +56,19 @@
   [{:keys [fx/context path]}]
   {:context (fx/swap-context context assoc :last-executable-path (str path))
    ::effects/read-file {:file {:path path}
-                        :reader-fn metadata/executable->metadata
+                        :reader-fn game-data/executable->game-data
                         :on-complete {::type ::load-mod}
                         :on-exception {::type ::exception}}})
 
 (defmethod event-handler ::load-mod
   [{:keys [fx/context] {:keys [data]} :file}]
   {:context (fx/swap-context context assoc
-                             :metadata (select-keys data [::metadata/executable ::metadata/resource-dir])
+                             :game-data (select-keys data [::game-data/executable ::game-data/resource-dir])
                              :files (apply
                                      file-graph/new-file-graph
                                      (mapcat
                                       (fn [[type paths]] (map (fn [p] {:type type :path p}) paths))
-                                      (dissoc data ::metadata/executable ::metadata/resource-dir))))})
+                                      (dissoc data ::game-data/executable ::game-data/resource-dir))))})
 
 ;; TODO Create prompt effect
 ;; Checks for unsaved work and only clears everything if there is none or user still wants to close
@@ -82,7 +82,7 @@
 (defmethod event-handler ::clear-mod
   [{:keys [fx/context]}]
   {:context (fx/swap-context context #(-> %
-                                          (dissoc :metadata :selected-file :files :current-editor)
+                                          (dissoc :game-data :selected-file :files :current-editor)
                                           (assoc :files (file-graph/new-file-graph))))})
 
 ;; These events relate to actions done with files in the tree list view
@@ -122,7 +122,7 @@
   (if (fx/sub context file-graph/is-file-open?-sub path)
     (when edit? {:dispatch {::type ::create-editor :file file}})
     {::effects/read-file {:file file
-                          :reader-fn (partial util/decode-file (metadata/resource-type->codec type))
+                          :reader-fn (partial util/decode-file (game-data/resource-type->codec type))
                           :on-complete {::type ::load-file :edit? edit?}
                           :on-exception {::type ::exception}}}))
 
