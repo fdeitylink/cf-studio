@@ -140,7 +140,7 @@
   ;; TODO Maintain existing pxpack subeditor selection if editor already exists
    :dispatch {::type ::switch-to-editor
               :editor (merge {:path path :type type}
-                             (when (= type ::pxpack/pxpack) {:subtype ::pxpack/head}))}})
+                             (when (= type ::pxpack/pxpack) {:subtype ::pxpack/metadata}))}})
 
 (defmethod event-handler ::switch-to-editor
   [{:keys [fx/context editor]}]

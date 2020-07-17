@@ -1,5 +1,5 @@
 (ns cf.studio.editors.pxpack.editor
-  (:require [cf.kero.field.head :as head]
+  (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
             [cf.studio.events :as events]
             [cf.studio.editors.pxpack.events]
@@ -14,9 +14,9 @@
    :text (str type)
    :style-class "app-text-small"})
 
-(defn- pxpack-head-editor
+(defn- pxpack-metadata-editor
   [{:keys [path]}]
-  (child-editor-text ::pxpack/head))
+  (child-editor-text ::pxpack/metadata))
 
 (defn- pxpack-tile-layers-editor
   [{:keys [path]}]
@@ -29,7 +29,7 @@
 (defn- child-editor
   [{:keys [path subtype]}]
   (case subtype
-    ::pxpack/head {:fx/type pxpack-head-editor :path path}
+    ::pxpack/metadata {:fx/type pxpack-metadata-editor :path path}
     ::pxpack/tile-layers {:fx/type pxpack-tile-layers-editor :path path}
     ::pxpack/units {:fx/type pxpack-units-editor :path path}))
 
@@ -45,12 +45,12 @@
                :right {:fx/type :text
                        :text (-> context
                                  (fx/sub file-graph/file-data-sub path)
-                                 (get-in [::pxpack/head ::head/description]))
+                                 (get-in [::pxpack/metadata ::metadata/description]))
                        :text-alignment :right
                        :style-class "app-text-small"}
                :bottom {:fx/type :h-box
                         :children (doall
-                                   (for [[text subtype] [[::head ::pxpack/head]
+                                   (for [[text subtype] [[::metadata ::pxpack/metadata]
                                                          [::tile-layers ::pxpack/tile-layers]
                                                          [::units ::pxpack/units]]]
                                      {:fx/type :button
