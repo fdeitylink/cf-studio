@@ -1,8 +1,7 @@
 (ns cf.studio.editors.pxpack.editor
   (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.events :as events]
-            [cf.studio.editors.pxpack.events]
+            [cf.studio.events.core :as events]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]

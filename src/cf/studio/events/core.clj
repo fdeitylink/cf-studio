@@ -1,6 +1,5 @@
-(ns cf.studio.events
-  (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.kero.game-data :as game-data]
+(ns cf.studio.events.core
+  (:require [cf.kero.game-data :as game-data]
             [cf.util :as util]
             [cf.studio.effects :as effects]
             [cf.studio.file-graph :as file-graph]
@@ -141,7 +140,7 @@
   ;; TODO Maintain existing pxpack subeditor selection if editor already exists
    :dispatch {::type ::switch-to-editor
               :editor (merge {:path path :type type}
-                             (when (= type ::pxpack/pxpack) {:subtype ::pxpack/metadata}))}})
+                             (when (= type :cf.kero.field.pxpack/pxpack) {:subtype :cf.kero.field.pxpack/metadata}))}})
 
 (defmethod event-handler ::switch-to-editor
   [{:keys [fx/context editor]}]
@@ -155,3 +154,5 @@
                                         (if (= path (get-in ctxt [:current-editor :path]))
                                           (dissoc ctxt :current-editor)
                                           ctxt)))})
+
+(load "pxpack_events")

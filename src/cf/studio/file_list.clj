@@ -1,6 +1,6 @@
 (ns cf.studio.file-list
   (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.events :as events]
+            [cf.studio.events.core :as events]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]

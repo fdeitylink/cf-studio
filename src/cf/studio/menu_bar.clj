@@ -1,5 +1,5 @@
 (ns cf.studio.menu-bar
-  (:require [cf.studio.events :as events]
+  (:require [cf.studio.events.core :as events]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs]))
