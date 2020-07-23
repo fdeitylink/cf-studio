@@ -63,7 +63,7 @@
     ::tileset kstr/string-codec
     ::visibility-type :byte
     ::scroll-type :ubyte)
-   #(update % ::scroll-type (partial (memfn ^clojure.lang.PersistentVector indexOf e) scroll-types))
+   (fn [lm] (update lm ::scroll-type #(.indexOf ^clojure.lang.PersistentVector scroll-types %)))
    #(update % ::scroll-type (partial get scroll-types))))
 
 (def metadata-codec
