@@ -4,7 +4,7 @@
             [cf.studio.editors.editor-view :refer [editor-view]]
             [cf.studio.effects :as effects]
             [cf.studio.events.core :as events]
-            [cf.studio.file-graph :refer [new-file-graph]]
+            [cf.studio.file-graph :refer [file-graph]]
             [cf.studio.file-list :refer [file-list]]
             [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.menu-bar :refer [menu-bar]]
@@ -18,7 +18,7 @@
 ;; maybe drop game data wrapper and put executable & resource dir at top level
 
 (def *context
-  (atom (fx/create-context {:files (new-file-graph)})))
+  (atom (fx/create-context {:files (file-graph)})))
 
 (defn license-dialog
   [{:keys [fx/context]}]

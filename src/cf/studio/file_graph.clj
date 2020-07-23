@@ -33,7 +33,7 @@
 #_(defn remove-file
     [files path])
 
-(defn new-file-graph
+(defn file-graph
   "Creates a new file graph from `files`."
   [& files]
   (reduce create-file (loom.graph/digraph) files))

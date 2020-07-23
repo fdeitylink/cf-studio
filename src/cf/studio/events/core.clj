@@ -64,7 +64,7 @@
   {:context (fx/swap-context context assoc
                              :game-data (select-keys data [::game-data/executable ::game-data/resource-dir])
                              :files (apply
-                                     file-graph/new-file-graph
+                                     file-graph/file-graph
                                      (mapcat
                                       (fn [[type paths]] (map (fn [p] {:type type :path p}) paths))
                                       (dissoc data ::game-data/executable ::game-data/resource-dir))))})
@@ -82,7 +82,7 @@
   [{:keys [fx/context]}]
   {:context (fx/swap-context context #(-> %
                                           (dissoc :game-data :selected-path :files :current-editor)
-                                          (assoc :files (file-graph/new-file-graph))))})
+                                          (assoc :files (file-graph/file-graph))))})
 
 ;; These events relate to actions done with files in the tree list view
 
