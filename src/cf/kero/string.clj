@@ -15,7 +15,7 @@
   `max-length` is the maximum allowed byte length.
   The returned function yields `true` if the length is valid, `false` otherwise."
   [max-length]
-  #(<= (count (.getBytes ^String % charset)) max-length))
+  #(<= (count (.getBytes ^String % ^String charset)) max-length))
 
 (def max-name-length
   "The maximum byte length of a name string."

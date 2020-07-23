@@ -44,6 +44,6 @@
    (fn [_]
      (boolean
       (some
-       #(and (= "clojure.main$repl" (.getClassName %))
-             (= "doInvoke" (.getMethodName %)))
+       #(and (= "clojure.main$repl" (.getClassName ^StackTraceElement %))
+             (= "doInvoke" (.getMethodName ^StackTraceElement %)))
        (.getStackTrace (Thread/currentThread)))))))

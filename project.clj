@@ -12,6 +12,7 @@
                  [org.clojure/core.cache "1.0.207"]
                  [org.flatland/ordered "1.5.9"]
                  [smee/binary "0.5.5"]]
+  :global-vars {*warn-on-reflection* true}
   :main ^:skip-aot cf.studio.app
   :target-path "target/%s"
   :profiles {:uberjar
