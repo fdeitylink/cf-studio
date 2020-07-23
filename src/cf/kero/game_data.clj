@@ -29,15 +29,15 @@
 
 ;; TODO Consider returning a set of {:path: _ :type _}
 (defn- resource-files
-  "Returns an alphabetically sorted set of resource files.
+  "Returns a set of resource files.
   `resource-dir` is the root resource directory.
   `subdir` is the specific subdirectory in `resource-dir` for the desired resource type.
   `extension` is the filename extension of the resource type.
   `prefix` is the optional filename prefix of the resource type."
   [resource-dir {:keys [subdir prefix extension]}]
-  (apply sorted-set (fs/find-files
-                     (fs/file resource-dir subdir)
-                     (re-pattern (str "^" prefix ".+\\" extension "$")))))
+  (set (fs/find-files
+        (fs/file resource-dir subdir)
+        (re-pattern (str "^" prefix ".+\\" extension "$")))))
 
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
 (spec/def ::resource-dir (spec/and (comp #{"rsc_k" "rsc_p"} fs/base-name) fs/directory?))
@@ -54,8 +54,7 @@
               ;; TODO Find way to do resource subdir check from this spec and not ::metdatada spec
               #(clojure.string/starts-with? (fs/base-name %) ~prefix)
               #(= (fs/extension %) ~extension))
-             ;; TODO Consider relaxing sorted set requirement
-             :kind #(and (set? %) (sorted? %))
+             :kind set?
              :distinct true)))))
 
 (define-resource-type-specs)
@@ -80,14 +79,14 @@
   Keys are namespaced under this namespace, unless otherwise specified, and will map to:
    - `:executable` - the path to the game executable
    - `:resource-dir` - the path to the game's root resource directory
-   - `:music` - a sorted set of the game's background music file paths
-   - `::pxpack/pxpack` - a sorted set of the game's field file paths
-   - `:image` - a sorted set of the game's image file paths besides the spritesheets and tilesets
-   - `:spritesheet` - a sorted set of the game's spritesheet file paths
-   - `:tileset` - a sorted set of the game's tileset file paths
-   - `:tile-attribute` - a sorted set of the game's tile attribute file paths
-   - `:sfx` - a sorted set of the game's sound effects file paths
-   - `:script` - a sorted set of the game's script file paths"
+   - `:music` - a set of the game's background music file paths
+   - `::pxpack/pxpack` - a set of the game's field file paths
+   - `:image` - a set of the game's image file paths besides the spritesheets and tilesets
+   - `:spritesheet` - a set of the game's spritesheet file paths
+   - `:tileset` - a set of the game's tileset file paths
+   - `:tile-attribute` - a set of the game's tile attribute file paths
+   - `:sfx` - a set of the game's sound effects file paths
+   - `:script` - a set of the game's script file paths"
   [executable-path]
   (let [resource-dir (first (fs/find-files (fs/parent executable-path) #"rsc_[kp]"))]
     (->> resource-type->path-meta

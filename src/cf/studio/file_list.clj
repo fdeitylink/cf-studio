@@ -40,7 +40,7 @@
                name
                (keyword "cf.studio.file-list")
                (fx/sub context translate-sub))
-   ;; TODO Consider having vals be just paths, not file maps
+   ;; TODO sort alphabetically
    :children (let [editing (-> context
                                (fx/sub file-graph/filter-editing-files-sub)
                                (file-graph/filter-file-type resource-type)
