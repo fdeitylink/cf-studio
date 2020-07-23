@@ -44,7 +44,7 @@
                :right {:fx/type :text
                        :text (-> context
                                  (fx/sub file-graph/file-data-sub path)
-                                 (get-in [::pxpack/metadata ::metadata/description]))
+                                 (get-in [::pxpack/metadata ::metadata/name]))
                        :text-alignment :right
                        :style-class "app-text-small"}
                :bottom {:fx/type :h-box

@@ -9,9 +9,8 @@
   "Marks the start of PxPack metadata. This also marks the start of a PxPack file."
   "PXPACK121127a**")
 
-;; TODO Rename to 'field name'
-(def max-description-length
-  "The maximum byte length of the description string. The string charset is specified by `cf.kero.string/charset`."
+(def max-name-length
+  "The maximum byte length of the name. The string charset is specified by `cf.kero.string/charset`."
   31)
 
 ;; TODO These fields are just helper metadata for editing (left right up down)
@@ -27,7 +26,7 @@
   "A vector of the scrolling types of a PxPack tile layer. The index of each element is its byte value in PxPack metadata."
   [:normal :three-fourths :half :quarter :eighth :zero :h-three-fourths :h-half :h-quarter :v0-half])
 
-(spec/def ::description (kstr/kero-string-validator max-description-length))
+(spec/def ::name (kstr/kero-string-validator max-name-length))
 (spec/def ::fields (spec/coll-of ::kstr/name :count num-referenced-fields))
 (spec/def ::spritesheet ::kstr/name)
 (spec/def ::unknown-bytes (spec/coll-of ::util/byte :count num-unknown-bytes))
@@ -40,7 +39,7 @@
 (spec/def ::layer-metadata (spec/and
                             (spec/map-of (constantly true) (spec/keys :req [::tileset ::visibility-type ::scroll-type]))
                             (spec/keys :req [::tile-layer/foreground ::tile-layer/middleground ::tile-layer/background])))
-(spec/def ::metadata (spec/keys :req [::description ::fields ::spritesheet ::unknown-bytes ::bg-color ::layer-metadata]))
+(spec/def ::metadata (spec/keys :req [::name ::fields ::spritesheet ::unknown-bytes ::bg-color ::layer-metadata]))
 
 (def ^:private layer-metadata-codec
   "Codec for PxPack metadata's layer metadata chunk."
@@ -57,7 +56,7 @@
   (bin/compile-codec
    (bin/ordered-map
     :header (bin/constant (bin/c-string "UTF-8") header)
-    ::description kstr/string-codec
+    ::name kstr/string-codec
     ::fields (bin/repeated kstr/string-codec :length num-referenced-fields)
     ::spritesheet kstr/string-codec
     ::unknown-bytes (bin/repeated :byte :length num-unknown-bytes)
