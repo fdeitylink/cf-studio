@@ -1,5 +1,6 @@
 (ns cf.kero.game-data
   (:require [cf.kero.field.pxpack :as pxpack]
+            [cf.util :as util]
             clojure.set
             [clojure.spec.alpha :as spec]
             clojure.string
@@ -19,9 +20,9 @@
    ::sfx {:subdir "se" :prefix "" :extension ".ptnoise"}
    ::script {:subdir "text" :prefix "" :extension ".pxeve"}})
 
-(def resource-type->codec
+(def resource-type->reader-fn
   "Map of resource type keywords to file codecs"
-  {::pxpack/pxpack pxpack/pxpack-codec})
+  {::pxpack/pxpack (partial util/decode-file pxpack/pxpack-codec)})
 
 (def resource-dir->game-type
   "Map of resource directory names to Kero Blaster base game types."

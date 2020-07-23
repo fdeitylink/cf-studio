@@ -1,6 +1,5 @@
 (ns cf.studio.events.core
   (:require [cf.kero.game-data :as game-data]
-            [cf.util :as util]
             [cf.studio.effects :as effects]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
@@ -119,12 +118,12 @@
 (defmethod event-handler ::open-file
   [{:keys [fx/context path edit?]}]
   (let [file (fx/sub context file-graph/file-sub path)]
-  (if (fx/sub context file-graph/is-file-open?-sub path)
-    (when edit? {:dispatch {::type ::create-editor :file file}})
-    {::effects/read-file {:file file
-                          :reader-fn (partial util/decode-file (game-data/resource-type->codec (:type file)))
-                          :on-complete {::type ::load-file :edit? edit?}
-                          :on-exception {::type ::exception}}})))
+    (if (fx/sub context file-graph/is-file-open?-sub path)
+      (when edit? {:dispatch {::type ::create-editor :file file}})
+      {::effects/read-file {:file file
+                            :reader-fn (game-data/resource-type->reader-fn (:type file))
+                            :on-complete {::type ::load-file :edit? edit?}
+                            :on-exception {::type ::exception}}})))
 
 (defmethod event-handler ::load-file
   [{:keys [fx/context edit?] {:keys [path data] :as file} :file}]
