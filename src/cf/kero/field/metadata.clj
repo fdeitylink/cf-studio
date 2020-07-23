@@ -13,21 +13,28 @@
   "The maximum byte length of the name. The string charset is specified by `cf.kero.string/charset`."
   31)
 
-;; TODO These fields are just helper metadata for editing (left right up down)
-(def num-referenced-fields
-  "The number of other fields referenced by a PxPack field."
-  4)
-
 (def num-unknown-bytes
   "The number of contiguous unknown bytes in PxPack metadata."
   5)
 
 (def scroll-types
   "A vector of the scrolling types of a PxPack tile layer. The index of each element is its byte value in PxPack metadata."
-  [:normal :three-fourths :half :quarter :eighth :zero :h-three-fourths :h-half :h-quarter :v0-half])
+  [:normal
+   :three-fourths
+   :half
+   :quarter
+   :eighth
+   :zero
+   :h-three-fourths
+   :h-half
+   :h-quarter
+   :v0-half])
 
 (spec/def ::name (kstr/kero-string-validator max-name-length))
-(spec/def ::fields (spec/coll-of ::kstr/name :count num-referenced-fields))
+(spec/def ::left-field ::kstr/name)
+(spec/def ::right-field ::kstr/name)
+(spec/def ::up-field ::kstr/name)
+(spec/def ::down-field ::kstr/name)
 (spec/def ::spritesheet ::kstr/name)
 (spec/def ::unknown-bytes (spec/coll-of ::util/byte :count num-unknown-bytes))
 (spec/def ::bg-color (spec/and
@@ -39,7 +46,15 @@
 (spec/def ::layer-metadata (spec/and
                             (spec/map-of (constantly true) (spec/keys :req [::tileset ::visibility-type ::scroll-type]))
                             (spec/keys :req [::tile-layer/foreground ::tile-layer/middleground ::tile-layer/background])))
-(spec/def ::metadata (spec/keys :req [::name ::fields ::spritesheet ::unknown-bytes ::bg-color ::layer-metadata]))
+(spec/def ::metadata (spec/keys :req [::name
+                                      ::left-field
+                                      ::right-field
+                                      ::up-field
+                                      ::down-field
+                                      ::spritesheet
+                                      ::unknown-bytes
+                                      ::bg-color
+                                      ::layer-metadata]))
 
 (def ^:private layer-metadata-codec
   "Codec for PxPack metadata's layer metadata chunk."
@@ -57,7 +72,10 @@
    (bin/ordered-map
     :header (bin/constant (bin/c-string "UTF-8") header)
     ::name kstr/string-codec
-    ::fields (bin/repeated kstr/string-codec :length num-referenced-fields)
+    ::left-field kstr/string-codec
+    ::right-field kstr/string-codec
+    ::up-field kstr/string-codec
+    ::down-field kstr/string-codec
     ::spritesheet kstr/string-codec
     ::unknown-bytes (bin/repeated :byte :length num-unknown-bytes)
       ;; TODO Push colors into metadata.bg-color ns? Make them non-namespaced?
