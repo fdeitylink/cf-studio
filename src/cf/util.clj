@@ -21,14 +21,14 @@
 
 (defn decode-file
   "Decodes a file according to a codec."
-  [codec file]
-  (with-open [is (io/input-stream file)]
+  [codec path]
+  (with-open [is (io/input-stream path)]
     (bin/decode codec is)))
 
 (defn encode-file
   "Encodes a value into a file according to a codec."
-  [codec file value]
-  (with-open [os (io/output-stream file)]
+  [codec path value]
+  (with-open [os (io/output-stream path)]
     (bin/encode codec os value)))
 
 (def running-in-repl?
