@@ -2,6 +2,7 @@
   (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
             [cf.studio.events.core :as events]
+            [cf.studio.editors.pxpack.tile-layers :refer [tile-layers-editor]]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
@@ -17,10 +18,6 @@
   [{:keys [path]}]
   (child-editor-text ::pxpack/metadata))
 
-(defn- pxpack-tile-layers-editor
-  [{:keys [path]}]
-  (child-editor-text ::pxpack/tile-layers))
-
 (defn- pxpack-units-editor
   [{:keys [path]}]
   (child-editor-text ::pxpack/units))
@@ -29,7 +26,7 @@
   [{:keys [path subtype]}]
   (case subtype
     ::pxpack/metadata {:fx/type pxpack-metadata-editor :path path}
-    ::pxpack/tile-layers {:fx/type pxpack-tile-layers-editor :path path}
+    ::pxpack/tile-layers {:fx/type tile-layers-editor :path path}
     ::pxpack/units {:fx/type pxpack-units-editor :path path}))
 
 (defn pxpack-editor
@@ -55,8 +52,7 @@
                                      {:fx/type :button
                                       :h-box/margin {:top 5.0 :bottom 5.0}
                                       :text (fx/sub context translate-sub text)
-                                      :on-action {::events/type ::events/switch-pxpack-editor :path path :subtype subtype}}))}}
-              {:fx/type :separator}
+                                      :on-action {::events/type ::events/pxpack-switch-editor :path path :subtype subtype}}))}}
               {:fx/type child-editor
                :path path
                :subtype subtype

@@ -4,7 +4,8 @@
             clojure.set
             [clojure.spec.alpha :as spec]
             clojure.string
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs])
+  (:import javafx.scene.image.Image))
 
 (def resource-type->path-meta
   "Map of resource type keywords to metadata for their paths."
@@ -20,9 +21,19 @@
    ::sfx {:subdir "se" :prefix "" :extension ".ptnoise"}
    ::script {:subdir "text" :prefix "" :extension ".pxeve"}})
 
+(defn- image
+  "Constructs an `Image` from `path`."
+  [path]
+  (->> path
+       (str "file:///")
+       Image.))
+
 (def resource-type->reader-fn
   "Map of resource type keywords to file codecs"
-  {::pxpack/pxpack (partial util/decode-file pxpack/pxpack-codec)})
+  {::pxpack/pxpack (partial util/decode-file pxpack/pxpack-codec)
+   ::image image
+   ::spritesheet image
+   ::tileset image})
 
 (def resource-dir->game-type
   "Map of resource directory names to Kero Blaster base game types."
