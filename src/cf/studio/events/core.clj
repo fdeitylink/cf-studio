@@ -1,5 +1,6 @@
 (ns cf.studio.events.core
-  (:require [cf.kero.game-data :as game-data]
+  (:require [cf.kero.field.pxpack :as pxpack]
+            [cf.kero.game-data :as game-data]
             [cf.studio.effects :as effects]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
@@ -134,12 +135,25 @@
 ;; These events relate to managing editors
 
 (defmethod event-handler ::create-editor
-  [{:keys [fx/context] {:keys [path type]} :file}]
+  [{:keys [fx/context] {:keys [path type] :as file} :file}]
   {:context (fx/swap-context context update :files file-graph/open-editor path)
-  ;; TODO Maintain existing pxpack subeditor selection if editor already exists
-   :dispatch {::type ::switch-to-editor
-              :editor (merge {:path path :type type}
-                             (when (= type :cf.kero.field.pxpack/pxpack) {:subtype :cf.kero.field.pxpack/metadata}))}})
+   :dispatch {::type (case type
+                       ::pxpack/pxpack ::pxpack-create-editor)
+              :file file}})
+
+(defmethod event-handler ::load-dependencies
+  [{:keys [fx/context path dependencies]}]
+  (let [dep-paths (map
+                   ;; TODO Handle localize items
+                   (fn [[dep-name type]]
+                     (let [resource-dir (-> context (fx/sub :game-data) ::game-data/resource-dir)
+                           {:keys [subdir extension]} (type game-data/resource-type->path-meta)]
+                       (fs/file resource-dir subdir (str dep-name extension))))
+                   dependencies)]
+    (cons
+     [:context (fx/swap-context context update :files file-graph/add-file-dependencies path dep-paths)]
+     (for [dep-path dep-paths]
+       [:dispatch {::type ::open-file :path dep-path :edit? false}]))))
 
 (defmethod event-handler ::switch-to-editor
   [{:keys [fx/context editor]}]
