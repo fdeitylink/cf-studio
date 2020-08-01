@@ -86,7 +86,7 @@
 
 ;; These events relate to actions done with files in the tree list view
 
-(defmethod event-handler ::selected-file-changed
+(defmethod event-handler ::selected-path-changed
   [{:keys [fx/context ^TreeItem fx/event]}]
   ;; event is nil if moving from child to parent with left arrow key (bug?)
   (let [value (some-> event .getValue)]
@@ -98,7 +98,7 @@
   [{:keys [^MouseEvent fx/event]}]
   (when (and (= MouseButton/PRIMARY (.getButton event))
              (= 2 (.getClickCount event)))
-    {:dispatch {::type ::open-selected-file}}))
+    {:dispatch {::type ::open-selected-path}}))
 
 ;; TODO
 ;; Enter key accelerator doesn't work on the corresponding menu item so we have this
@@ -106,9 +106,9 @@
 (defmethod event-handler ::file-list-keypress
   [{:keys [^KeyEvent fx/event]}]
   (when (= KeyCode/ENTER (.getCode event))
-    {:dispatch {::type ::open-selected-file}}))
+    {:dispatch {::type ::open-selected-path}}))
 
-(defmethod event-handler ::open-selected-file
+(defmethod event-handler ::open-selected-path
   [{:keys [fx/context]}]
   (when-let [path (fx/sub context :selected-path)]
     {:dispatch {::type ::open-file :path path :edit? true}

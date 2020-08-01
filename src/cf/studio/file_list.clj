@@ -17,7 +17,7 @@
               ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
               :disable (not (fx/sub context :game-data))
-              :on-action {::events/type ::events/open-selected-file}}
+              :on-action {::events/type ::events/open-selected-path}}
              #_{:fx/type :menu-item
                 :text (fx/sub context translate-sub ::delete)
                 :accelerator [:delete]
@@ -77,7 +77,7 @@
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always
                :props {:selection-mode :single
-                       :on-selected-item-changed {::events/type ::events/selected-file-changed}}
+                       :on-selected-item-changed {::events/type ::events/selected-path-changed}}
                :desc {:fx/type :tree-view
                       :show-root false
                       ;; TODO possible feature request
