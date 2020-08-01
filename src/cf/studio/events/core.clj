@@ -86,7 +86,7 @@
 
 ;; These events relate to actions done with files in the tree list view
 
-(defmethod event-handler ::file-selection-changed
+(defmethod event-handler ::selected-file-changed
   [{:keys [fx/context ^TreeItem fx/event]}]
   ;; event is nil if moving from child to parent with left arrow key (bug?)
   (let [value (some-> event .getValue)]

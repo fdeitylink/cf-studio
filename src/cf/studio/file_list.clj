@@ -77,7 +77,7 @@
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always
                :props {:selection-mode :single
-                       :on-selected-item-changed {::events/type ::events/file-selection-changed}}
+                       :on-selected-item-changed {::events/type ::events/selected-file-changed}}
                :desc {:fx/type :tree-view
                       :show-root false
                       ;; TODO possible feature request
