@@ -1,7 +1,6 @@
 (ns cf.studio.editors.pxpack.editor
   (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.events.core :as events]
             [cf.studio.editors.pxpack.tile-layers :refer [tile-layers-editor]]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
@@ -18,19 +17,8 @@
   [{:keys [path]}]
   (child-editor-text ::pxpack/metadata))
 
-(defn- pxpack-units-editor
-  [{:keys [path]}]
-  (child-editor-text ::pxpack/units))
-
-(defn- child-editor
-  [{:keys [path subtype]}]
-  (case subtype
-    ::pxpack/metadata {:fx/type pxpack-metadata-editor :path path}
-    ::pxpack/tile-layers {:fx/type tile-layers-editor :path path}
-    ::pxpack/units {:fx/type pxpack-units-editor :path path}))
-
 (defn pxpack-editor
-  [{:keys [fx/context path subtype]}]
+  [{:keys [fx/context path]}]
   {:fx/type :v-box
    :alignment :top-center
    :children [{:fx/type :border-pane
@@ -44,16 +32,12 @@
                                  (get-in [::pxpack/metadata ::metadata/name]))
                        :text-alignment :right
                        :style-class "app-text-small"}
-               :bottom {:fx/type :h-box
-                        :children (doall
-                                   (for [[text subtype] [[::metadata ::pxpack/metadata]
-                                                         [::tile-layers ::pxpack/tile-layers]
-                                                         [::units ::pxpack/units]]]
-                                     {:fx/type :button
-                                      :h-box/margin {:top 5.0 :bottom 5.0}
-                                      :text (fx/sub context translate-sub text)
-                                      :on-action {::events/type ::events/pxpack-switch-editor :path path :subtype subtype}}))}}
-              {:fx/type child-editor
-               :path path
-               :subtype subtype
-               :v-box/vgrow :always}]})
+               :bottom {:fx/type :tab-pane
+                        :tab-closing-policy :unavailable
+                        :tabs (doall
+                               (for [[text editor] {::metadata pxpack-metadata-editor
+                                                    ::tile-layers tile-layers-editor}]
+                                 {:fx/type :tab
+                                  :text (fx/sub context translate-sub text)
+                                  :content {:fx/type editor
+                                            :path path}}))}}]})

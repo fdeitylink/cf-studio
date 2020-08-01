@@ -136,10 +136,12 @@
 
 (defmethod event-handler ::create-editor
   [{:keys [fx/context] {:keys [path type] :as file} :file}]
-  {:context (fx/swap-context context update :files file-graph/open-editor path)
-   :dispatch {::type (case type
-                       ::pxpack/pxpack ::pxpack-create-editor)
-              :file file}})
+  (concat
+   [[:context (fx/swap-context context update :files file-graph/open-editor path)]
+    [:dispatch {::type (case type
+                         ::pxpack/pxpack ::pxpack-add-dependencies)
+                :file file}]
+    [:dispatch {::type ::switch-to-editor :path path}]]))
 
 (defmethod event-handler ::load-dependencies
   [{:keys [fx/context path dependencies]}]
@@ -156,16 +158,17 @@
        [:dispatch {::type ::open-file :path dep-path :edit? false}]))))
 
 (defmethod event-handler ::switch-to-editor
-  [{:keys [fx/context editor]}]
-  {:context (fx/swap-context context assoc :current-editor editor)})
+  [{:keys [fx/context path]}]
+  {:context (fx/swap-context context assoc :current-editor path)})
 
 ;; TODO Use prompt effect (see todo on ::close-mod)
 (defmethod event-handler ::close-editor
   [{:keys [fx/context path]}]
-  {:context (fx/swap-context context #(as-> % ctxt
-                                        (update ctxt :files file-graph/close-editor path)
-                                        (if (= path (get-in ctxt [:current-editor :path]))
-                                          (dissoc ctxt :current-editor)
-                                          ctxt)))})
+  {:context (fx/swap-context context
+                             #(as-> % ctxt
+                                (update ctxt :files file-graph/close-editor path)
+                                (if (= path (:current-editor ctxt))
+                                  (dissoc ctxt :current-editor)
+                                  ctxt)))})
 
 (load "pxpack_events")

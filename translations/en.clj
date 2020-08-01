@@ -48,5 +48,4 @@
 
  :cf.studio.editors.pxpack.editor {:metadata "Metadata"
                                    :tile-layers "Tile Layers"
-                                   :units "Units"
                                    :script "Script"}}
