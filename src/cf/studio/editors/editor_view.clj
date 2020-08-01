@@ -6,7 +6,7 @@
 
 (defn- child-editor
   [{:keys [fx/context]}]
-  (if-let [path (fx/sub context :current-editor)]
+  (if-let [path (fx/sub context :editor)]
     (case (fx/sub context file-graph/file-type-sub path)
       :cf.kero.field.pxpack/pxpack {:fx/type pxpack-editor :path path})
     {:fx/type :text

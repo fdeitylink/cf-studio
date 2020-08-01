@@ -81,7 +81,7 @@
 (defmethod event-handler ::clear-mod
   [{:keys [fx/context]}]
   {:context (fx/swap-context context #(-> %
-                                          (dissoc :game-data :selected-path :files :current-editor)
+                                          (dissoc :game-data :selected-path :editor)
                                           (assoc :files (file-graph/file-graph))))})
 
 ;; These events relate to actions done with files in the tree list view
@@ -141,7 +141,7 @@
     [:dispatch {::type (case type
                          ::pxpack/pxpack ::pxpack-add-dependencies)
                 :file file}]
-    [:dispatch {::type ::switch-to-editor :path path}]]))
+    [:dispatch {::type ::switch-editor :path path}]]))
 
 (defmethod event-handler ::load-dependencies
   [{:keys [fx/context path dependencies]}]
@@ -157,9 +157,9 @@
      (for [dep-path dep-paths]
        [:dispatch {::type ::open-file :path dep-path :edit? false}]))))
 
-(defmethod event-handler ::switch-to-editor
+(defmethod event-handler ::switch-editor
   [{:keys [fx/context path]}]
-  {:context (fx/swap-context context assoc :current-editor path)})
+  {:context (fx/swap-context context assoc :editor path)})
 
 ;; TODO Use prompt effect (see todo on ::close-mod)
 (defmethod event-handler ::close-editor
@@ -167,8 +167,8 @@
   {:context (fx/swap-context context
                              #(as-> % ctxt
                                 (update ctxt :files file-graph/close-editor path)
-                                (if (= path (:current-editor ctxt))
-                                  (dissoc ctxt :current-editor)
+                                (if (= path (:editor ctxt))
+                                  (dissoc ctxt :editor)
                                   ctxt)))})
 
 (load "pxpack_events")
