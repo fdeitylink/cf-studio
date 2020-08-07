@@ -120,7 +120,7 @@
   [{:keys [fx/context path edit?]}]
   (let [file (fx/sub context file-graph/file-sub path)]
     (if (fx/sub context file-graph/is-file-open?-sub path)
-      (when edit? {:dispatch {::type ::create-editor :file file}})
+      (when edit? {:dispatch {::type ::init-editor :file file}})
       {::effects/read-file {:file file
                             :reader-fn (game-data/resource-type->reader-fn (:type file))
                             :on-complete {::type ::load-file :edit? edit?}
@@ -130,11 +130,11 @@
   [{:keys [fx/context edit?] {:keys [path data] :as file} :file}]
   (merge
    {:context (fx/swap-context context update :files file-graph/open-file path data)}
-   (when edit? {:dispatch {::type ::create-editor :file file}})))
+   (when edit? {:dispatch {::type ::init-editor :file file}})))
 
 ;; These events relate to managing editors
 
-(defmethod event-handler ::create-editor
+(defmethod event-handler ::init-editor
   [{:keys [fx/context] {:keys [path type] :as file} :file}]
   (concat
    [[:context (fx/swap-context context update :files file-graph/open-editor path)]
