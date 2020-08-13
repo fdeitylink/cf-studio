@@ -13,12 +13,12 @@
             [cljfx.api :as fx]
             [cljfx.css :as css]))
 
-;; TODO
-;; init context fn (useful for ::events/clear-mod)
-;; maybe drop game data wrapper and put executable & resource dir at top level
+;; TODO Maybe drop game data wrapper and put executable & resource dir at top level
 
-(def *context
-  (atom (fx/create-context {:files (file-graph)})))
+;; TODO Move this to another ns so its usable for :events/clear-mod
+(defn- init-context
+  [config]
+  (atom (fx/create-context (assoc config :files (file-graph)))))
 
 (defn license-dialog
   [{:keys [fx/context]}]
@@ -61,10 +61,8 @@
 (defn -main
   [& [config-path]]
   (util/set-running-in-repl!)
-  (let [{:keys [config config-path]} (config/read-config config-path)]
-    (swap! *context fx/swap-context merge config {:config-path config-path}))
   (fx/create-app
-   *context
+   (init-context (config/read-config! config-path))
    :event-handler events/event-handler
    :effects {::effects/choose-file effects/choose-file
              ::effects/read-file effects/read-file

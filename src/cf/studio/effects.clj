@@ -60,9 +60,7 @@
                                                     :v-box/vgrow :always}]}}})))
 
 (defn shutdown [{:keys [fx/context]} _]
-  (let [path (fx/sub context :config-path)
-        config (select-keys (:cljfx.context/m context) (keys config/default-config))]
-    (config/write-config path config)
-    (when-not util/running-in-repl?
-      (javafx.application.Platform/exit)
-      (shutdown-agents))))
+  (config/write-config! (config/context->config context))
+  (when-not util/running-in-repl?
+    (javafx.application.Platform/exit)
+    (shutdown-agents)))
