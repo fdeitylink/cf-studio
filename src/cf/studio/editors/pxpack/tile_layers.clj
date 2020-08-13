@@ -114,10 +114,10 @@
 
 (defn tile-layers-editor
   [{:keys [fx/context path]}]
-  (let [data (fx/sub context file-graph/file-data-sub path)
+  (let [data (fx/sub-ctx context file-graph/file-data-sub path)
         metadata (::pxpack/metadata data)
         {::metadata/keys [red green blue]} (::metadata/bg-color metadata)
-        deps (fx/sub context file-graph/file-dependencies-sub path)]
+        deps (fx/sub-ctx context file-graph/file-dependencies-sub path)]
     {:fx/type :scroll-pane
      :content {:fx/type :stack-pane
                :alignment :top-left
@@ -131,7 +131,7 @@
                                       tileset (some->> deps
                                                        (filter #(= (fs/base-name % true) tileset-name))
                                                        first
-                                                       (fx/sub context file-graph/file-data-sub))]]
+                                                       (fx/sub-ctx context file-graph/file-data-sub))]]
                             {:fx/type tile-layer-view
                              :tiles tiles
                              :tileset tileset}))}}))

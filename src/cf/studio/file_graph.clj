@@ -5,21 +5,22 @@
             loom.attr
             loom.graph))
 
-;; TODO More cljfx context integration?
-;; Seems like a bad pattern to use fx/swap-context here (is it?), so we'd have events manage the swapping
+;; TODO More cljfx context integration? Reevaluate, given new features in cljfx 1.7.5 (fx/sub-ctx & fx/sub-val)
+;; Seems like a bad pattern to use fx/swap-context here (is it?), so we have events manage the swapping
 ;;  - e.g. (fx/swap-context context assoc-file-data path data)
 ;;  - Using fx/swap-context here would put intermediary (often "invalid") states into the context cache
 ;;    - Having the "root" function use contexts and the "child" functions not would solve this,
 ;;      but then we're mixing between contexts and not-contexts, and also some functions that are
-;;      "children" in some cases are "roots" in others. Not to mention this drops the benefit of fx/sub.
-;; The issue is that fx/sub fns take the 'full' context map (i.e. containing cljfx internals)
+;;      "children" in some cases are "roots" in others. Not to mention this drops the benefit of fx/sub-ctx.
+;; The issue is that fx/sub-ctx fns take the 'full' context map (i.e. containing cljfx internals)
 ;; while fx/swap-context fns take just the state map (i.e. no internals, just app state)
-;; so fns using swap-context couldn't rely on fx/sub fns, which makes integration feel pointless.
+;; so fns using swap-context couldn't rely on fx/sub-ctx fns, which makes integration feel pointless.
+;; sub-val would work here, but it doesn't use caching since it's meant for quick ops (e.g. get).
 ;;
 ;; Integration might also add unworthwhile complexity and coupling to this ns, especially when some
 ;; fns invoke other context-based fns in this ns *and* loom fns (not context-based, just take the graph)
 ;;
-;; Benefit would be that using fx/sub takes advantage of cljfx cache
+;; Benefit would be that using fx/sub-ctx takes advantage of cljfx cache
 
 (defn create-file
   "Adds `file` to `files`."
@@ -207,9 +208,9 @@
          ;; Getting the real arglist makes the docs cleaner than using [context# & rest#]
          (let [argvec (-> fn-name resolve meta :arglists first (assoc 0 'context))]
            `(defn ~(-> fn-name (str "-sub") symbol)
-              ~(str "`fx/sub` version of `" fn-name "`.")
+              ~(str "`fx/sub-ctx` version of `" fn-name "`.")
               ~argvec
-              (~fn-name (fx/sub ~(first argvec) :files) ~@(rest argvec)))))))
+              (~fn-name (fx/sub-val ~(first argvec) :files) ~@(rest argvec)))))))
 
 (create-sub-fns
  file

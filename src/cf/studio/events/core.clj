@@ -37,11 +37,11 @@
 (defmethod event-handler ::open-new-mod
   [{:keys [fx/context]}]
   {:dispatch {::type ::close-mod}
-   ::effects/choose-file {:title (fx/sub context translate-sub ::open-new-mod-chooser-title)
-                          :initial-directory (if-let [last-path (fx/sub context :last-executable-path)]
+   ::effects/choose-file {:title (fx/sub-ctx context translate-sub ::open-new-mod-chooser-title)
+                          :initial-directory (if-let [last-path (fx/sub-val context :last-executable-path)]
                                                (fs/parent last-path)
                                                (fs/home))
-                          :extension-filters [{:description (fx/sub context translate-sub ::open-new-mod-filter-description)
+                          :extension-filters [{:description (fx/sub-ctx context translate-sub ::open-new-mod-filter-description)
                                                :extensions ["*.exe"]}]
                           :dialog-type :open
                           :on-complete {::type ::open-mod}}})
@@ -49,7 +49,7 @@
 (defmethod event-handler ::open-last-mod
   [{:keys [fx/context]}]
   [[:dispatch {::type ::close-mod}]
-   [:dispatch {::type ::open-mod :path (fx/sub context :last-executable-path)}]])
+   [:dispatch {::type ::open-mod :path (fx/sub-val context :last-executable-path)}]])
 
 (defmethod event-handler ::open-mod
   [{:keys [fx/context path]}]
@@ -74,7 +74,7 @@
 (defmethod event-handler ::close-mod
   [{:keys [fx/context]}]
   (concat
-   (for [path (file-graph/paths (fx/sub context file-graph/filter-editing-files-sub))]
+   (for [path (file-graph/paths (fx/sub-ctx context file-graph/filter-editing-files-sub))]
      [:dispatch {::type ::close-editor :path path}])
    {:dispatch {::type ::clear-mod}}))
 
@@ -110,7 +110,7 @@
 
 (defmethod event-handler ::open-selected-path
   [{:keys [fx/context]}]
-  (when-let [path (fx/sub context :selected-path)]
+  (when-let [path (fx/sub-val context :selected-path)]
     {:dispatch {::type ::open-file :path path :edit? true}
      :context (fx/swap-context context dissoc :selected-path)}))
 
@@ -118,8 +118,8 @@
 
 (defmethod event-handler ::open-file
   [{:keys [fx/context path edit?]}]
-  (let [file (fx/sub context file-graph/file-sub path)]
-    (if (fx/sub context file-graph/is-file-open?-sub path)
+  (let [file (fx/sub-ctx context file-graph/file-sub path)]
+    (if (fx/sub-ctx context file-graph/is-file-open?-sub path)
       (when edit? {:dispatch {::type ::init-editor :file file}})
       {::effects/read-file {:file file
                             :reader-fn (game-data/resource-type->reader-fn (:type file))
@@ -148,7 +148,7 @@
   (let [dep-paths (map
                    ;; TODO Handle localize items
                    (fn [[dep-name type]]
-                     (let [resource-dir (-> context (fx/sub :game-data) ::game-data/resource-dir)
+                     (let [resource-dir (fx/sub-val context get-in [:game-data ::game-data/resource-dir])
                            {:keys [subdir extension]} (type game-data/resource-type->path-meta)]
                        (fs/file resource-dir subdir (str dep-name extension))))
                    dependencies)]

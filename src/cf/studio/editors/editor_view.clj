@@ -6,11 +6,11 @@
 
 (defn- child-editor
   [{:keys [fx/context]}]
-  (if-let [path (fx/sub context :editor)]
-    (case (fx/sub context file-graph/file-type-sub path)
+  (if-let [path (fx/sub-val context :editor)]
+    (case (fx/sub-ctx context file-graph/file-type-sub path)
       :cf.kero.field.pxpack/pxpack {:fx/type pxpack-editor :path path})
     {:fx/type :text
-     :text (fx/sub context translate-sub ::no-editor-open)
+     :text (fx/sub-ctx context translate-sub ::no-editor-open)
      :style-class "app-text-medium"}))
 
 (defn editor-view

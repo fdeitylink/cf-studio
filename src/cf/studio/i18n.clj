@@ -40,10 +40,9 @@
   [locale resource-id & args]
   (apply tempura/tr {:dict translation-map} [locale :en] [resource-id] args))
 
+;; TODO tempura uses its own internal caching; make this fx/sub-val'able
 (defn translate-sub
   "Translation function that uses the in-context locale.
   Can be used with cljfx subscriptions to avoid explicitly specifying the locale."
   [context resource-id & args]
-  (apply translate (fx/sub context :locale) resource-id args))
-
-;; TODO Macro to eliminate (fx/sub context translate-sub key) boilerplate
+  (apply translate (fx/sub-val context :locale) resource-id args))

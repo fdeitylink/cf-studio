@@ -19,7 +19,7 @@
 (defn context->config
   "Returns the submap of `context` containing the user config."
   [context]
-  (select-keys (fx/sub context) (cons :config-path (keys default-config))))
+  (select-keys (fx/sub-val context identity) (cons :config-path (keys default-config))))
 
 (defn read-config!
   "Reads in a Cat & Frog Studio config file.

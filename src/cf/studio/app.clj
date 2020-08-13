@@ -23,8 +23,8 @@
 (defn license-dialog
   [{:keys [fx/context]}]
   {:fx/type :dialog
-   :title (fx/sub context translate-sub ::license-dialog-title)
-   :showing (not (fx/sub context :license-accepted))
+   :title (fx/sub-ctx context translate-sub ::license-dialog-title)
+   :showing (not (fx/sub-val context :license-accepted))
    :on-hidden {::events/type ::events/license-dialog-consumed}
    :dialog-pane {:fx/type :dialog-pane
                  :button-types [:yes :no]
@@ -33,7 +33,7 @@
                                       :spacing 20
                                       :alignment :center
                                       :children [{:fx/type :text
-                                                  :text (fx/sub context translate-sub ::license-dialog-header)
+                                                  :text (fx/sub-ctx context translate-sub ::license-dialog-header)
                                                   :font {:family "" :weight :bold :size 20}}
                                                  {:fx/type :text-area
                                                   :editable false
@@ -43,9 +43,9 @@
 (defn root-view
   [{:keys [fx/context]}]
   {:fx/type :stage
-   :title (fx/sub context translate-sub ::app-title)
+   :title (fx/sub-ctx context translate-sub ::app-title)
    :maximized true
-   :showing (fx/sub context :license-accepted)
+   :showing (fx/sub-val context :license-accepted)
    :on-hidden {::events/type ::events/shutdown}
    :scene {:fx/type :scene
            :stylesheets [(::css/url styles)]
@@ -70,6 +70,6 @@
              ::effects/exception-dialog effects/exception-dialog
              ::effects/shutdown effects/shutdown}
    :desc-fn (fn [context]
-              (if (fx/sub context :license-accepted)
+              (if (fx/sub-val context :license-accepted)
                 {:fx/type root-view}
                 {:fx/type license-dialog}))))

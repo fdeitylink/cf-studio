@@ -5,7 +5,7 @@
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[aysylu/loom "1.0.2"]
                  [clj-commons/fs "1.5.2"]
-                 [cljfx "1.7.4"]
+                 [cljfx "1.7.5"]
                  [cljfx/css "1.1.0"]
                  [com.taoensso/tempura "1.2.1"]
                  [org.clojure/clojure "1.10.1"]

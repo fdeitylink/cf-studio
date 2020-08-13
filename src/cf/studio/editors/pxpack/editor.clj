@@ -28,7 +28,7 @@
                       :style-class "app-title"}
                :right {:fx/type :text
                        :text (-> context
-                                 (fx/sub file-graph/file-data-sub path)
+                                 (fx/sub-ctx file-graph/file-data-sub path)
                                  (get-in [::pxpack/metadata ::metadata/name]))
                        :text-alignment :right
                        :style-class "app-text-small"}
@@ -38,6 +38,6 @@
                                (for [[text editor] {::metadata pxpack-metadata-editor
                                                     ::tile-layers tile-layers-editor}]
                                  {:fx/type :tab
-                                  :text (fx/sub context translate-sub text)
+                                  :text (fx/sub-ctx context translate-sub text)
                                   :content {:fx/type editor
                                             :path path}}))}}]})

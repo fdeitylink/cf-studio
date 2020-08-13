@@ -10,23 +10,23 @@
 
 (defn- context-menu
   [{:keys [fx/context]}]
-  (let [path (fx/sub context :selected-path)]
+  (let [path (fx/sub-val context :selected-path)]
     {:fx/type :context-menu
      :items [{:fx/type :menu-item
-              :text (fx/sub context translate-sub ::open)
+              :text (fx/sub-ctx context translate-sub ::open)
               ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
-              :disable (not (fx/sub context :game-data))
+              :disable (not (fx/sub-val context :game-data))
               :on-action {::events/type ::events/open-selected-path}}
              #_{:fx/type :menu-item
-                :text (fx/sub context translate-sub ::delete)
+                :text (fx/sub-ctx context translate-sub ::delete)
                 :accelerator [:delete]
-                :disable (not (fx/sub context :game-data))
+                :disable (not (fx/sub-val context :game-data))
                 :on-action {::events/type ::events/delete-file}}
              {:fx/type :menu-item
-              :text (fx/sub context translate-sub ::close)
+              :text (fx/sub-ctx context translate-sub ::close)
               :accelerator [:ctrl :w]
-              :disable (not (and path (fx/sub context file-graph/editing-file?-sub path)))
+              :disable (not (and path (fx/sub-ctx context file-graph/editing-file?-sub path)))
               :on-action {::events/type ::events/close-editor :path path}}]}))
 
 (def ^:private resource-types
@@ -38,7 +38,7 @@
 (defn- editing-list-sub
   [context resource-type]
   (-> context
-      (fx/sub file-graph/filter-editing-files-sub)
+      (fx/sub-ctx file-graph/filter-editing-files-sub)
       (file-graph/filter-file-type resource-type)
       file-graph/paths
       sort))
@@ -48,16 +48,16 @@
 (defn- open-list-sub
   [context resource-type]
   (-> context
-      (fx/sub file-graph/filter-open-files-sub)
+      (fx/sub-ctx file-graph/filter-open-files-sub)
       (file-graph/filter-file-type resource-type)
       file-graph/paths
-      (#(apply disj %1 %2) (fx/sub context editing-list-sub resource-type))
+      (#(apply disj %1 %2) (fx/sub-ctx context editing-list-sub resource-type))
       sort))
 
 (defn- closed-list-sub
   [context resource-type]
   (-> context
-      (fx/sub file-graph/filter-closed-files-sub)
+      (fx/sub-ctx file-graph/filter-closed-files-sub)
       (file-graph/filter-file-type resource-type)
       file-graph/paths
       sort))
@@ -68,19 +68,19 @@
    :value (->> resource-type
                name
                (keyword "cf.studio.file-list")
-               (fx/sub context translate-sub))
-   :children (let [editing (fx/sub context editing-list-sub resource-type)
-                   open (fx/sub context open-list-sub resource-type)
-                   closed (fx/sub context closed-list-sub resource-type)]
+               (fx/sub-ctx context translate-sub))
+   :children (let [editing (fx/sub-ctx context editing-list-sub resource-type)
+                   open (fx/sub-ctx context open-list-sub resource-type)
+                   closed (fx/sub-ctx context closed-list-sub resource-type)]
                (doall
                 (list*
                  {:fx/type :tree-item
                   :expanded true
-                  :value (fx/sub context translate-sub ::editing-files)
+                  :value (fx/sub-ctx context translate-sub ::editing-files)
                   :children (for [file editing]
                               {:fx/type :tree-item :value file})}
                  {:fx/type :tree-item
-                  :value (fx/sub context translate-sub ::open-files)
+                  :value (fx/sub-ctx context translate-sub ::open-files)
                   :children (for [file open]
                               {:fx/type :tree-item :value file})}
                  (for [file closed]
@@ -90,7 +90,7 @@
   [{:keys [fx/context]}]
   {:fx/type :v-box
    :children [{:fx/type :label
-               :text (fx/sub context translate-sub ::label)
+               :text (fx/sub-ctx context translate-sub ::label)
                :style-class ["app-title" "label"]}
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always
@@ -114,3 +114,4 @@
                                         (for [group resource-types]
                                           {:fx/type file-group
                                            :resource-type group}))}}}]})
+
