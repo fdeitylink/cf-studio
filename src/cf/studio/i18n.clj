@@ -5,18 +5,18 @@
             [taoensso.tempura :as tempura])
   (:import java.io.PushbackReader))
 
-(def translation-file-regex
+(def ^:private translation-file-regex
   "Regex for locating translation files."
   #"^.+\.clj$")
 
 (defonce
-  ^{:doc "A sequence of translation files for Cat & Frog Studio."
+  ^{:doc "Sequence of translation files for Cat & Frog Studio."
     :private true}
   translation-files
   (fs/find-files (io/file "translations") translation-file-regex))
 
 (defonce
-  ^{:doc "A sequence of locales Cat & Frog Studio has translations for."}
+  ^{:doc "Sequence of locales Cat & Frog Studio has translations for."}
   translated-locales
   (map #(fs/base-name % true) translation-files))
 
@@ -36,7 +36,7 @@
    translation-files))
 
 (defn translate
-  "Translation function for Cat & Frog Studio. Use to retrieve locale-specific strings"
+  "Translation function for Cat & Frog Studio. Use to retrieve locale-specific strings."
   [locale resource-id & args]
   (apply tempura/tr {:dict translation-map} [locale :en] [resource-id] args))
 
