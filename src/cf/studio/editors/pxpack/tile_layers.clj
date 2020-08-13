@@ -5,7 +5,6 @@
             [cf.kero.tile.tileset :as tileset]
             [cf.studio.file-graph :as file-graph]
             [cljfx.api :as fx]
-            clojure.string
             [me.raynes.fs :as fs])
   (:import javafx.scene.canvas.Canvas
            [javafx.scene.image Image PixelFormat WritableImage WritablePixelFormat]
@@ -59,7 +58,7 @@
   "Draws the tiles in `tiles` in the specified region, scaled by `scale`, onto `canvas`."
   [^Canvas canvas ^Image tileset tiles x y width height scale]
   (future
-    (when (pos? (* width height))
+    (when (and (some? tileset) (pos? (* width height)))
       (let [tiles-buf (tiles-buffer width height)
             img-x (* x tileset/tile-width scale)
             img-y (* y tileset/tile-height scale)
@@ -129,10 +128,10 @@
                           (for [layer (reverse tile-layer/layers)
                                 :let [tiles (get-in data [::pxpack/tile-layers layer])
                                       tileset-name (get-in metadata [::metadata/layer-metadata layer ::metadata/tileset])
-                                      tileset (->> deps
-                                                   (filter #(clojure.string/includes? (fs/base-name % true) tileset-name))
-                                                   first
-                                                   (fx/sub context file-graph/file-data-sub))]]
+                                      tileset (some->> deps
+                                                       (filter #(= (fs/base-name % true) tileset-name))
+                                                       first
+                                                       (fx/sub context file-graph/file-data-sub))]]
                             {:fx/type tile-layer-view
                              :tiles tiles
                              :tileset tileset}))}}))
