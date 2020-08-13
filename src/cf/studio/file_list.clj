@@ -33,6 +33,35 @@
   "List of resource types that have editor implementations and thus appear in this tree view"
   [::pxpack/pxpack])
 
+;; TODO Filter type, then open/closed?
+
+(defn- editing-list-sub
+  [context resource-type]
+  (-> context
+      (fx/sub file-graph/filter-editing-files-sub)
+      (file-graph/filter-file-type resource-type)
+      file-graph/paths
+      sort))
+
+;; TODO Remove eventually. Not very useful for the user.
+
+(defn- open-list-sub
+  [context resource-type]
+  (-> context
+      (fx/sub file-graph/filter-open-files-sub)
+      (file-graph/filter-file-type resource-type)
+      file-graph/paths
+      (#(apply disj %1 %2) (fx/sub context editing-list-sub resource-type))
+      sort))
+
+(defn- closed-list-sub
+  [context resource-type]
+  (-> context
+      (fx/sub file-graph/filter-closed-files-sub)
+      (file-graph/filter-file-type resource-type)
+      file-graph/paths
+      sort))
+
 (defn- file-group
   [{:keys [fx/context resource-type]}]
   {:fx/type :tree-item
@@ -40,20 +69,9 @@
                name
                (keyword "cf.studio.file-list")
                (fx/sub context translate-sub))
-   ;; TODO sort alphabetically
-   :children (let [editing (-> context
-                               (fx/sub file-graph/filter-editing-files-sub)
-                               (file-graph/filter-file-type resource-type)
-                               file-graph/paths)
-                   open (-> context
-                            (fx/sub file-graph/filter-open-files-sub)
-                            (file-graph/filter-file-type resource-type)
-                            file-graph/paths
-                            (clojure.set/difference editing))
-                   closed (-> context
-                              (fx/sub file-graph/filter-closed-files-sub)
-                              (file-graph/filter-file-type resource-type)
-                              file-graph/paths)]
+   :children (let [editing (fx/sub context editing-list-sub resource-type)
+                   open (fx/sub context open-list-sub resource-type)
+                   closed (fx/sub context closed-list-sub resource-type)]
                (doall
                 (list*
                  {:fx/type :tree-item
