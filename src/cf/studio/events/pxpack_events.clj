@@ -12,7 +12,11 @@
         tilesets (zipmap
                   (map ::metadata/tileset (-> metadata ::metadata/layer-metadata vals))
                   (repeat ::game-data/tileset))]
-    {:context (fx/swap-context context update-in [:editors path :visible-layers] #(or % tile-layer/layers))
+    {:context (fx/swap-context context update-in [:editors path]
+                               (fn [editor]
+                                 (-> editor
+                                     (update :visible-layers #(or % tile-layer/layers))
+                                     (update :scale #(or % 2)))))
      :dispatch {::type ::load-dependencies
                 :path path
                 :dependencies (remove (comp clojure.string/blank? key) (merge spritesheet tilesets))}}))
@@ -20,3 +24,7 @@
 (defmethod event-handler ::pxpack-visible-tile-layers-changed
   [{:keys [fx/context fx/event path layer]}]
   {:context (fx/swap-context context update-in [:editors path :visible-layers] (if event conj disj) layer)})
+
+(defmethod event-handler ::pxpack-tile-layer-scale-changed
+  [{:keys [fx/context fx/event path]}]
+  {:context (fx/swap-context context assoc-in [:editors path :scale] event)})

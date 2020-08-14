@@ -109,8 +109,7 @@
                          (fx/sub-ctx context file-graph/file-data-sub))
 
         visible (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-        ;; TODO Store per-editor scale in context
-        scale 4]
+        scale (fx/sub-val context get-in [:editors path :scale])]
     {:fx/type :canvas
      :width (* scale tileset/tile-width (tile-layer/width tiles))
      :height (* scale tileset/tile-height (tile-layer/height tiles))
@@ -131,19 +130,33 @@
   [{:keys [fx/context path]}]
   {:fx/type :grid-pane
    :style-class "app-tile-layer-prefs"
-   :children (doall
-              (for [[row layer] (map-indexed vector tile-layer/layers)]
-                {:fx/type :check-box
-                 :grid-pane/row row
-                 :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-                 :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
-                                       :path path
-                                       :layer layer}
-                 :style-class ["check-box" "app-text-small"]
-                 :text (fx/sub-ctx context translate-sub (->> layer
-                                                              name
-                                                              (keyword "cf.studio.editors.pxpack.tile-layers")
-                                                              (fx/sub-ctx context translate-sub)))}))})
+   :children (conj
+              (vec
+               (for [[row layer] (map-indexed vector tile-layer/layers)]
+                 {:fx/type :check-box
+                  :grid-pane/row row
+                  :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
+                  :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
+                                        :path path
+                                        :layer layer}
+                  :style-class ["check-box" "app-text-small"]
+                  :text (fx/sub-ctx context translate-sub (->> layer
+                                                               name
+                                                               (keyword "cf.studio.editors.pxpack.tile-layers")
+                                                               (fx/sub-ctx context translate-sub)))}))
+              {:fx/type :slider
+               :grid-pane/row 3
+               :min 0.5
+               :max 4
+               :block-increment 0.5
+               :major-tick-unit 1
+               :minor-tick-count 1
+               :show-tick-labels true
+               :show-tick-marks true
+               :snap-to-ticks true
+               :value (fx/sub-val context get-in [:editors path :scale])
+               :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
+                                  :path path}})})
 
 (defn tile-layers-editor
   [{:keys [fx/context path]}]
