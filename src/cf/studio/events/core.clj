@@ -139,7 +139,7 @@
   (concat
    [[:context (fx/swap-context context update :files file-graph/open-editor path)]
     [:dispatch {::type (case type
-                         ::pxpack/pxpack ::pxpack-add-dependencies)
+                         ::pxpack/pxpack ::pxpack-init-editor)
                 :file file}]
     [:dispatch {::type ::switch-editor :path path}]]))
 

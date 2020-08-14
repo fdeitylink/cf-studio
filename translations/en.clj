@@ -48,4 +48,7 @@
 
  :cf.studio.editors.pxpack.editor {:metadata "Metadata"
                                    :tile-layers "Tile Layers"
-                                   :script "Script"}}
+                                   :script "Script"}
+ :cf.studio.editors.pxpack.tile-layers {:foreground "Foreground"
+                                        :middleground "Middleground"
+                                        :background "Background"}}

@@ -9,4 +9,7 @@
             "-text" {"-small" {:-fx-font-size 15}
                      "-medium" {:-fx-font-size 20}
                      "-large" {:-fx-font-size 25}}
-            "-file-list-cell" {:-fx-font [15 :sans-serif]}}}))
+            "-file-list-cell" {:-fx-font [15 :sans-serif]}
+            "-tile-layer-prefs" {:-fx-hgap 5
+                                 :-fx-vgap 5
+                                 :-fx-padding 5}}}))

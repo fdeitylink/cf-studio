@@ -3,6 +3,8 @@
             [cf.kero.field.pxpack :as pxpack]
             [cf.kero.field.tile-layer :as tile-layer]
             [cf.kero.tile.tileset :as tileset]
+            [cf.studio.events.core :as events]
+            [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.file-graph :as file-graph]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs])
@@ -105,31 +107,63 @@
                          (filter #(= (fs/base-name % true) tileset-name))
                          first
                          (fx/sub-ctx context file-graph/file-data-sub))
+
+        visible (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
         ;; TODO Store per-editor scale in context
         scale 4]
     {:fx/type :canvas
      :width (* scale tileset/tile-width (tile-layer/width tiles))
      :height (* scale tileset/tile-height (tile-layer/height tiles))
+     :visible visible
      :draw (fn [^Canvas canvas]
-             (doto canvas
-               (-> .getGraphicsContext2D
-                   (.setImageSmoothing false))
-               (draw-tile-layer! tileset tiles scale)))}))
+             ;; TODO
+             ;; This impl has lots of needless redrawing
+             ;; i.e. when invisible -> visible,
+             ;;      when one tile is changed in the whole layer
+             ;; look into creating a mutable impl with more fine-grained control
+             (when visible
+               (doto canvas
+                 (-> .getGraphicsContext2D
+                     (.setImageSmoothing false))
+                 (draw-tile-layer! tileset tiles scale))))}))
+
+(defn- editor-prefs-view
+  [{:keys [fx/context path]}]
+  {:fx/type :grid-pane
+   :style-class "app-tile-layer-prefs"
+   :children (doall
+              (for [[row layer] (map-indexed vector tile-layer/layers)]
+                {:fx/type :check-box
+                 :grid-pane/row row
+                 :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
+                 :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
+                                       :path path
+                                       :layer layer}
+                 :style-class ["check-box" "app-text-small"]
+                 :text (fx/sub-ctx context translate-sub (->> layer
+                                                              name
+                                                              (keyword "cf.studio.editors.pxpack.tile-layers")
+                                                              (fx/sub-ctx context translate-sub)))}))})
 
 (defn tile-layers-editor
   [{:keys [fx/context path]}]
   (let [{::metadata/keys [red green blue]} (-> context
                                                (fx/sub-ctx file-graph/file-data-sub path)
                                                (get-in [::pxpack/metadata ::metadata/bg-color]))]
-    {:fx/type :scroll-pane
-     :content {:fx/type :stack-pane
-               :alignment :top-left
-               :background {:fills [{:fill (Color/rgb red green blue)
-                                     :radii :empty
-                                     :insets :empty}]}
-               :children (mapv
-                          (fn [layer]
-                            {:fx/type tile-layer-view
-                             :path path
-                             :layer layer})
-                          (reverse tile-layer/layers))}}))
+    {:fx/type :v-box
+     :children [{:fx/type editor-prefs-view
+                 :path path}
+                {:fx/type :scroll-pane
+                 :v-box/vgrow :always
+                 :content {:fx/type :stack-pane
+                           ;; TODO CSS
+                           :alignment :top-left
+                           :background {:fills [{:fill (Color/rgb red green blue)
+                                                 :radii :empty
+                                                 :insets :empty}]}
+                           :children (mapv
+                                      (fn [layer]
+                                        {:fx/type tile-layer-view
+                                         :path path
+                                         :layer layer})
+                                      (reverse tile-layer/layers))}}]}))
