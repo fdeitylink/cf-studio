@@ -95,43 +95,41 @@
    (tile-layer/height tiles)
    scale))
 
-(defn- tile-layer-canvas
-  "Creates a `Canvas` for displaying `tiles` with the given `scale`."
-  [tiles scale]
-  (let [w (* scale tileset/tile-width (tile-layer/width tiles))
-        h (* scale tileset/tile-height (tile-layer/height tiles))]
-    (doto (Canvas. w h)
-      (-> .getGraphicsContext2D
-          (.setImageSmoothing false)))))
-
 (defn- tile-layer-view
-  [{:keys [tiles tileset]}]
-  ;; TODO Store per-editor scale in context
-  (let [scale 4]
-    {:fx/type fx/ext-instance-factory
-     :create #(doto (tile-layer-canvas tiles scale)
-                (draw-tile-layer! tileset tiles scale))}))
+  [{:keys [fx/context path layer]}]
+  (let [data (fx/sub-ctx context file-graph/file-data-sub path)
+        deps (fx/sub-ctx context file-graph/file-dependencies-sub path)
+        tiles (get-in data [::pxpack/tile-layers layer])
+        tileset-name (get-in data [::pxpack/metadata ::metadata/layer-metadata layer ::metadata/tileset])
+        tileset (some->> deps
+                         (filter #(= (fs/base-name % true) tileset-name))
+                         first
+                         (fx/sub-ctx context file-graph/file-data-sub))
+        ;; TODO Store per-editor scale in context
+        scale 4]
+    {:fx/type :canvas
+     :width (* scale tileset/tile-width (tile-layer/width tiles))
+     :height (* scale tileset/tile-height (tile-layer/height tiles))
+     :draw (fn [^Canvas canvas]
+             (doto canvas
+               (-> .getGraphicsContext2D
+                   (.setImageSmoothing false))
+               (draw-tile-layer! tileset tiles scale)))}))
 
 (defn tile-layers-editor
   [{:keys [fx/context path]}]
-  (let [data (fx/sub-ctx context file-graph/file-data-sub path)
-        metadata (::pxpack/metadata data)
-        {::metadata/keys [red green blue]} (::metadata/bg-color metadata)
-        deps (fx/sub-ctx context file-graph/file-dependencies-sub path)]
+  (let [{::metadata/keys [red green blue]} (-> context
+                                               (fx/sub-ctx file-graph/file-data-sub path)
+                                               (get-in [::pxpack/metadata ::metadata/bg-color]))]
     {:fx/type :scroll-pane
      :content {:fx/type :stack-pane
                :alignment :top-left
                :background {:fills [{:fill (Color/rgb red green blue)
                                      :radii :empty
                                      :insets :empty}]}
-               :children (doall
-                          (for [layer (reverse tile-layer/layers)
-                                :let [tiles (get-in data [::pxpack/tile-layers layer])
-                                      tileset-name (get-in metadata [::metadata/layer-metadata layer ::metadata/tileset])
-                                      tileset (some->> deps
-                                                       (filter #(= (fs/base-name % true) tileset-name))
-                                                       first
-                                                       (fx/sub-ctx context file-graph/file-data-sub))]]
+               :children (mapv
+                          (fn [layer]
                             {:fx/type tile-layer-view
-                             :tiles tiles
-                             :tileset tileset}))}}))
+                             :path path
+                             :layer layer})
+                          (reverse tile-layer/layers))}}))
