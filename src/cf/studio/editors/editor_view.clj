@@ -17,5 +17,4 @@
   [_]
   {:fx/type :stack-pane
    :children [{:fx/type child-editor
-               :stack-pane/alignment :center
-               :stack-pane/margin 10}]})
+               :stack-pane/alignment :center}]})

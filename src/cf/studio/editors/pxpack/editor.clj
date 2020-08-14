@@ -7,37 +7,36 @@
             [cljfx.api :as fx]
             [me.raynes.fs :as fs]))
 
-(defn- child-editor-text
-  [type]
-  {:fx/type :text
-   :text (str type)
-   :style-class "app-text-small"})
-
 (defn- pxpack-metadata-editor
   [{:keys [path]}]
-  (child-editor-text ::pxpack/metadata))
+  {:fx/type :text
+   :text (str ::pxpack/metadata)
+   :style-class "app-text-small"})
 
 (defn pxpack-editor
   [{:keys [fx/context path]}]
   {:fx/type :v-box
-   :alignment :top-center
-   :children [{:fx/type :border-pane
-               :left {:fx/type :text
-                      :text (fs/base-name path true)
-                      :text-alignment :left
-                      :style-class "app-title"}
-               :right {:fx/type :text
-                       :text (-> context
-                                 (fx/sub-ctx file-graph/file-data-sub path)
-                                 (get-in [::pxpack/metadata ::metadata/name]))
-                       :text-alignment :right
-                       :style-class "app-text-small"}
-               :bottom {:fx/type :tab-pane
-                        :tab-closing-policy :unavailable
-                        :tabs (doall
-                               (for [[text editor] {::metadata pxpack-metadata-editor
-                                                    ::tile-layers tile-layers-editor}]
-                                 {:fx/type :tab
-                                  :text (fx/sub-ctx context translate-sub text)
-                                  :content {:fx/type editor
-                                            :path path}}))}}]})
+   :children [{:fx/type :h-box
+               :children [{:fx/type :text
+                           :text (fs/base-name path true)
+                           :h-box/margin 10
+                           :style-class "app-title"}
+                          ;; Filler to push the text to the corners
+                          {:fx/type :region
+                           :h-box/hgrow :always}
+                          {:fx/type :text
+                           :h-box/margin 10
+                           :text (-> context
+                                     (fx/sub-ctx file-graph/file-data-sub path)
+                                     (get-in [::pxpack/metadata ::metadata/name]))
+                           :style-class "app-text-small"}]}
+              {:fx/type :tab-pane
+               :tab-closing-policy :unavailable
+               :v-box/vgrow :always
+               :tabs (doall
+                      (for [[text editor] {::metadata pxpack-metadata-editor
+                                           ::tile-layers tile-layers-editor}]
+                        {:fx/type :tab
+                         :text (fx/sub-ctx context translate-sub text)
+                         :content {:fx/type editor
+                                   :path path}}))}]})

@@ -9,5 +9,4 @@
             "-text" {"-small" {:-fx-font-size 15}
                      "-medium" {:-fx-font-size 20}
                      "-large" {:-fx-font-size 25}}
-            "-file-list-cell" {:-fx-font [15 :sans-serif]}}
-    ".hbox" {:-fx-spacing 5.0}}))
+            "-file-list-cell" {:-fx-font [15 :sans-serif]}}}))
