@@ -15,11 +15,16 @@
     {:context (fx/swap-context context update-in [:editors path]
                                (fn [editor]
                                  (-> editor
+                                     (update :layer #(or % (first tile-layer/layers)))
                                      (update :visible-layers #(or % tile-layer/layers))
                                      (update :scale #(or % 2)))))
      :dispatch {::type ::load-dependencies
                 :path path
                 :dependencies (remove (comp clojure.string/blank? key) (merge spritesheet tilesets))}}))
+
+(defmethod event-handler ::pxpack-selected-tile-layer-changed
+  [{:keys [fx/context path layer]}]
+  {:context (fx/swap-context context assoc-in [:editors path :layer] layer)})
 
 (defmethod event-handler ::pxpack-visible-tile-layers-changed
   [{:keys [fx/context fx/event path layer]}]

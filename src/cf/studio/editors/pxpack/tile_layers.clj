@@ -132,20 +132,29 @@
    :style-class "app-tile-layer-prefs"
    :children (conj
               (vec
-               (for [[row layer] (map-indexed vector tile-layer/layers)]
-                 {:fx/type :check-box
-                  :grid-pane/row row
-                  :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-                  :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
-                                        :path path
-                                        :layer layer}
-                  :style-class ["check-box" "app-text-small"]
-                  :text (fx/sub-ctx context translate-sub (->> layer
-                                                               name
-                                                               (keyword "cf.studio.editors.pxpack.tile-layers")
-                                                               (fx/sub-ctx context translate-sub)))}))
+               (flatten
+                (for [[row layer] (map-indexed vector tile-layer/layers)]
+                  [{:fx/type :radio-button
+                    :grid-pane/row row
+                    :selected (= layer (fx/sub-val context get-in [:editors path :layer]))
+                    :on-selected-changed {::events/type ::events/pxpack-selected-tile-layer-changed
+                                          :path path
+                                          :layer layer}}
+                   {:fx/type :check-box
+                    :grid-pane/row row
+                    :grid-pane/column 1
+                    :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
+                    :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
+                                          :path path
+                                          :layer layer}
+                    :style-class ["check-box" "app-text-small"]
+                    :text (fx/sub-ctx context translate-sub (->> layer
+                                                                 name
+                                                                 (keyword "cf.studio.editors.pxpack.tile-layers")
+                                                                 (fx/sub-ctx context translate-sub)))}])))
               {:fx/type :slider
                :grid-pane/row 3
+               :grid-pane/column-span 2
                :min 0.5
                :max 4
                :block-increment 0.5
