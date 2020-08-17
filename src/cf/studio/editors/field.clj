@@ -1,19 +1,19 @@
-(ns cf.studio.editors.pxpack.editor
+(ns cf.studio.editors.field
   (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.editors.pxpack.tile-layers :refer [tile-layers-editor]]
+            [cf.studio.editors.field-layers :refer [field-layers-editor]]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs]))
 
-(defn- pxpack-metadata-editor
+(defn- field-metadata-editor
   [{:keys [path]}]
   {:fx/type :text
    :text (str ::pxpack/metadata)
    :style-class "app-text-small"})
 
-(defn pxpack-editor
+(defn field-editor
   [{:keys [fx/context path]}]
   {:fx/type :v-box
    :children [{:fx/type :h-box
@@ -31,11 +31,11 @@
                                      (get-in [::pxpack/metadata ::metadata/name]))
                            :style-class "app-text-small"}]}
               {:fx/type :tab-pane
-               :tab-closing-policy :unavailable
                :v-box/vgrow :always
+               :tab-closing-policy :unavailable
                :tabs (doall
-                      (for [[text editor] {::metadata pxpack-metadata-editor
-                                           ::tile-layers tile-layers-editor}]
+                      (for [[text editor] {::metadata field-metadata-editor
+                                           ::tile-layers field-layers-editor}]
                         {:fx/type :tab
                          :text (fx/sub-ctx context translate-sub text)
                          :content {:fx/type editor

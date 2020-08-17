@@ -1,4 +1,4 @@
-(ns cf.studio.editors.pxpack.tile-layers
+(ns cf.studio.editors.field-layers
   (:require [cf.kero.field.metadata :as metadata]
             [cf.kero.field.pxpack :as pxpack]
             [cf.kero.field.tile-layer :as tile-layer]
@@ -129,7 +129,7 @@
 (defn- editor-prefs-view
   [{:keys [fx/context path]}]
   {:fx/type :grid-pane
-   :style-class "app-tile-layer-prefs"
+   :style-class "app-field-layer-editor-prefs"
    :children (conj
               (vec
                (flatten
@@ -150,7 +150,7 @@
                     :style-class ["check-box" "app-text-small"]
                     :text (fx/sub-ctx context translate-sub (->> layer
                                                                  name
-                                                                 (keyword "cf.studio.editors.pxpack.tile-layers")
+                                                                 (keyword "cf.studio.editors.field-layers")
                                                                  (fx/sub-ctx context translate-sub)))}])))
               {:fx/type :slider
                :grid-pane/row 3
@@ -167,7 +167,7 @@
                :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
                                   :path path}})})
 
-(defn tile-layers-editor
+(defn field-layers-editor
   [{:keys [fx/context path]}]
   (let [{::metadata/keys [red green blue]} (-> context
                                                (fx/sub-ctx file-graph/file-data-sub path)

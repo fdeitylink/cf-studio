@@ -46,9 +46,9 @@
 
  :cf.studio.editors.editor-view {:no-editor-open "Open a file to start editing"}
 
- :cf.studio.editors.pxpack.editor {:metadata "Metadata"
-                                   :tile-layers "Tile Layers"
-                                   :script "Script"}
- :cf.studio.editors.pxpack.tile-layers {:foreground "Foreground"
-                                        :middleground "Middleground"
-                                        :background "Background"}}
+ :cf.studio.editors.field {:metadata "Metadata"
+                           :tile-layers "Tile Layers"
+                           :script "Script"}
+ :cf.studio.editors.field-layers {:foreground "Foreground"
+                                  :middleground "Middleground"
+                                  :background "Background"}}
