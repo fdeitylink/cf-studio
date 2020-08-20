@@ -51,4 +51,6 @@
                            :script "Script"}
  :cf.studio.editors.field-layers {:foreground "Foreground"
                                   :middleground "Middleground"
-                                  :background "Background"}}
+                                  :background "Background"
+                                  :layers "Layers"
+                                  :layer-scale "Layer Scale"}}

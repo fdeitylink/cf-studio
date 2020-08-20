@@ -130,10 +130,14 @@
   [{:keys [fx/context path]}]
   {:fx/type :grid-pane
    :style-class "app-field-layer-editor-prefs"
-   :children (conj
-              (vec
-               (flatten
-                (for [[row layer] (map-indexed vector tile-layer/layers)]
+   :children (flatten
+              [{:fx/type :label
+                :grid-pane/row 0
+                :grid-pane/column-span 2
+                :text (fx/sub-ctx context translate-sub ::layers)
+                :style-class "app-title"}
+               (vec
+                (for [[layer row] (map vector tile-layer/layers (range 1 4))]
                   [{:fx/type :radio-button
                     :grid-pane/row row
                     :selected (= layer (fx/sub-val context get-in [:editors path :layer]))
@@ -151,21 +155,26 @@
                     :text (fx/sub-ctx context translate-sub (->> layer
                                                                  name
                                                                  (keyword "cf.studio.editors.field-layers")
-                                                                 (fx/sub-ctx context translate-sub)))}])))
-              {:fx/type :slider
-               :grid-pane/row 3
-               :grid-pane/column-span 2
-               :min 0.5
-               :max 4
-               :block-increment 0.5
-               :major-tick-unit 1
-               :minor-tick-count 1
-               :show-tick-labels true
-               :show-tick-marks true
-               :snap-to-ticks true
-               :value (fx/sub-val context get-in [:editors path :scale])
-               :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
-                                  :path path}})})
+                                                                 (fx/sub-ctx context translate-sub)))}]))
+               {:fx/type :label
+                :grid-pane/row 4
+                :grid-pane/column-span 2
+                :text (fx/sub-ctx context translate-sub ::layer-scale)
+                :style-class "app-title"}
+               {:fx/type :slider
+                :grid-pane/row 5
+                :grid-pane/column-span 2
+                :min 0.5
+                :max 4
+                :block-increment 0.5
+                :major-tick-unit 1
+                :minor-tick-count 1
+                :show-tick-labels true
+                :show-tick-marks true
+                :snap-to-ticks true
+                :value (fx/sub-val context get-in [:editors path :scale])
+                :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
+                                   :path path}}])})
 
 (defn field-layers-editor
   [{:keys [fx/context path]}]
@@ -174,7 +183,7 @@
                                                (get-in [::pxpack/metadata ::metadata/bg-color]))]
     {:fx/type :split-pane
      :orientation :vertical
-     :divider-positions [0.1]
+     :divider-positions [0.2]
      :items [{:fx/type editor-prefs-view
               :path path}
              {:fx/type :scroll-pane
