@@ -172,20 +172,21 @@
   (let [{::metadata/keys [red green blue]} (-> context
                                                (fx/sub-ctx file-graph/file-data-sub path)
                                                (get-in [::pxpack/metadata ::metadata/bg-color]))]
-    {:fx/type :v-box
-     :children [{:fx/type editor-prefs-view
-                 :path path}
-                {:fx/type :scroll-pane
-                 :v-box/vgrow :always
-                 :content {:fx/type :stack-pane
+    {:fx/type :split-pane
+     :orientation :vertical
+     :divider-positions [0.1]
+     :items [{:fx/type editor-prefs-view
+              :path path}
+             {:fx/type :scroll-pane
+              :content {:fx/type :stack-pane
                            ;; TODO CSS
-                           :alignment :top-left
-                           :background {:fills [{:fill (Color/rgb red green blue)
-                                                 :radii :empty
-                                                 :insets :empty}]}
-                           :children (mapv
-                                      (fn [layer]
-                                        {:fx/type tile-layer-view
-                                         :path path
-                                         :layer layer})
-                                      (reverse tile-layer/layers))}}]}))
+                        :alignment :top-left
+                        :background {:fills [{:fill (Color/rgb red green blue)
+                                              :radii :empty
+                                              :insets :empty}]}
+                        :children (mapv
+                                   (fn [layer]
+                                     {:fx/type tile-layer-view
+                                      :path path
+                                      :layer layer})
+                                   (reverse tile-layer/layers))}}]}))
