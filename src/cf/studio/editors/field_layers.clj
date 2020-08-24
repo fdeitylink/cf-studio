@@ -109,7 +109,7 @@
                          (fx/sub-ctx context file-graph/file-data-sub))
 
         visible (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-        scale (fx/sub-val context get-in [:editors path :scale])]
+        scale (fx/sub-val context get-in [:editors path :layer-scale])]
     {:fx/type :canvas
      :width (* scale tileset/tile-width (tile-layer/width tiles))
      :height (* scale tileset/tile-height (tile-layer/height tiles))
@@ -172,7 +172,7 @@
                 :show-tick-labels true
                 :show-tick-marks true
                 :snap-to-ticks true
-                :value (fx/sub-val context get-in [:editors path :scale])
+                :value (fx/sub-val context get-in [:editors path :layer-scale])
                 :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
                                    :path path}}])})
 

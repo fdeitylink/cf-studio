@@ -17,7 +17,7 @@
                                  (-> editor
                                      (update :layer #(or % (first tile-layer/layers)))
                                      (update :visible-layers #(or % tile-layer/layers))
-                                     (update :scale #(or % 2)))))
+                                     (update :layer-scale #(or % 2)))))
      :dispatch {::type ::load-dependencies
                 :path path
                 :dependencies (remove (comp clojure.string/blank? key) (merge spritesheet tilesets))}}))
@@ -32,4 +32,4 @@
 
 (defmethod event-handler ::pxpack-tile-layer-scale-changed
   [{:keys [fx/context fx/event path]}]
-  {:context (fx/swap-context context assoc-in [:editors path :scale] event)})
+  {:context (fx/swap-context context assoc-in [:editors path :layer-scale] event)})
