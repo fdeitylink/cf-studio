@@ -2,7 +2,7 @@
 
 A modding tool for Studio Pixel's 2014 platformer [Kero Blaster](https://en.wikipedia.org/wiki/Kero_Blaster).
 
-[!Screenshot of Cat & Frog Studio](/doc/screenshot.png?raw=true "Screenshot")
+![Screenshot of Cat & Frog Studio](/doc/screenshot.png?raw=true "Screenshot")
 
 ## Installation
 
