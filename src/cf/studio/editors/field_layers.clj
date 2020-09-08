@@ -97,17 +97,24 @@
    (tile-layer/height tiles)
    scale))
 
+(defn- layer->tileset-sub
+  "Returns the tileset image for a field's layer."
+  [context path layer]
+  (let [tileset-name (-> context
+                         (fx/sub-ctx file-graph/file-data-sub path)
+                         (get-in [::pxpack/metadata ::metadata/layer-metadata layer ::metadata/tileset]))]
+    (some->> path
+             (fx/sub-ctx context file-graph/file-dependencies-sub)
+             (filter #(= (fs/base-name % true) tileset-name))
+             first
+             (fx/sub-ctx context file-graph/file-data-sub))))
+
 (defn- tile-layer-view
   [{:keys [fx/context path layer]}]
-  (let [data (fx/sub-ctx context file-graph/file-data-sub path)
-        deps (fx/sub-ctx context file-graph/file-dependencies-sub path)
-        tiles (get-in data [::pxpack/tile-layers layer])
-        tileset-name (get-in data [::pxpack/metadata ::metadata/layer-metadata layer ::metadata/tileset])
-        tileset (some->> deps
-                         (filter #(= (fs/base-name % true) tileset-name))
-                         first
-                         (fx/sub-ctx context file-graph/file-data-sub))
-
+  (let [tiles (-> context
+                  (fx/sub-ctx file-graph/file-data-sub path)
+                  (get-in [::pxpack/tile-layers layer]))
+        tileset (fx/sub-ctx context layer->tileset-sub path layer)
         visible (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
         scale (fx/sub-val context get-in [:editors path :layer-scale])]
     {:fx/type :canvas
@@ -126,55 +133,75 @@
                      (.setImageSmoothing false))
                  (draw-tile-layer! tileset tiles scale))))}))
 
+(defn- tileset-view
+  [{:keys [fx/context path]}]
+  (let [layer (fx/sub-val context get-in [:editors path :layer])
+        image ^Image (fx/sub-ctx context layer->tileset-sub path layer)
+        scale 2 #_(fx/sub-val context get-in [:editors path :tileset-scale])
+        width (* scale (.getWidth image))
+        height (* scale (.getHeight image))]
+    {:fx/type :scroll-pane
+     :content {:fx/type :canvas
+               :width width
+               :height height
+               :draw (fn [^Canvas canvas]
+                       (doto (.getGraphicsContext2D canvas)
+                         (.setImageSmoothing false)
+                         (.clearRect 0 0 width height)
+                         (.drawImage image 0 0 width height)))}}))
+
 (defn- editor-prefs-view
   [{:keys [fx/context path]}]
-  {:fx/type :grid-pane
-   :style-class "app-field-layer-editor-prefs"
-   :children (flatten
-              [{:fx/type :label
-                :grid-pane/row 0
-                :grid-pane/column-span 2
-                :text (fx/sub-ctx context translate-sub ::layers)
-                :style-class "app-title"}
-               (vec
-                (for [[layer row] (map vector tile-layer/layers (range 1 4))]
-                  [{:fx/type :radio-button
-                    :grid-pane/row row
-                    :selected (= layer (fx/sub-val context get-in [:editors path :layer]))
-                    :on-selected-changed {::events/type ::events/pxpack-selected-tile-layer-changed
-                                          :path path
-                                          :layer layer}}
-                   {:fx/type :check-box
-                    :grid-pane/row row
-                    :grid-pane/column 1
-                    :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-                    :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
-                                          :path path
-                                          :layer layer}
-                    :style-class ["check-box" "app-text-small"]
-                    :text (fx/sub-ctx context translate-sub (->> layer
-                                                                 name
-                                                                 (keyword "cf.studio.editors.field-layers")
-                                                                 (fx/sub-ctx context translate-sub)))}]))
-               {:fx/type :label
-                :grid-pane/row 4
-                :grid-pane/column-span 2
-                :text (fx/sub-ctx context translate-sub ::layer-scale)
-                :style-class "app-title"}
-               {:fx/type :slider
-                :grid-pane/row 5
-                :grid-pane/column-span 2
-                :min 0.5
-                :max 4
-                :block-increment 0.5
-                :major-tick-unit 1
-                :minor-tick-count 1
-                :show-tick-labels true
-                :show-tick-marks true
-                :snap-to-ticks true
-                :value (fx/sub-val context get-in [:editors path :layer-scale])
-                :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
-                                   :path path}}])})
+  {:fx/type :split-pane
+   :items [{:fx/type :grid-pane
+            :style-class "app-field-layer-editor-prefs"
+            :children (flatten
+                       [{:fx/type :label
+                         :grid-pane/row 0
+                         :grid-pane/column-span 2
+                         :text (fx/sub-ctx context translate-sub ::layers)
+                         :style-class "app-title"}
+                        (vec
+                         (for [[layer row] (map vector tile-layer/layers (range 1 4))]
+                           [{:fx/type :radio-button
+                             :grid-pane/row row
+                             :selected (= layer (fx/sub-val context get-in [:editors path :layer]))
+                             :on-selected-changed {::events/type ::events/pxpack-selected-tile-layer-changed
+                                                   :path path
+                                                   :layer layer}}
+                            {:fx/type :check-box
+                             :grid-pane/row row
+                             :grid-pane/column 1
+                             :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
+                             :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
+                                                   :path path
+                                                   :layer layer}
+                             :style-class ["check-box" "app-text-small"]
+                             :text (fx/sub-ctx context translate-sub (->> layer
+                                                                          name
+                                                                          (keyword "cf.studio.editors.field-layers")
+                                                                          (fx/sub-ctx context translate-sub)))}]))
+                        {:fx/type :label
+                         :grid-pane/row 4
+                         :grid-pane/column-span 2
+                         :text (fx/sub-ctx context translate-sub ::layer-scale)
+                         :style-class "app-title"}
+                        {:fx/type :slider
+                         :grid-pane/row 5
+                         :grid-pane/column-span 2
+                         :min 0.5
+                         :max 4
+                         :block-increment 0.5
+                         :major-tick-unit 1
+                         :minor-tick-count 1
+                         :show-tick-labels true
+                         :show-tick-marks true
+                         :snap-to-ticks true
+                         :value (fx/sub-val context get-in [:editors path :layer-scale])
+                         :on-value-changed {::events/type ::events/pxpack-tile-layer-scale-changed
+                                            :path path}}])}
+           {:fx/type tileset-view
+            :path path}]})
 
 (defn field-layers-editor
   [{:keys [fx/context path]}]
@@ -188,7 +215,7 @@
               :path path}
              {:fx/type :scroll-pane
               :content {:fx/type :stack-pane
-                           ;; TODO CSS
+                        ;; TODO CSS
                         :alignment :top-left
                         :background {:fills [{:fill (Color/rgb red green blue)
                                               :radii :empty
