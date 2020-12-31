@@ -7,6 +7,7 @@
             [me.raynes.fs :as fs])
   (:import java.io.IOException
            [java.util Collection List]
+           [javafx.application Platform]
            [javafx.stage FileChooser FileChooser$ExtensionFilter Stage]))
 
 (defn choose-file [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
@@ -62,5 +63,5 @@
 (defn shutdown [{:keys [fx/context]} _]
   (config/write-config! (config/context->config context))
   (when-not util/running-in-repl?
-    (javafx.application.Platform/exit)
+    (Platform/exit)
     (shutdown-agents)))
