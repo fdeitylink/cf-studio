@@ -138,11 +138,11 @@
   "If the file corresponding to `path` is open and is closeable, marks it as
   closed and removes its data."
   [files path]
-  (if (and (is-file-open? files path) (can-close-file? files path))
+  (if-not (and (is-file-open? files path) (can-close-file? files path))
+    files
     (-> files
         (loom.attr/add-attr path :open? false)
-        (loom.attr/remove-attr path :data))
-    files))
+        (loom.attr/remove-attr path :data))))
 
 ;; TODO Ensure open? first?
 (defn open-editor
