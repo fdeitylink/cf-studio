@@ -47,3 +47,8 @@
        #(and (= "clojure.main$repl" (.getClassName ^StackTraceElement %))
              (= "doInvoke" (.getMethodName ^StackTraceElement %)))
        (.getStackTrace (Thread/currentThread)))))))
+
+(defn disj*
+  "Same as [[disj]] but takes keyseq instead of rest arg."
+  [set ks]
+  (apply disj set ks))

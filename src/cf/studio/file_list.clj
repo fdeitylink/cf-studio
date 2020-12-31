@@ -3,6 +3,7 @@
             [cf.studio.events.core :as events]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
+            [cf.util :as util]
             [cljfx.api :as fx]
             [cljfx.ext.tree-view :as fx.ext.tree-view]
             [clojure.set]
@@ -51,7 +52,7 @@
       (fx/sub-ctx file-graph/filter-open-files-sub)
       (file-graph/filter-file-type resource-type)
       file-graph/paths
-      (#(apply disj %1 %2) (fx/sub-ctx context editing-list-sub resource-type))
+      (util/disj* (fx/sub-ctx context editing-list-sub resource-type))
       sort))
 
 (defn- closed-list-sub
