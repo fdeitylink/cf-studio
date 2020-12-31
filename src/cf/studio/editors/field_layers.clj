@@ -157,7 +157,7 @@
   [{:keys [fx/context text path value-key on-value-changed-event]}]
   {:fx/type :v-box
    :children [{:fx/type :label
-               :text (fx/sub-ctx context translate-sub text)
+               :text (fx/sub-val context translate-sub text)
                :style-class "app-title"}
               {:fx/type :slider
                :min 0.5
@@ -181,7 +181,7 @@
                        [{:fx/type :label
                          :grid-pane/row 0
                          :grid-pane/column-span 2
-                         :text (fx/sub-ctx context translate-sub ::layers)
+                         :text (fx/sub-val context translate-sub ::layers)
                          :style-class "app-title"}
                         (vec
                          (for [[layer row] (map vector tile-layer/layers (range 1 4))]
@@ -199,10 +199,10 @@
                                                    :path path
                                                    :layer layer}
                              :style-class ["check-box" "app-text-small"]
-                             :text (fx/sub-ctx context translate-sub (->> layer
+                             :text (fx/sub-val context translate-sub (->> layer
                                                                           name
                                                                           (keyword "cf.studio.editors.field-layers")
-                                                                          (fx/sub-ctx context translate-sub)))}]))
+                                                                          (fx/sub-val context translate-sub)))}]))
                         {:fx/type scale-slider
                          :grid-pane/row 4
                          :grid-pane/column-span 2

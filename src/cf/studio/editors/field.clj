@@ -37,6 +37,6 @@
                       (for [[text editor] {::metadata field-metadata-editor
                                            ::tile-layers field-layers-editor}]
                         {:fx/type :tab
-                         :text (fx/sub-ctx context translate-sub text)
+                         :text (fx/sub-val context translate-sub text)
                          :content {:fx/type editor
                                    :path path}}))}]})

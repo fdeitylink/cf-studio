@@ -14,18 +14,18 @@
   (let [path (fx/sub-val context :selected-path)]
     {:fx/type :context-menu
      :items [{:fx/type :menu-item
-              :text (fx/sub-ctx context translate-sub ::open)
+              :text (fx/sub-val context translate-sub ::open)
               ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
               :disable (not (fx/sub-val context :game-data))
               :on-action {::events/type ::events/open-selected-path}}
              #_{:fx/type :menu-item
-                :text (fx/sub-ctx context translate-sub ::delete)
+                :text (fx/sub-val context translate-sub ::delete)
                 :accelerator [:delete]
                 :disable (not (fx/sub-val context :game-data))
                 :on-action {::events/type ::events/delete-file}}
              {:fx/type :menu-item
-              :text (fx/sub-ctx context translate-sub ::close)
+              :text (fx/sub-val context translate-sub ::close)
               :accelerator [:ctrl :w]
               :disable (not (and path (fx/sub-ctx context file-graph/editing-file?-sub path)))
               :on-action {::events/type ::events/close-editor :path path}}]}))
@@ -69,7 +69,7 @@
    :value (->> resource-type
                name
                (keyword "cf.studio.file-list")
-               (fx/sub-ctx context translate-sub))
+               (fx/sub-val context translate-sub))
    :children (let [editing (fx/sub-ctx context editing-list-sub resource-type)
                    open (fx/sub-ctx context open-list-sub resource-type)
                    closed (fx/sub-ctx context closed-list-sub resource-type)]
@@ -77,11 +77,11 @@
                 (list*
                  {:fx/type :tree-item
                   :expanded true
-                  :value (fx/sub-ctx context translate-sub ::editing-files)
+                  :value (fx/sub-val context translate-sub ::editing-files)
                   :children (for [file editing]
                               {:fx/type :tree-item :value file})}
                  {:fx/type :tree-item
-                  :value (fx/sub-ctx context translate-sub ::open-files)
+                  :value (fx/sub-val context translate-sub ::open-files)
                   :children (for [file open]
                               {:fx/type :tree-item :value file})}
                  (for [file closed]
@@ -91,7 +91,7 @@
   [{:keys [fx/context]}]
   {:fx/type :v-box
    :children [{:fx/type :label
-               :text (fx/sub-ctx context translate-sub ::label)
+               :text (fx/sub-val context translate-sub ::label)
                :style-class ["app-title" "label"]}
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always

@@ -1,6 +1,5 @@
 (ns cf.studio.i18n
-  (:require [cljfx.api :as fx]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [taoensso.tempura :as tempura])
   (:import java.io.PushbackReader))
@@ -43,6 +42,6 @@
 ;; TODO tempura uses its own internal caching; make this fx/sub-val'able
 (defn translate-sub
   "Translation function that uses the in-context locale.
-  Can be used with cljfx subscriptions to avoid explicitly specifying the locale."
-  [context resource-id & args]
-  (apply translate (fx/sub-val context :locale) resource-id args))
+  Can be used with [[cljfx.api/sub-val]] to avoid explicitly specifying the locale."
+  [context-val resource-id & args]
+  (apply translate (:locale context-val) resource-id args))

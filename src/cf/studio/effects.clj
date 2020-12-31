@@ -45,7 +45,7 @@
   (fx/on-fx-thread
    (fx/create-component
     {:fx/type :dialog
-     :title (fx/sub-ctx context translate-sub ::exception-dialog-title)
+     :title (fx/sub-val context translate-sub ::exception-dialog-title)
      :showing true
      :dialog-pane {:fx/type :dialog-pane
                    :button-types [:ok]

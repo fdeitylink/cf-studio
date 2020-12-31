@@ -23,7 +23,7 @@
 (defn license-dialog
   [{:keys [fx/context]}]
   {:fx/type :dialog
-   :title (fx/sub-ctx context translate-sub ::license-dialog-title)
+   :title (fx/sub-val context translate-sub ::license-dialog-title)
    :showing (not (fx/sub-val context :license-accepted))
    :on-hidden {::events/type ::events/license-dialog-consumed}
    :dialog-pane {:fx/type :dialog-pane
@@ -33,7 +33,7 @@
                                       :spacing 20
                                       :alignment :center
                                       :children [{:fx/type :text
-                                                  :text (fx/sub-ctx context translate-sub ::license-dialog-header)
+                                                  :text (fx/sub-val context translate-sub ::license-dialog-header)
                                                   :font {:family "" :weight :bold :size 20}}
                                                  {:fx/type :text-area
                                                   :editable false
@@ -43,7 +43,7 @@
 (defn root-view
   [{:keys [fx/context]}]
   {:fx/type :stage
-   :title (fx/sub-ctx context translate-sub ::app-title)
+   :title (fx/sub-val context translate-sub ::app-title)
    :maximized true
    :showing (fx/sub-val context :license-accepted)
    :on-hidden {::events/type ::events/shutdown}

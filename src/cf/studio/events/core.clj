@@ -37,11 +37,11 @@
 (defmethod event-handler ::open-new-mod
   [{:keys [fx/context]}]
   {:dispatch {::type ::close-mod}
-   ::effects/choose-file {:title (fx/sub-ctx context translate-sub ::open-new-mod-chooser-title)
+   ::effects/choose-file {:title (fx/sub-val context translate-sub ::open-new-mod-chooser-title)
                           :initial-directory (if-let [last-path (fx/sub-val context :last-executable-path)]
                                                (fs/parent last-path)
                                                (fs/home))
-                          :extension-filters [{:description (fx/sub-ctx context translate-sub ::open-new-mod-filter-description)
+                          :extension-filters [{:description (fx/sub-val context translate-sub ::open-new-mod-filter-description)
                                                :extensions ["*.exe"]}]
                           :dialog-type :open
                           :on-complete {::type ::open-mod}}})
