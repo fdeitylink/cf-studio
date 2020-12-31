@@ -78,12 +78,12 @@
 (defn file-dependencies
   "Returns a set of paths that `path` depends on."
   [files path]
-  (loom.graph/successors files path))
+  (loom.graph/predecessors files path))
 
 (defn- create-edges
   "Creates a sequence of vector edges between `path` and each item in `dependencies`."
   [path dependencies]
-  (map (partial vector path) dependencies))
+  (map #(vector % path) dependencies))
 
 ;; TODO Ensure editing? first?
 (defn add-file-dependencies
@@ -132,7 +132,7 @@
   [files path]
   (and
    (not (editing-file? files path))
-   (zero? (loom.graph/in-degree files path))))
+   (zero? (loom.graph/out-degree files path))))
 
 (defn- close-file
   "If the file corresponding to `path` is open and is closeable, marks it as
