@@ -202,15 +202,15 @@
   `fn-names` is a list of function symbols. Each new function will
   have `-sub` appended to its name and take the same arguments, except
   with a context as the first argument instead of a file graph."
-  [& fn-names]
+  [& fn-syms]
   `(do
-     ~@(for [fn-name fn-names]
+     ~@(for [fn-sym fn-syms]
          ;; Getting the real arglist makes the docs cleaner than using [context# & rest#]
-         (let [argvec (-> fn-name resolve meta :arglists first (assoc 0 'context))]
-           `(defn ~(-> fn-name (str "-sub") symbol)
-              ~(str "`fx/sub-ctx` version of `" fn-name "`.")
+         (let [argvec (-> fn-sym resolve meta :arglists first (assoc 0 'context))]
+           `(defn ~(-> fn-sym (str "-sub") symbol)
+              ~(str "`fx/sub-ctx` version of `" fn-sym "`.")
               ~argvec
-              (~fn-name (fx/sub-val ~(first argvec) :files) ~@(rest argvec)))))))
+              (~fn-sym (fx/sub-val ~(first argvec) :files) ~@(rest argvec)))))))
 
 (create-sub-fns
  file
