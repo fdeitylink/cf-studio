@@ -32,3 +32,7 @@
 (defmethod event-handler ::pxpack-tile-layer-scale-changed
   [{:keys [fx/context fx/event path]}]
   {:context (fx/swap-context context assoc-in [:editors path :layer-scale] event)})
+
+(defmethod event-handler ::pxpack-tileset-scale-changed
+  [{:keys [fx/context fx/event path]}]
+  {:context (fx/swap-context context assoc-in [:editors path :tileset-scale] event)})

@@ -53,4 +53,5 @@
                                   :middleground "Middleground"
                                   :background "Background"
                                   :layers "Layers"
-                                  :layer-scale "Layer Scale"}}
+                                  :layer-scale "Layer Scale"
+                                  :tileset-scale "Tileset Scale"}}
