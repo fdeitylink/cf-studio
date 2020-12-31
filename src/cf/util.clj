@@ -1,6 +1,7 @@
 (ns cf.util
   (:require [clojure.java.io :as io]
             [clojure.spec.alpha :as spec]
+            loom.graph
             [org.clojars.smee.binary.core :as bin]))
 
 (spec/def ::byte (spec/int-in -0x80 0x80))
@@ -52,3 +53,8 @@
   "Same as [[disj]] but takes keyseq instead of rest arg."
   [set ks]
   (apply disj set ks))
+
+(defn filter-nodes
+  "Same as [[loom.derived/nodes-filtered-by]] but retains attributes."
+  [pred g]
+  (loom.graph/remove-nodes* g (remove pred (loom.graph/nodes g))))

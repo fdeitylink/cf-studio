@@ -1,7 +1,8 @@
 (ns cf.studio.file-graph
   "Namespace for managing Cat & Frog Studio's file graph.
   Manages opening, closing, editing files, and their dependencies on other files."
-  (:require [cljfx.api :as fx]
+  (:require [cf.util :as util]
+            [cljfx.api :as fx]
             loom.attr
             loom.graph))
 
@@ -162,26 +163,21 @@
         (remove-file-dependencies files path deps)
         (reduce close-file files (cons path deps))))))
 
-(defn- filter-nodes
-  "Same as `loom.derived/nodes-filtered-by` but retains attributes."
-  [pred g]
-  (loom.graph/remove-nodes* g (remove pred (loom.graph/nodes g))))
+(defn filter-files
+  "Filters `files` according to `pred`.
+  `pred` is a predicate function taking `files` and a path as arguments."
+  [files pred]
+  (util/filter-nodes (partial pred files) files))
 
 (defn filter-file-attr
   "Filters `files` for files where the attribute `k` has value `v`."
   [files k v]
-  (filter-nodes #(= v (loom.attr/attr files % k)) files))
+  (filter-files files #(= (loom.attr/attr %1 %2 k) v)))
 
 (defn filter-file-type
   "Filters `files` for files with type `type`."
   [files type]
   (filter-file-attr files :type type))
-
-(defn filter-files
-  "Filters `files` according to `pred`.
-  `pred` is a predicate function taking `files` and a node as arguments."
-  [files pred]
-  (filter-nodes (partial pred files) files))
 
 (defn filter-open-files
   "Filters `files` for open files."
