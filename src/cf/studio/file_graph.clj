@@ -154,7 +154,8 @@
   "If the file corresponding to `path` is being edited, closes its editor, removes
   its dependencies, and closes the file and its dependencies where possible."
   [files path]
-  (when (editing-file? files path)
+  (if-not (editing-file? files path)
+    files
     (let [deps (file-dependencies files path)]
       (as-> files files
         (loom.attr/add-attr files path :editing? false)
