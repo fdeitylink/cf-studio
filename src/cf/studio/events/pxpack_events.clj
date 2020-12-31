@@ -12,12 +12,11 @@
         tilesets (zipmap
                   (map ::metadata/tileset (-> metadata ::metadata/layer-metadata vals))
                   (repeat ::game-data/tileset))]
-    {:context (fx/swap-context context update-in [:editors path]
-                               (fn [editor]
-                                 (-> editor
-                                     (update :layer #(or % (first tile-layer/layers)))
-                                     (update :visible-layers #(or % tile-layer/layers))
-                                     (update :layer-scale #(or % 2)))))
+    {:context (fx/swap-context context update-in [:editors path] (partial merge
+                                                                          {:layer (first tile-layer/layers)
+                                                                           :visible-layers tile-layer/layers
+                                                                           :layer-scale 2
+                                                                           :tileset-scale 2}))
      :dispatch {::type ::load-dependencies
                 :path path
                 :dependencies (remove (comp clojure.string/blank? key) (merge spritesheet tilesets))}}))
