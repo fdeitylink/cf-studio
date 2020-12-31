@@ -138,8 +138,11 @@
   (let [layer (fx/sub-val context get-in [:editors path :layer])
         image ^Image (fx/sub-ctx context layer->tileset-sub path layer)
         scale 2 #_(fx/sub-val context get-in [:editors path :tileset-scale])
-        width (* scale (.getWidth image))
-        height (* scale (.getHeight image))]
+        [width height] (if-not image
+                         [0 0]
+                         (map
+                          (partial * scale)
+                          [(.getWidth image) (.getHeight image)]))]
     {:fx/type :scroll-pane
      :content {:fx/type :canvas
                :width width
