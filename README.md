@@ -25,7 +25,7 @@ Cat & Frog Studio uses the following languages and libraries:
 
 ## License
 
-Copyright 2020 Brian "fdeitylink" Christian
+Copyright 2021 Brian "fdeitylink" Christian
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
