@@ -6,11 +6,7 @@ A modding tool for Studio Pixel's 2014 platformer [Kero Blaster](https://en.wiki
 
 ## Installation
 
-Clone the repo and run `lein run`.
-
-## Usage
-
-    $ java -jar cf-studio-0.1.0-SNAPSHOT-standalone.jar [args]
+Clone the repo and run `clj -M -m cf.studio.app`
 
 ## License
 
