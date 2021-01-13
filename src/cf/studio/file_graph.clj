@@ -194,7 +194,7 @@
   [files]
   (filter-files files is-file-closed?))
 
-(defmacro ^:private create-sub-fns
+(defmacro ^:private def-sub-fns
   "Turns functions of file graphs into functions of cljfx contexts.
   `fn-names` is a list of function symbols. Each new function will
   have `-sub` appended to its name and take the same arguments, except
@@ -209,7 +209,7 @@
               ~argvec
               (~fn-sym (fx/sub-val ~(first argvec) :files) ~@(rest argvec)))))))
 
-(create-sub-fns
+(def-sub-fns
  file
  paths
  files
