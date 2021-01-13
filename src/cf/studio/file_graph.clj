@@ -196,9 +196,9 @@
 
 (defmacro ^:private def-sub-fns
   "Turns functions of file graphs into functions of cljfx contexts.
-  `fn-names` is a list of function symbols. Each new function will
-  have `-sub` appended to its name and take the same arguments, except
-  with a context as the first argument instead of a file graph."
+  `fn-syms` is a list of function symbols. Each new function will have
+  '-sub' appended to its name and take the same arguments, except with
+  a cljfx context object as the first argument instead of a file graph."
   [& fn-syms]
   `(do
      ~@(for [fn-sym fn-syms]
