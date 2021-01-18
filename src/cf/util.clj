@@ -58,3 +58,13 @@
   "Same as [[loom.derived/nodes-filtered-by]] but retains attributes."
   [pred g]
   (loom.graph/remove-nodes* g (remove pred (loom.graph/nodes g))))
+
+(defn find-first
+  "Returns the first item in `coll` satisfying `pred`, else nil."
+  [pred coll]
+  (reduce
+   (fn [_ x]
+     (when (pred x)
+       (reduced x)))
+   nil
+   coll))
