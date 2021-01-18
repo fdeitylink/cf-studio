@@ -19,7 +19,7 @@
   (int-array (* width tileset/tile-width height tileset/tile-height)))
 
 (def ^:private ^WritablePixelFormat px-format
-  "`WritablePixelFormat` for use with rendering tile layers."
+  "[[WritablePixelFormat]] for use with rendering tile layers."
   (PixelFormat/getIntArgbPreInstance))
 
 (defn- read-tile!
@@ -42,7 +42,7 @@
                 w)))
 
 (defn- tile-layer-image
-  "Creates an `Image` with the pixels from `tile-buf`.
+  "Creates an [[Image]] with the pixels from `tile-buf`.
   `width` and `height` are the dimensions of the tile layer region being formed."
   [^ints tiles-buf width height]
   (let [w (int (* width tileset/tile-width))
@@ -58,7 +58,7 @@
            w)))))
 
 (defn draw-tile-layer-region!
-  "Draws the tiles in `tiles` in the specified region, scaled by `scale`, onto `canvas`."
+  "Draws the tiles, from `tileset`, in `tiles` in the specified region, scaled by `scale`, onto `canvas`."
   [^Canvas canvas ^Image tileset tiles x y width height scale]
   (future
     (when (and (some? tileset) (pos? (* width height)))
@@ -99,7 +99,7 @@
    scale))
 
 (defn- layer->tileset-sub
-  "Returns the tileset image for a field's layer."
+  "Returns the tileset image for `layer` in the field at `path`."
   [context path layer]
   (let [tileset-name (-> context
                          (fx/sub-ctx file-graph/file-data-sub path)
