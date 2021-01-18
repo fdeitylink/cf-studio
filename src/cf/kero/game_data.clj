@@ -54,7 +54,7 @@
 (spec/def ::executable (spec/and #(= (fs/extension %) ".exe") fs/file?))
 (spec/def ::resource-dir (spec/and (comp #{"rsc_k" "rsc_p"} fs/base-name) fs/directory?))
 
-(defmacro ^:private define-resource-type-specs
+(defmacro ^:private def-resource-type-specs
   "Defines the specs for the resource types"
   []
   `(do
@@ -69,7 +69,7 @@
              :kind set?
              :distinct true)))))
 
-(define-resource-type-specs)
+(def-resource-type-specs)
 
 (spec/def ::game-data (spec/and
                       (spec/keys :req (conj (keys resource-type->path-meta) ::executable ::resource-dir))
