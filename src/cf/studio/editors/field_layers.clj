@@ -6,6 +6,7 @@
             [cf.studio.events.core :as events]
             [cf.studio.i18n :refer [translate-sub]]
             [cf.studio.file-graph :as file-graph]
+            [cf.util :as util]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs])
   (:import javafx.scene.canvas.Canvas
@@ -105,8 +106,7 @@
                          (get-in [::pxpack/metadata ::metadata/layer-metadata layer ::metadata/tileset]))]
     (some->> path
              (fx/sub-ctx context file-graph/file-dependencies-sub)
-             (filter #(= (fs/base-name % true) tileset-name))
-             first
+             (util/find-first #(= tileset-name (fs/base-name % true)))
              (fx/sub-ctx context file-graph/file-data-sub))))
 
 (defn- tile-layer-view
