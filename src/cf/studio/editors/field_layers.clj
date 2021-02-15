@@ -140,9 +140,7 @@
         scale (fx/sub-val context get-in [:editors path :tileset-scale])
         [width height] (if-not image
                          [0 0]
-                         (map
-                          (partial * scale)
-                          [(.getWidth image) (.getHeight image)]))]
+                         (map (partial * scale) [(.getWidth image) (.getHeight image)]))]
     {:fx/type :scroll-pane
      :content {:fx/type :canvas
                :width width
