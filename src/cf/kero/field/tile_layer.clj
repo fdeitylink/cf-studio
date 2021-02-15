@@ -5,7 +5,7 @@
             [org.clojars.smee.binary.core :as bin]))
 
 (def header
-  "Marks the start of the head of a PxPack tile layer."
+  "Marks the start of a PxPack tile layer."
   "pxMAP01")
 
 (def num-tile-layers
