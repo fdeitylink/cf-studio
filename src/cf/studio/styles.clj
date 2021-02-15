@@ -10,6 +10,6 @@
                      "-medium" {:-fx-font-size 20}
                      "-large" {:-fx-font-size 25}}
             "-file-list-cell" {:-fx-font [15 :sans-serif]}
-            "-field-layer-editor-prefs" {:-fx-hgap 5
-                                         :-fx-vgap 5
-                                         :-fx-padding 5}}}))
+            "-field-prefs" {:-fx-hgap 5
+                            :-fx-vgap 5
+                            :-fx-padding 5}}}))

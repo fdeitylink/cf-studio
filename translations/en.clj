@@ -49,9 +49,9 @@
  :cf.studio.editors.field {:metadata "Metadata"
                            :tile-layers "Tile Layers"
                            :script "Script"}
- :cf.studio.editors.field-layers {:foreground "Foreground"
-                                  :middleground "Middleground"
-                                  :background "Background"
-                                  :layers "Layers"
-                                  :layer-scale "Layer Scale"
-                                  :tileset-scale "Tileset Scale"}}
+ :cf.studio.editors.field-prefs {:foreground "Foreground"
+                                 :middleground "Middleground"
+                                 :background "Background"
+                                 :layers "Layers"
+                                 :layer-scale "Layer Scale"
+                                 :tileset-scale "Tileset Scale"}}
