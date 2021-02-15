@@ -42,7 +42,7 @@
                       (spec/keys :req [::red ::green ::blue])))
 (spec/def ::tileset ::kstr/name)
 (spec/def ::visibility-type ::util/byte)
-(spec/def ::scroll-type #(some #{%} scroll-types))
+(spec/def ::scroll-type (set scroll-types))
 (spec/def ::layer-metadata (spec/and
                             (spec/map-of (constantly true) (spec/keys :req [::tileset ::visibility-type ::scroll-type]))
                             (spec/keys :req [::tile-layer/foreground ::tile-layer/middleground ::tile-layer/background])))
