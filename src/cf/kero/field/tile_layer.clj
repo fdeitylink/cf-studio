@@ -83,7 +83,7 @@
      :width :ushort-le
      :height :ushort-le)
     (fn [{:keys [width height]}]
-      (if (= 0 (* width height))
+      (if (zero? (* width height))
         []
         [(bin/constant :byte 0) (bin/repeated (bin/repeated :ubyte :length width) :length height)]))
     nil
@@ -93,6 +93,6 @@
      (let [w (width layer)
            h (height layer)]
        {:header {:header header :width w :height h}
-        :body (if (= 0 (* w h)) [] [0 layer])}))
+        :body (if (zero? (* w h)) [] [0 layer])}))
    ;; Turn file data into 2D vector
    (comp (partial mapv vec) second :body)))
