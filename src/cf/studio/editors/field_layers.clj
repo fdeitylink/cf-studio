@@ -181,7 +181,7 @@
                          :grid-pane/column-span 2
                          :text (fx/sub-val context translate-sub ::layers)
                          :style-class "app-title"}
-                        (vec
+                        (doall
                          (for [[layer row] (map vector tile-layer/layers (range 1 4))]
                            [{:fx/type :radio-button
                              :grid-pane/row row
