@@ -1,8 +1,6 @@
 {:cf.studio.config {:default-notepad-text "Use this space to take notes and keep track of ideas"}
 
- :cf.studio.app {:app-title "Cat & Frog Studio"
-                 :license-dialog-title "License Confirmation"
-                 :license-dialog-header "By using Cat & Frog Studio, you agree to the following license terms"}
+ :cf.studio.app {:app-title "Cat & Frog Studio"}
 
  :cf.studio.events.core {:open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
                          :open-new-mod-filter-description "KB/PH Executable File"}

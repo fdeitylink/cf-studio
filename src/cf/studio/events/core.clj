@@ -6,8 +6,7 @@
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]
             [me.raynes.fs :as fs])
-  (:import javafx.event.Event
-           [javafx.scene.control ButtonBar$ButtonData ButtonType Dialog TreeItem]
+  (:import javafx.scene.control.TreeItem
            [javafx.scene.input KeyCode KeyEvent MouseButton MouseEvent]))
 
 (defmulti event-handler ::type)
@@ -22,14 +21,6 @@
 (defmethod event-handler ::shutdown
   [event-map]
   {::effects/shutdown event-map})
-
-(defmethod event-handler ::license-dialog-consumed
-  [{:keys [^Event fx/event fx/context]}]
-  (let [accepted (= ButtonBar$ButtonData/YES
-                    (-> event ^Dialog (.getSource) ^ButtonType (.getResult) .getButtonData))]
-    (merge
-     {:context (fx/swap-context context assoc :license-accepted accepted)}
-     (when-not accepted {:dispatch {::type ::shutdown}}))))
 
 ;; These events relate to opening and loading a new mod project
 

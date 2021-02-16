@@ -20,32 +20,12 @@
   [config]
   (atom (fx/create-context (assoc config :files (file-graph)))))
 
-(defn license-dialog
-  [{:keys [fx/context]}]
-  {:fx/type :dialog
-   :title (fx/sub-val context translate-sub ::license-dialog-title)
-   :showing (not (fx/sub-val context :license-accepted))
-   :on-hidden {::events/type ::events/license-dialog-consumed}
-   :dialog-pane {:fx/type :dialog-pane
-                 :button-types [:yes :no]
-                 :expanded true
-                 :expandable-content {:fx/type :v-box
-                                      :spacing 20
-                                      :alignment :center
-                                      :children [{:fx/type :text
-                                                  :text (fx/sub-val context translate-sub ::license-dialog-header)
-                                                  :font {:family "" :weight :bold :size 20}}
-                                                 {:fx/type :text-area
-                                                  :editable false
-                                                  :text (slurp "LICENSE")
-                                                  :v-box/vgrow :always}]}}})
-
 (defn root-view
   [{:keys [fx/context]}]
   {:fx/type :stage
    :title (fx/sub-val context translate-sub ::app-title)
    :maximized true
-   :showing (fx/sub-val context :license-accepted)
+   :showing true
    :on-hidden {::events/type ::events/shutdown}
    :scene {:fx/type :scene
            :stylesheets [(::css/url styles)]
@@ -69,7 +49,4 @@
              ::effects/write-file effects/write-file
              ::effects/exception-dialog effects/exception-dialog
              ::effects/shutdown effects/shutdown}
-   :desc-fn (fn [context]
-              (if (fx/sub-val context :license-accepted)
-                {:fx/type root-view}
-                {:fx/type license-dialog}))))
+   :desc-fn (fn [_] {:fx/type root-view})))

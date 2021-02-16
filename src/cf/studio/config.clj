@@ -12,8 +12,7 @@
 
 (def default-config
   "Default config map for Cat & Frog Studio."
-  {:license-accepted false
-   :locale :en
+  {:locale :en
    :last-executable-path nil})
 
 (defn context->config
