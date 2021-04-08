@@ -3,7 +3,7 @@
         cljfx/cljfx {:mvn/version "1.7.12"}
         cljfx/css {:mvn/version "1.1.0"}
         com.taoensso/tempura {:mvn/version "1.2.1"}
-        org.clojure/clojure {:mvn/version "1.10.2"}
+        org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/core.cache {:mvn/version "1.0.207"}
         org.flatland/ordered {:mvn/version "1.5.9"}
         smee/binary {:mvn/version "0.5.5"}}}
