@@ -7,7 +7,7 @@
             [me.raynes.fs :as fs])
   (:import java.io.IOException
            [java.util Collection List]
-           [javafx.application Platform]
+           javafx.application.Platform
            [javafx.stage FileChooser FileChooser$ExtensionFilter Stage]))
 
 (defn choose-file [{:keys [title initial-directory initial-filename extension-filters dialog-type on-complete]} dispatch!]
@@ -25,15 +25,15 @@
                     :open {:path @(fx/on-fx-thread (.showOpenDialog chooser (Stage.)))}
                     :open-multiple {:paths @(fx/on-fx-thread (.showOpenMultipleDialog chooser (Stage.)))}
                     :save {:path @(fx/on-fx-thread (.showSaveDialog chooser (Stage.)))})]
-     ;; If user escapes dialog w/o making a choice, path is nil
+    ;; Path is nil if user doesn't choose a path
     (when (first (vals selection))
       (dispatch! (merge on-complete selection)))))
 
 (defn read-file [{:keys [file reader-fn on-complete on-exception]} dispatch!]
   (dispatch!
-    (try
-      (assoc on-complete :file (assoc file :data (reader-fn (:path file))))
-      (catch IOException e (assoc on-exception :file file :exception e)))))
+   (try
+     (assoc on-complete :file (assoc file :data (reader-fn (:path file))))
+     (catch IOException e (assoc on-exception :file file :exception e)))))
 
 (defn write-file [{:keys [file writer-fn on-complete on-exception]} dispatch!]
   (dispatch!
