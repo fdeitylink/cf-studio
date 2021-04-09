@@ -1,6 +1,6 @@
 {:deps {aysylu/loom {:mvn/version "1.0.2"}
         clj-commons/fs {:mvn/version "1.6.307"}
-        cljfx/cljfx {:mvn/version "1.7.12"}
+        cljfx/cljfx {:mvn/version "1.7.13"}
         cljfx/css {:mvn/version "1.1.0"}
         com.taoensso/tempura {:mvn/version "1.2.1"}
         org.clojure/clojure {:mvn/version "1.10.3"}
