@@ -41,4 +41,4 @@
    ;; Convert attributes into file data
    (fn [pxattr] [header width height 0 pxattr])
    ;; Turn file data into 2D vector
-   (comp (partial mapv vec) #(nth % 4))))
+   (comp (partial mapv vec) peek)))
