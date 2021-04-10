@@ -13,10 +13,6 @@
   "The maximum byte length of the name. The string charset is specified by `cf.kero.string/charset`."
   31)
 
-(def num-unknown-bytes
-  "The number of contiguous unknown bytes in PxPack metadata."
-  5)
-
 (def scroll-types
   "A vector of the scrolling types of a PxPack tile layer. The index of each element is its byte value in PxPack metadata."
   [:normal
@@ -36,7 +32,9 @@
 (spec/def ::up-field ::kstr/name)
 (spec/def ::down-field ::kstr/name)
 (spec/def ::spritesheet ::kstr/name)
-(spec/def ::unknown-bytes (spec/coll-of ::util/byte :count num-unknown-bytes))
+(spec/def ::area-x ::util/ushort)
+(spec/def ::area-y ::util/ushort)
+(spec/def ::area ::util/ubyte)
 (spec/def ::bg-color (spec/and
                       (spec/map-of (constantly true) ::util/ubyte)
                       (spec/keys :req [::red ::green ::blue])))
@@ -52,7 +50,9 @@
                                       ::up-field
                                       ::down-field
                                       ::spritesheet
-                                      ::unknown-bytes
+                                      ::area-x
+                                      ::area-y
+                                      ::area
                                       ::bg-color
                                       ::layer-metadata]))
 
@@ -77,8 +77,10 @@
     ::up-field kstr/string-codec
     ::down-field kstr/string-codec
     ::spritesheet kstr/string-codec
-    ::unknown-bytes (bin/repeated :byte :length num-unknown-bytes)
-      ;; TODO Push colors into metadata.bg-color ns? Make them non-namespaced?
+    ::area-x :ushort-le
+    ::area-y :ushort-le
+    ::area :ubyte
+    ;; TODO Push colors into metadata.bg-color ns? Make them non-namespaced?
     ::bg-color (apply bin/ordered-map (interleave [::red ::green ::blue] (repeat :ubyte)))
       ;; TODO Break out into ::tilesets, ::visibility-types, ::scroll-types
     ::layer-metadata (apply bin/ordered-map (interleave tile-layer/layers (repeat layer-metadata-codec))))
