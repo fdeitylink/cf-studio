@@ -16,9 +16,13 @@
   "The maximum value for a tile index. Equivalent to the maximum of an unsigned byte."
   0xFF)
 
-(def max-dimension-size
-  "The maximum width or height of a tile layer. Equivalent to the maximum of an unsigned short."
-  0xFFFF)
+(def max-width
+  "The maximum width of a tile layer."
+  640)
+
+(def max-height
+  "The maximum height of a tile layer."
+  256)
 
 (def layers
   "An ordered set of keywords representing the three tile layers. The order is that in which tile layers appear in PxPack files."
@@ -70,8 +74,8 @@
           :else (mapv #(subvec % 0 new-width) resized))))))
 
 (spec/def ::tile-layer (spec/coll-of
-                        (spec/coll-of ::util/ubyte :max-count max-dimension-size :kind vector?)
-                        :max-count max-dimension-size
+                        (spec/coll-of ::util/ubyte :max-count max-width :kind vector?)
+                        :max-count max-height
                         :kind vector?))
 
 (def tile-layer-codec
