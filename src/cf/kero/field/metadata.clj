@@ -38,12 +38,18 @@
 (spec/def ::bg-color (spec/and
                       (spec/map-of (constantly true) ::util/ubyte)
                       (spec/keys :req [::red ::green ::blue])))
-(spec/def ::tileset ::kstr/name)
-(spec/def ::visibility-type ::util/byte)
-(spec/def ::scroll-type (set scroll-types))
-(spec/def ::layer-metadata (spec/and
-                            (spec/map-of (constantly true) (spec/keys :req [::tileset ::visibility-type ::scroll-type]))
-                            (spec/keys :req [::tile-layer/foreground ::tile-layer/middleground ::tile-layer/background])))
+(spec/def ::tilesets (spec/map-of
+                      tile-layer/layers
+                      ::kstr/name
+                      :count 3))
+(spec/def ::visibility-types (spec/map-of
+                              tile-layer/layers
+                              ::util/byte
+                              :count 3))
+(spec/def ::scroll-types (spec/map-of
+                          tile-layer/layers
+                          (set scroll-types)
+                          :count 3))
 (spec/def ::metadata (spec/keys :req [::name
                                       ::left-field
                                       ::right-field
@@ -54,14 +60,16 @@
                                       ::area-y
                                       ::area
                                       ::bg-color
-                                      ::layer-metadata]))
+                                      ::tilesets
+                                      ::visibility-types
+                                      ::scroll-types]))
 
 (def ^:private layer-metadata-codec
   "Codec for PxPack metadata's layer metadata chunk."
   (bin/compile-codec
    (bin/ordered-map
-    ::tileset kstr/string-codec
-    ::visibility-type :byte
+    :tileset kstr/string-codec
+    :visibility-type :byte
     ::scroll-type :ubyte)
    (fn [lm] (update lm ::scroll-type #(.indexOf ^clojure.lang.PersistentVector scroll-types %)))
    #(update % ::scroll-type (partial get scroll-types))))
@@ -82,7 +90,25 @@
     ::area :ubyte
     ;; TODO Push colors into metadata.bg-color ns? Make them non-namespaced?
     ::bg-color (apply bin/ordered-map (interleave [::red ::green ::blue] (repeat :ubyte)))
-      ;; TODO Break out into ::tilesets, ::visibility-types, ::scroll-types
-    ::layer-metadata (apply bin/ordered-map (interleave tile-layer/layers (repeat layer-metadata-codec))))
-   #(assoc % :header header)
-   #(dissoc % :header)))
+    :layer-metadata (apply bin/ordered-map (interleave tile-layer/layers (repeat layer-metadata-codec))))
+   (fn [{::keys [tilesets visibility-types scroll-types] :as metadata}]
+     (reduce-kv
+      (fn [metadata meta-kw meta-map]
+        (reduce-kv
+         (fn [metadata layer value]
+           (assoc-in metadata [:layer-metadata layer meta-kw] value))
+         metadata
+         meta-map))
+      (-> metadata
+         (dissoc ::tilesets ::visibility-types ::scroll-types)
+         (assoc :header header))
+      {:tileset tilesets :visibility-type visibility-types :scroll-type scroll-types}))
+   (fn [{:keys [layer-metadata] :as metadata}]
+     (reduce-kv
+      (fn [metadata layer {:keys [tileset visibility-type scroll-type]}]
+        (-> metadata
+            (assoc-in [::tilesets layer] tileset)
+            (assoc-in [::visibility-types layer] visibility-type)
+            (assoc-in [::scroll-types layer] scroll-type)))
+      (dissoc metadata :header :layer-metadata)
+      layer-metadata))))

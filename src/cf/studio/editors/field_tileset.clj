@@ -13,7 +13,7 @@
   [context path layer]
   (let [tileset-name (-> context
                          (fx/sub-ctx file-graph/file-data-sub path)
-                         (get-in [::pxpack/metadata ::metadata/layer-metadata layer ::metadata/tileset]))]
+                         (get-in [::pxpack/metadata ::metadata/tilesets layer]))]
     (some->> path
              (fx/sub-ctx context file-graph/file-dependencies-sub)
              ;; TODO filter file ext/type as well?

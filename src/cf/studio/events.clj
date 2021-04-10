@@ -56,7 +56,7 @@
   (let [metadata (::pxpack/metadata data)
         spritesheet {(::metadata/spritesheet metadata) ::game-data/spritesheet}
         tilesets (zipmap
-                  (->> metadata ::metadata/layer-metadata vals (map ::metadata/tileset))
+                  (->> metadata ::metadata/tilesets vals)
                   (repeat ::game-data/tileset))]
     {:context (fx/swap-context context update-in [:editors path] (partial merge
                                                                           {:layer (first tile-layer/layers)
