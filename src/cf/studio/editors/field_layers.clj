@@ -121,9 +121,10 @@
 
 (defn field-layers-view
   [{:keys [fx/context path]}]
-  (let [{::metadata/keys [red green blue]} (-> context
-                                               (fx/sub-ctx file-graph/file-data-sub path)
-                                               (get-in [::pxpack/metadata ::metadata/bg-color]))]
+  (let [color (-> context
+                  (fx/sub-ctx file-graph/file-data-sub path)
+                  (get-in [::pxpack/metadata ::metadata/bg-color]))
+        {::metadata/keys [red green blue]} color]
     {:fx/type :stack-pane
      ;; TODO CSS
      :alignment :top-left
