@@ -1,13 +1,15 @@
 (ns cf.studio.file-list
   (:require [cf.kero.field.pxpack :as pxpack]
-            [cf.studio.events.core :as events]
+            [cf.studio.events :as events]
             [cf.studio.file-graph :as file-graph]
             [cf.studio.i18n :refer [translate-sub]]
             [cf.util :as util]
             [cljfx.api :as fx]
             [cljfx.ext.tree-view :as fx.ext.tree-view]
             [clojure.set]
-            [me.raynes.fs :as fs]))
+            [me.raynes.fs :as fs])
+  (:import javafx.scene.control.TreeItem
+           [javafx.scene.input KeyCode KeyEvent MouseButton MouseEvent]))
 
 (defn- context-menu
   [{:keys [fx/context]}]
@@ -18,7 +20,7 @@
               ;; FIXME Accelerator doesn't work?
               :accelerator [:enter]
               :disable (not (fx/sub-val context :game-data))
-              :on-action {::events/type ::events/open-selected-path}}
+              :on-action {::events/type ::open-selected-path}}
              #_{:fx/type :menu-item
                 :text (fx/sub-val context translate-sub ::delete)
                 :accelerator [:delete]
@@ -96,7 +98,7 @@
               {:fx/type fx.ext.tree-view/with-selection-props
                :v-box/vgrow :always
                :props {:selection-mode :single
-                       :on-selected-item-changed {::events/type ::events/selected-path-changed}}
+                       :on-selected-item-changed {::events/type ::selected-path-changed}}
                :desc {:fx/type :tree-view
                       :show-root false
                       ;; TODO possible feature request
@@ -106,13 +108,40 @@
                       :cell-factory {:fx/cell-type :tree-cell
                                      :describe (fn [value]
                                                  {:style-class ["cell" "indexed-cell" "tree-cell" "app-file-list-cell"]
-                                                  :text (if (string? value) value (fs/base-name value true))})}
+                                                  :text (fs/base-name value true)})}
                       :context-menu {:fx/type context-menu}
-                      :on-mouse-clicked {::events/type ::events/file-list-click}
-                      :on-key-pressed {::events/type ::events/file-list-keypress}
+                      :on-mouse-clicked {::events/type ::click}
+                      :on-key-pressed {::events/type ::keypress}
                       :root {:fx/type :tree-item
                              :children (doall
                                         (for [group resource-types]
                                           {:fx/type file-group
                                            :resource-type group}))}}}]})
 
+(defmethod events/event-handler ::selected-path-changed
+  [{:keys [fx/context ^TreeItem fx/event]}]
+  ;; event is nil if moving from child to parent with left arrow key (bug?)
+  (let [value (some-> event .getValue)]
+    (if (or (nil? value) (string? value))
+      {:context (fx/swap-context context dissoc :selected-path)}
+      {:context (fx/swap-context context assoc :selected-path value)})))
+
+(defmethod events/event-handler ::click
+  [{:keys [^MouseEvent fx/event]}]
+  (when (and (= MouseButton/PRIMARY (.getButton event))
+             (= 2 (.getClickCount event)))
+    {:dispatch {::events/type ::open-selected-path}}))
+
+;; TODO
+;; Enter key accelerator doesn't work on the corresponding menu item so we have this
+;; Figure out why and if we can just use an on-action on the menu item
+(defmethod events/event-handler ::keypress
+  [{:keys [^KeyEvent fx/event]}]
+  (when (= KeyCode/ENTER (.getCode event))
+    {:dispatch {::events/type ::open-selected-path}}))
+
+(defmethod events/event-handler ::open-selected-path
+  [{:keys [fx/context]}]
+  (when-let [path (fx/sub-val context :selected-path)]
+    {:dispatch {::events/type ::events/open-file :path path :edit? true}
+     :context (fx/swap-context context dissoc :selected-path)}))

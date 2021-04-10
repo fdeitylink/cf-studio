@@ -2,9 +2,6 @@
 
  :cf.studio.app {:app-title "Cat & Frog Studio"}
 
- :cf.studio.events.core {:open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
-                         :open-new-mod-filter-description "KB/PH Executable File"}
-
  :cf.studio.effects {:exception-dialog-title "An exception has occurred"}
 
  :cf.studio.file-list {:label "Files"
@@ -40,7 +37,10 @@
 
                       :help "_Help"
                       :help-about "_About"
-                      :help-guide "_Guide"}
+                      :help-guide "_Guide"
+
+                      :open-new-mod-chooser-title "Browse to a Kero Blaster, Pink Hour, or Pink Heaven executable file"
+                      :open-new-mod-filter-description "KB/PH Executable File"}
 
  :cf.studio.editors.editor-view {:no-editor-open "Open a file to start editing"}
 

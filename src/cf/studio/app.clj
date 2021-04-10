@@ -3,7 +3,7 @@
   (:require [cf.studio.config :as config]
             [cf.studio.editors.editor-view :refer [editor-view]]
             [cf.studio.effects :as effects]
-            [cf.studio.events.core :as events]
+            [cf.studio.events :as events]
             [cf.studio.file-graph :refer [file-graph]]
             [cf.studio.file-list :refer [file-list]]
             [cf.studio.i18n :refer [translate-sub]]

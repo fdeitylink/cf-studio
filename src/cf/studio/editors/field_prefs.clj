@@ -1,6 +1,6 @@
 (ns cf.studio.editors.field-prefs
   (:require [cf.kero.field.tile-layer :as tile-layer]
-            [cf.studio.events.core :as events]
+            [cf.studio.events :as events]
             [cf.studio.i18n :refer [translate-sub]]
             [cljfx.api :as fx]))
 
@@ -38,14 +38,14 @@
                   [{:fx/type :radio-button
                     :grid-pane/row row
                     :selected (= layer (fx/sub-val context get-in [:editors path :layer]))
-                    :on-selected-changed {::events/type ::events/pxpack-selected-tile-layer-changed
+                    :on-selected-changed {::events/type ::selected-layer-changed
                                           :path path
                                           :layer layer}}
                    {:fx/type :check-box
                     :grid-pane/row row
                     :grid-pane/column 1
                     :selected (boolean (fx/sub-val context get-in [:editors path :visible-layers layer]))
-                    :on-selected-changed {::events/type ::events/pxpack-visible-tile-layers-changed
+                    :on-selected-changed {::events/type ::visible-layers-changed
                                           :path path
                                           :layer layer}
                     :style-class ["check-box" "app-text-small"]
@@ -59,11 +59,27 @@
                 :text ::layer-scale
                 :path path
                 :value-key :layer-scale
-                :on-value-changed-event ::events/pxpack-tile-layer-scale-changed}
+                :on-value-changed-event ::layer-scale-changed}
                {:fx/type scale-slider
                 :grid-pane/row 5
                 :grid-pane/column-span 2
                 :text ::tileset-scale
                 :path path
                 :value-key :tileset-scale
-                :on-value-changed-event ::events/pxpack-tileset-scale-changed}])})
+                :on-value-changed-event ::tileset-scale-changed}])})
+
+(defmethod events/event-handler ::selected-layer-changed
+  [{:keys [fx/context path layer]}]
+  {:context (fx/swap-context context assoc-in [:editors path :layer] layer)})
+
+(defmethod events/event-handler ::visible-layers-changed
+  [{:keys [fx/context fx/event path layer]}]
+  {:context (fx/swap-context context update-in [:editors path :visible-layers] (if event conj disj) layer)})
+
+(defmethod events/event-handler ::layer-scale-changed
+  [{:keys [fx/context fx/event path]}]
+  {:context (fx/swap-context context assoc-in [:editors path :layer-scale] event)})
+
+(defmethod events/event-handler ::tileset-scale-changed
+  [{:keys [fx/context fx/event path]}]
+  {:context (fx/swap-context context assoc-in [:editors path :tileset-scale] event)})
